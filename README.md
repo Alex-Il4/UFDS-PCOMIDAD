@@ -1,6 +1,24 @@
 # ufds-web
 
-## Project setup
+## Authors
+
+- [Adrian Ernesto Aguilera Cruz](https://www.github.com/Adrian-Aguilera)
+- [Andrew Gabriel LLanos Portillo](https://www.github.com/Adrian-Aguilera)
+- [Oscar Alexander Jimenez Hernandez](https://www.github.com/Adrian-Aguilera)
+
+
+
+## Intalacion
+
+Ejecutar el siguiente comando
+
+```bash
+  npm install
+```
+
+<hr>
+
+## Inicializar el proyecto
 ```
 yarn install
 ```
@@ -9,16 +27,3 @@ yarn install
 ```
 yarn serve
 ```
-
-### Compiles and minifies for production
-```
-yarn build
-```
-
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
