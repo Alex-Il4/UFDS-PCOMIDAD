@@ -18,13 +18,10 @@ Ejecutar el siguiente comando
 
 <hr>
 
-## Inicializar el proyecto
+## Ejecutar el proyecto
 ```
 yarn install
 ```
-
-O
-
 ```
 npm run serve
 ```
