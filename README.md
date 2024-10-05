@@ -1,4 +1,6 @@
-# ufds-web
+# Project UFDS-WEB
+
+Un proyecto de gestion de pedidos orientado a un servicio web
 
 ## Authors
 
@@ -15,20 +17,19 @@ Ejecutar el siguiente comando
 ```bash
   npm install
 ```
-
-<hr>
-
-## Instalar yarn
 Instalar yarn como un metodo alterno al iniciar el servidor
 ```
 yarn install
 ```
+
+<hr>
+
+### Compilar el proyecto
+Usando: 
+```
+yarn run serve
+```
 o
 ```
 npm run serve
-```
-
-### Compiles and hot-reloads for development
-```
-yarn serve
 ```
