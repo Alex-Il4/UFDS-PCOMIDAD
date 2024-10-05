@@ -23,6 +23,12 @@ Ejecutar el siguiente comando
 yarn install
 ```
 
+O
+
+```
+npm run serve
+```
+
 ### Compiles and hot-reloads for development
 ```
 yarn serve
