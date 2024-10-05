@@ -18,10 +18,12 @@ Ejecutar el siguiente comando
 
 <hr>
 
-## Ejecutar el proyecto
+## Instalar yarn
+Instalar yarn como un metodo alterno al iniciar el servidor
 ```
 yarn install
 ```
+o
 ```
 npm run serve
 ```
