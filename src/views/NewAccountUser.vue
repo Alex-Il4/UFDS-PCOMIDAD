@@ -12,11 +12,16 @@
                 max-width="400"
                 rounded="md"
               >
-                <v-img
-                  class="mx-auto my-6"
-                  max-width="80"
-                  src="../assets/logosuper.svg"
-                ></v-img>
+                <div class="orange--text text-subtitle-1 text-medium-emphasis">
+                    <strong class="text-amber-darken-3">Nuevo usuario</strong> 
+                </div>
+  
+                <v-text-field
+                  density="compact"
+                  placeholder="usuario"
+                  prepend-inner-icon="mdi-account-outline"
+                  variant="outlined"
+                ></v-text-field>   
   
                 <div class="orange--text text-subtitle-1 text-medium-emphasis">
                     <strong class="text-amber-darken-3">Correo</strong> 
@@ -27,10 +32,10 @@
                   placeholder="Ingresa tu correo"
                   prepend-inner-icon="mdi-email-outline"
                   variant="outlined"
-                ></v-text-field>
+                ></v-text-field>    
   
                 <div class="orange--text text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
-                    <strong class="text-amber-darken-3">Contraseña</strong>
+                    <strong class="text-amber-darken-3">Nueva contraseña</strong>
   
                
                 </div>
@@ -39,18 +44,29 @@
                   :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
                   :type="visible ? 'text' : 'password'"
                   density="compact"
-                  placeholder="ingresa tu contraseña"
+                  placeholder="ingresa tu nueva contraseña"
                   prepend-inner-icon="mdi-lock-outline"
                   variant="outlined"
                   @click:append-inner="visible = !visible"
                 ></v-text-field>
+                
+                <div class="orange--text text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
+                    <strong class="text-amber-darken-3">Confirmar contraseña</strong>
   
-                <v-card
-                  class="mb-12"
-                  color="surface-variant"
-                  variant="tonal"
-                >
-                </v-card>
+               
+                </div>
+  
+                <v-text-field
+                  :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+                  :type="visible ? 'text' : 'password'"
+                  density="compact"
+                  placeholder="Repite tu nueva contraseña"
+                  prepend-inner-icon="mdi-lock-outline"
+                  variant="outlined"
+                  @click:append-inner="visible = !visible"
+                ></v-text-field>
+
+              
   
                 <v-btn
                   class="mb-8"
@@ -59,17 +75,17 @@
                   variant="tonal"
                   block
                 >
-                <strong class="text-amber-darken-3">Iniciar Sesion</strong> 
+                <strong class="text-amber-darken-3">Crear Cuenta</strong> 
                 </v-btn>
   
                 <v-card-text class="text-center">
                   <a
                     class="text-blue text-decoration-none"
-                    href="/AccountUser"
+                    href="/"
                     rel="noopener noreferrer"
                     target="_blank"
                   >
-                  <strong class="text-amber-darken-3">No tienes cuenta?</strong> 
+                  <strong class="text-amber-darken-3">Ya tienes cuenta?</strong> 
                   </a>
                 </v-card-text>
               </v-card>
@@ -79,8 +95,8 @@
         
         <!-- Columna 2 con fondo azul claro, ocupando el 100% del espacio horizontal -->
         <v-col class="pa-0 fill-height d-flex" cols="8">
-          <v-sheet class="pa-0 fill-height caja2" color="blue lighten-4">
-            dede
+          <v-sheet class="pa-0 fill-height caja3">
+           
           </v-sheet>
         </v-col>
       </v-row>
@@ -89,7 +105,7 @@
   
   <script>
   export default {
-    name: 'LoginUser',
+    name: 'NewAccountUser',
     data() {
       return {
         visible: false // Define la propiedad visible en el data
@@ -109,13 +125,12 @@
     height: 100vh; /* 100% de la altura del viewport */
     width: 100vw;  /* 100% del ancho del viewport */
   }
-  .ConLogin {
-    margin-top: 5%;
-  }
-  .caja2 {
-    background-image: url(../assets/deliv.jpg);
-    background-size: cover;
-    background-position: center;
-  }
+  .caja3 {
+  background-image: url(../assets/delivery2.jpg);
+  background-size: 70%; /* O puedes cambiarlo a contain según lo que desees */
+  background-position: center;
+  background-repeat: no-repeat; /* Evita que la imagen se repita */
+  height: 100%; /* Asegúrate de que ocupe toda la altura disponible */
+}
   </style>
   
