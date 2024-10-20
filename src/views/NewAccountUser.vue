@@ -81,7 +81,8 @@
                 <v-card-text class="text-center">
                   <a
                     class="text-blue text-decoration-none"
-                    href="/"
+                    @click="redirectToAccountUser"
+                    style="cursor: pointer;"
                     rel="noopener noreferrer"
                     target="_blank"
                   >
@@ -110,6 +111,11 @@
       return {
         visible: false // Define la propiedad visible en el data
       };
+    },
+    methods: {
+      redirectToAccountUser() {
+        this.$router.push('/'); // Cambia la ruta a '/AccountUser'
+      }
     }
   }
   </script>
