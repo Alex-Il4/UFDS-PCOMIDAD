@@ -94,7 +94,12 @@
       return {
         visible: false // Define la propiedad visible en el data
       };
+    },
+    methods: {
+    redirectToAccountUser() {
+      this.$router.push('/AccountUser'); // Cambia la ruta a '/AccountUser'
     }
+  }
   }
   </script>
   
