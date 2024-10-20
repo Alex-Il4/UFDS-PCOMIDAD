@@ -79,7 +79,7 @@
         
         <!-- Columna 2 con fondo azul claro, ocupando el 100% del espacio horizontal -->
         <v-col class="pa-0 fill-height d-flex" cols="8">
-          <v-sheet class="pa-0 fill-height caja2" color="blue lighten-4">
+          <v-sheet class="pa-0 fill-height caja2">
             dede
           </v-sheet>
         </v-col>
