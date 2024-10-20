@@ -133,7 +133,7 @@
   }
   .caja3 {
     
-
+background-image: url(../assets/compras.jpg);
   background-size: 70%; /* O puedes cambiarlo a contain según lo que desees */
   background-position: center;
   background-repeat: no-repeat; /* Evita que la imagen se repita */
