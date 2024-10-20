@@ -54,7 +54,17 @@
                 >
                   <strong class="text-amber-darken-3">Iniciar Sesion</strong> 
                 </v-btn>
-  
+                
+                <v-card-text class="text-center">
+                  <span
+                    class="text-blue text-decoration-none"
+                    @click="redirectToCreateRestaurant"
+                    style="cursor: pointer;"
+                  >
+                    <strong class="text-amber-darken-3">crear restaurante</strong>
+                  </span>
+                </v-card-text>
+
                 <v-card-text class="text-center">
                   <span
                     class="text-blue text-decoration-none"
