@@ -17,7 +17,7 @@
               ></v-img>
   
               <div class="orange--text text-subtitle-1 text-medium-emphasis">
-                <strong class="text-amber-darken-3">Correo</strong>
+                <strong class="text-red-accent-3 ">Correo</strong>
               </div>
   
               <v-text-field
@@ -28,7 +28,7 @@
               ></v-text-field>
   
               <div class="orange--text text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
-                <strong class="text-amber-darken-3">Contraseña</strong>
+                <strong class="text-red-accent-3">Contraseña</strong>
               </div>
   
               <v-text-field
@@ -46,13 +46,13 @@
   
               <v-btn
                 class="mb-8"
-                color="orange"
+                color="red"
                 size="large"
                 variant="tonal"
                 block
                 @click="redirectToAccountUser"
               >
-                <strong class="text-amber-darken-3">Iniciar Sesión</strong>
+                <strong class="text-red-accent-3">Iniciar Sesión</strong>
               </v-btn>
   
               <v-card-text class="text-center">
@@ -61,7 +61,7 @@
                   @click="redirectToCreateRestaurant"
                   style="cursor: pointer;"
                 >
-                  <strong class="text-amber-darken-3">crear restaurante</strong>
+                  <strong class="text-red-accent-3">Crear restaurante</strong>
                 </span>
               </v-card-text>
   
@@ -71,7 +71,7 @@
                   @click="redirectToLoginUser"
                   style="cursor: pointer;"
                 >
-                  <strong class="text-amber-darken-3">iniciar como usuario</strong>
+                  <strong class="text-red-accent-3">Iniciar como usuario</strong>
                 </span>
               </v-card-text>
             </v-card>
