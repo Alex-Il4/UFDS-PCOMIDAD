@@ -120,7 +120,7 @@
   }
   </script>
   
-  <style>
+  <style scoped>
   html, body, #app {
     height: 100%;
     margin: 0;
