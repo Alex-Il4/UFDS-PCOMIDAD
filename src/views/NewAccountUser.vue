@@ -132,6 +132,7 @@
     width: 100vw;  /* 100% del ancho del viewport */
   }
   .caja3 {
+    
   background-image: url(../assets/delivery2.jpg);
   background-size: 70%; /* O puedes cambiarlo a contain según lo que desees */
   background-position: center;
