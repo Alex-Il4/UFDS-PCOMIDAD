@@ -4,21 +4,22 @@
       <v-row class="no-gutters fill-height">
         <!-- Columna 1 con fondo rojo claro, ocupando el 100% del espacio horizontal -->
         <v-col class="pa-0 fill-height d-flex" cols="5">
-          <v-sheet class="pa-0 fill-height" color="red lighten-4">
+          <v-sheet class="pa-0 fill-height" color="transparent">
             <div class="ConLogin">
+               
+
+                <v-card
+                class="mx-auto pa-10 pb-2"
+                elevation="2"
+                max-width="400"
+                rounded="md"
+                >
                 <v-img
                 class="mx-auto my-6"
                 max-width="80"
                 src="../assets/logosuper.svg"
                 ></v-img>
 
-                <v-card
-                class="mx-auto pa-10 pb-2"
-                elevation="2"
-                max-width="400"
-             
-                rounded="md"
-                >
                 <div class="text-subtitle-1 text-medium-emphasis">Account</div>
 
                 <v-text-field
