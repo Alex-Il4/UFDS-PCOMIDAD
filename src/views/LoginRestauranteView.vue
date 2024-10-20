@@ -58,10 +58,10 @@
                 <v-card-text class="text-center">
                   <span
                     class="text-blue text-decoration-none"
-                    @click="redirectToAccountUser"
+                    @click="redirectToLoginUser"
                     style="cursor: pointer;"
                   >
-                    <strong class="text-amber-darken-3">No tienes cuenta?</strong>
+                    <strong class="text-amber-darken-3">iniciar como usuario</strong>
                   </span>
                 </v-card-text>
               </v-card>
@@ -70,7 +70,7 @@
         </v-col>
   
         <v-col class="pa-0 fill-height d-flex" cols="8">
-          <v-sheet class="pa-0 fill-height caja2">
+          <v-sheet class="pa-0 fill-height caja4">
           
           </v-sheet>
         </v-col>
@@ -87,8 +87,11 @@
       };
     },
     methods: {
-      redirectToAccountUser() {
-        this.$router.push('/AccountUser'); // Cambia la ruta a '/AccountUser'
+      redirectToLoginUser() {
+        this.$router.push('/'); // Cambia la ruta a '/AccountUser'
+      },
+      redirectToCreateRestaurant() {
+        this.$router.push('/'); // Cambia la ruta a '/AccountUser'
       }
     }
   }
@@ -108,8 +111,8 @@
   .ConLogin {
     margin-top: 5%;
   }
-  .caja2 {
-    background-image: url(../assets/deliv.jpg);
+  .caja4{
+   
     background-size: cover;
     background-position: center;
   }

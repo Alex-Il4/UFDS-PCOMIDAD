@@ -81,7 +81,7 @@
                 <v-card-text class="text-center">
                   <a
                     class="text-blue text-decoration-none"
-                    @click="redirectToAccountUser"
+                    @click="redirectToLogin"
                     style="cursor: pointer;"
                     rel="noopener noreferrer"
                     target="_blank"
@@ -113,7 +113,7 @@
       };
     },
     methods: {
-      redirectToAccountUser() {
+      redirectToLogin() {
         this.$router.push('/'); // Cambia la ruta a '/AccountUser'
       }
     }
