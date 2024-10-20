@@ -1,8 +1,6 @@
 <template>
-    <!-- v-container sin margen ni padding, y con fluid para ocupar todo el ancho -->
     <v-container class="pa-0 ma-0 fill-height" fluid>
       <v-row class="no-gutters fill-height">
-        <!-- Columna 1 con fondo rojo claro, ocupando el 100% del espacio horizontal -->
         <v-col class="pa-0 fill-height d-flex" cols="4">
           <v-sheet class="pa-0 fill-height" color="transparent">
             <div class="ConLogin">
@@ -19,7 +17,7 @@
                 ></v-img>
   
                 <div class="orange--text text-subtitle-1 text-medium-emphasis">
-                    <strong class="text-amber-darken-3">Correo</strong> 
+                  <strong class="text-amber-darken-3">Correo</strong> 
                 </div>
   
                 <v-text-field
@@ -30,9 +28,7 @@
                 ></v-text-field>
   
                 <div class="orange--text text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
-                    <strong class="text-amber-darken-3">Contraseña</strong>
-  
-               
+                  <strong class="text-amber-darken-3">Contraseña</strong>
                 </div>
   
                 <v-text-field
@@ -45,11 +41,7 @@
                   @click:append-inner="visible = !visible"
                 ></v-text-field>
   
-                <v-card
-                  class="mb-12"
-                  color="surface-variant"
-                  variant="tonal"
-                >
+                <v-card class="mb-12" color="surface-variant" variant="tonal">
                 </v-card>
   
                 <v-btn
@@ -58,26 +50,25 @@
                   size="large"
                   variant="tonal"
                   block
+                  @click="redirectToAccountUser"
                 >
-                <strong class="text-amber-darken-3">Iniciar Sesion</strong> 
+                  <strong class="text-amber-darken-3">Iniciar Sesion</strong> 
                 </v-btn>
   
                 <v-card-text class="text-center">
-                  <a
+                  <span
                     class="text-blue text-decoration-none"
-                    href="/AccountUser"
-                    rel="noopener noreferrer"
-                    target="_blank"
+                    @click="redirectToAccountUser"
+                    style="cursor: pointer;"
                   >
-                  <strong class="text-amber-darken-3">No tienes cuenta?</strong> 
-                  </a>
+                    <strong class="text-amber-darken-3">No tienes cuenta?</strong>
+                  </span>
                 </v-card-text>
               </v-card>
             </div>
           </v-sheet>
         </v-col>
-        
-        <!-- Columna 2 con fondo azul claro, ocupando el 100% del espacio horizontal -->
+  
         <v-col class="pa-0 fill-height d-flex" cols="8">
           <v-sheet class="pa-0 fill-height caja2">
             dede
@@ -96,10 +87,10 @@
       };
     },
     methods: {
-    redirectToAccountUser() {
-      this.$router.push('/AccountUser'); // Cambia la ruta a '/AccountUser'
+      redirectToAccountUser() {
+        this.$router.push('/AccountUser'); // Cambia la ruta a '/AccountUser'
+      }
     }
-  }
   }
   </script>
   
