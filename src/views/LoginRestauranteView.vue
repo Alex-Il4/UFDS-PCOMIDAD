@@ -99,7 +99,7 @@
         this.$router.push('/'); // Cambia la ruta a '/AccountUser'
       },
       redirectToCreateRestaurant() {
-        this.$router.push('/'); // Cambia la ruta a '/AccountUser'
+        this.$router.push('/crearRestaurante'); // Cambia la ruta a '/AccountUser'
       }
     }
   }
