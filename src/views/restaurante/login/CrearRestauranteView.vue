@@ -140,9 +140,6 @@
         text="El restaurante ha sido creado exitosamente"
         title="Mensaje"
       >
-        <v-card-text>
-          <v-label>Redireccionando...</v-label>
-        </v-card-text>
       </v-card>
     </v-dialog>
   </v-container>
