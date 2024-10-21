@@ -96,7 +96,7 @@
         this.$router.push('/AccountUser'); // Cambia la ruta a '/AccountUser'
       },
       redirectToRestaurantLogin() {
-        this.$router.push('/loginRestaurante'); // Cambia la ruta a '/AccountUser'
+        this.$router.push('/restaurante/login'); // Cambia la ruta a '/AccountUser'
       }
     },
      
