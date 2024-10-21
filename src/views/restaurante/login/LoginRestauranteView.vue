@@ -1,8 +1,8 @@
 <template>
   <v-container class="pa-0 ma-0 fill-height" fluid>
     <v-row class="no-gutters fill-height">
-      <v-col class="pa-0 d-flex justify-center align-center" cols="4">
-        <v-sheet class="pa-0 align-content-lg-center flex" color="transparent">
+      <v-col class="pa-0 fill-height d-flex" cols="4" xs="12" sm="12" md="4" lg="4" xl="4" xxl="4">
+        <v-sheet class="pa-0 fill-height d-flex align-center justify-center" color="transparent">
           <v-card
             class="mx-auto pa-10 pb-2 fill-height"
             elevation="2"
@@ -97,7 +97,7 @@
         </v-sheet>
       </v-col>
 
-      <v-col class="pa-0 fill-height d-flex" cols="8">
+      <v-col class="pa-0 fill-height d-flex hide-on-sm-xs-md" cols="8" md="6" lg="6" xl="8" xxl="8">
         <v-sheet class="pa-0 fill-height caja4"></v-sheet>
       </v-col>
     </v-row>
@@ -141,9 +141,7 @@ export default {
 </script>
 
 <style scoped>
-html,
-body,
-#app {
+html, body, #app  {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -156,8 +154,13 @@ body,
 
 .caja4 {
   background-image: url(@/assets/res.jpg);
-  background-size: 100vh;
+  background-size: 100%;
   background-position: center;
   background-repeat: no-repeat;
+}
+@media (max-width: 950px) { /* xs and sm breakpoints */
+  .hide-on-sm-xs-md {
+    display: none !important;
+  }
 }
 </style>

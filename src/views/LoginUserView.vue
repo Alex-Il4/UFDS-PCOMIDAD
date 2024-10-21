@@ -1,7 +1,8 @@
 <template>
   <v-container class="pa-0 ma-0 fill-height" fluid>
     <v-row class="no-gutters fill-height">
-      <v-col class="pa-0 fill-height d-flex justify-center align-center" cols="4">
+      <!-- Primer v-col que siempre se mostrará -->
+      <v-col class="pa-0 fill-height d-flex justify-center align-center" xs="12" sm="12" md="4" lg="4" xl="4" xxl="4">
         <v-sheet class="pa-0 fill-height" color="transparent">
           <v-card
             class="mx-auto pa-10 pb-2 fill-height"
@@ -10,11 +11,7 @@
             rounded="md"
           >
             <!-- Contenido del v-card -->
-            <v-img
-              class="mx-auto my-6"
-              max-width="80"
-              src="../assets/logosuper.svg"
-            ></v-img>
+            <v-img class="mx-auto my-6" max-width="80" src="../assets/logosuper.svg"></v-img>
 
             <div class="orange--text text-subtitle-1 text-medium-emphasis">
               <strong class="text-amber-darken-3">Correo</strong>
@@ -75,23 +72,26 @@
         </v-sheet>
       </v-col>
 
-      <v-col class="pa-0 fill-height d-flex" cols="8">
+      <!-- Segundo v-col que se ocultará en pantallas xs y sm -->
+      <v-col 
+        class="pa-0 fill-height d-flex hide-on-sm-xs-md"  
+        md="6" lg="6" xl="8" xxl="8"
+      >
         <v-sheet class="pa-0 fill-height caja2"></v-sheet>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
-  
-  <script>
-  export default {
-    name: 'LoginUser',
-    data() {
-      return {
-        visible: false // Define la propiedad visible en el data
-      };
-    },
-    methods: {
+<script>
+export default {
+  name: 'LoginUser',
+  data() {
+    return {
+      visible: false // Define la propiedad visible en el data
+    };
+  },
+  methods: {
       redirectToAccountUser() {
         this.$router.push('/AccountUser'); // Cambia la ruta a '/AccountUser'
       },
@@ -99,13 +99,11 @@
         this.$router.push('/restaurante/login'); // Cambia la ruta a '/AccountUser'
       }
     },
-     
-    
-  }
-  </script>
-  
-  <style scoped>
-  html, body, #app {
+}
+</script>
+
+<style scoped>
+html, body, #app {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -129,8 +127,14 @@
 
 .caja2 {
   background-image: url(../assets/deliv.jpg);
-  background-size: cover;
+  background-size: 100%;
   background-position: center;
+  background-repeat: no-repeat;
 }
-  </style>
-  
+
+@media (max-width: 950px) { /* xs and sm breakpoints */
+  .hide-on-sm-xs-md {
+    display: none !important;
+  }
+}
+</style>
