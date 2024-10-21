@@ -129,10 +129,27 @@
         <v-sheet class="pa-0 fill-height caja3"> </v-sheet>
       </v-col>
     </v-row>
+    <v-dialog
+      v-model="dialog"
+      width="auto"
+    >
+      <v-card
+        max-width="400"
+        prepend-icon="bi bi-check-square-fill"
+        color="success"
+        text="El restaurante ha sido creado exitosamente"
+        title="Mensaje"
+      >
+        <v-card-text>
+          <v-label>Redireccionando...</v-label>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: "CrearRestauranteView",
   data: () => ({
@@ -141,6 +158,7 @@ export default {
     nombre: "",
     password: "",
     passwordConfirm: "",
+    dialog: false,
     rules: {
       required: (value) => {
         return !!value || "Este campo es requerido";
@@ -156,7 +174,28 @@ export default {
     async onSubmit() {
       const valid = await this.validateFields()
       if (valid) {
-        console.log("Formulario válido");
+        if (this.password === this.passwordConfirm) {
+          console.log(this.password);
+          console.log(this.passwordConfirm);
+          const json = {
+            "nombre": this.nombre,
+            "correo": this.correo,
+            "password": this.password,
+          };
+          try {
+            const response = await axios.post(`${process.env.VUE_APP_API_URL}/restaurantesLoginMethods/api/crear/`, json);
+            const data = response.data;
+            console.log(data);
+            this.dialog = true;
+            setTimeout(() => {
+              this.$router.push("/restaurante/login");
+            }, 3000);
+          } catch (error) {
+            console.log(error);
+          }
+        }else{
+          console.log("Las contraseñas no coinciden");
+        }
       }else{
         console.log("Formulario no válido");
       }
