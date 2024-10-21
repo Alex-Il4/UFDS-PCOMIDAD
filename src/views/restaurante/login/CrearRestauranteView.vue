@@ -14,89 +14,113 @@
             src="@/assets/logosuper.svg"
           >
           </v-img>
-          <div class="ConLogin">
-            <v-card
-              class="mx-auto pa-10 pb-2"
-              elevation="2"
-              max-width="400"
-              rounded="md"
-            >
-              <div class="orange--text text-subtitle-1 text-medium-emphasis">
-                <strong class="text-red-lighten-1">Nombre del restaurante</strong>
-              </div>
-
-              <v-text-field
-                density="compact"
-                placeholder="Restaurante"
-                prepend-inner-icon="mdi-account-outline"
-                variant="outlined"
-              ></v-text-field>
-
-              <div class="orange--text text-subtitle-1 text-medium-emphasis">
-                <strong class="text-red-lighten-1">Correo del restaurante</strong>
-              </div>
-
-              <v-text-field
-                density="compact"
-                placeholder="restaurante@restaurante.com"
-                prepend-inner-icon="mdi-email-outline"
-                variant="outlined"
-              ></v-text-field>
-
-              <div
-                class="orange--text text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between"
+          <v-form fast-fail  ref="form">
+            <div class="ConLogin">
+              <v-card
+                class="mx-auto pa-10 pb-2"
+                elevation="2"
+                max-width="400"
+                rounded="md"
               >
-                <strong class="text-red-lighten-1">Contraseña</strong>
-              </div>
+                <div class="orange--text text-subtitle-1 text-medium-emphasis">
+                  <strong class="text-red-lighten-1">Nombre del restaurante</strong>
+                </div>
 
-              <v-text-field
-                :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
-                :type="visible ? 'text' : 'password'"
-                density="compact"
-                placeholder="ingresa tu nueva contraseña"
-                prepend-inner-icon="mdi-lock-outline"
-                variant="outlined"
-                @click:append-inner="visible = !visible"
-              ></v-text-field>
+                <v-text-field
+                  v-model="nombre"
+                  :rules="[rules.required]"
+                  density="compact"
+                  placeholder="Restaurante"
+                  hint="Ingrese el nombre del restaurante"
+                  prepend-inner-icon="mdi-account-outline"
+                  variant="outlined"
+                  required
+                  color="success"
+                ></v-text-field>
 
-              <div
-                class="orange--text text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between"
-              >
-                <strong class="text-red-lighten-1">Confirmar contraseña</strong>
-              </div>
+                <div class="orange--text text-subtitle-1 text-medium-emphasis">
+                  <strong class="text-red-lighten-1">Correo del restaurante</strong>
+                </div>
 
-              <v-text-field
-                :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
-                :type="visible ? 'text' : 'password'"
-                density="compact"
-                placeholder="Repite tu nueva contraseña"
-                prepend-inner-icon="mdi-lock-outline"
-                variant="outlined"
-                @click:append-inner="visible = !visible"
-              ></v-text-field>
+                <v-text-field
+                  v-model="correo"
+                  density="compact"
+                  placeholder="restaurante@restaurante.com"
+                  hint="Ingrese el correo del restaurante"
+                  prepend-inner-icon="mdi-email-outline"
+                  variant="outlined"
+                  :rules="[rules.required, rules.email]"
+                  color="success"
+                ></v-text-field>
 
-              <v-btn
-                class="mb-8"
-                color="error"
-                size="large"
-                variant="tonal"
-                block
-              >
-                <strong class="text-red-lighten-1">Crear Cuenta</strong>
-              </v-btn>
-
-              <v-card-text class="text-center">
-                <a
-                  class="text-blue text-decoration-none"
-                  @click="redirectToLogin"
-                  style="cursor: pointer"
-                  rel="noopener noreferrer"
+                <div
+                  class="orange--text text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between"
                 >
-                  <strong class="text-red-lighten-1">Ya tienes cuenta?</strong>
-                </a>
-              </v-card-text>
-            </v-card>
-          </div>
+                  <strong class="text-red-lighten-1">Contraseña</strong>
+                </div>
+
+                <v-text-field
+                  v-model="password"
+                  :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+                  :type="visible ? 'text' : 'password'"
+                  density="compact"
+                  placeholder="ingresa tu nueva contraseña"
+                  prepend-inner-icon="mdi-lock-outline"
+                  hint="Ingrese su contraseña"
+                  variant="outlined"
+                  @click:append-inner="visible = !visible"
+                  color="success"
+                  :rules="[rules.required]"
+                ></v-text-field>
+
+                <div
+                  class="orange--text text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between"
+                >
+                  <strong class="text-red-lighten-1">Confirmar contraseña</strong>
+                </div>
+
+                <v-text-field
+                  v-model="passwordConfirm"
+                  :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
+                  :type="visible ? 'text' : 'password'"
+                  density="compact"
+                  placeholder="Repite tu nueva contraseña"
+                  hint="Confirme su contraseña"
+                  prepend-inner-icon="mdi-lock-outline"
+                  variant="outlined"
+                  @click:append-inner="visible = !visible"
+                  color="success"
+                  :rules="[rules.required]"
+                ></v-text-field>
+
+                <v-btn
+                  class="mb-8"
+                  color="error"
+                  size="large"
+                  variant="tonal"
+                  block
+                  @click="onSubmit"
+                >
+                  <strong class="text-red-lighten-1">Crear Cuenta</strong>
+                </v-btn>
+
+                <v-card-text class="text-center">
+                  <v-btn
+                  class="mb-1"
+                  value=""
+                  to="/restaurante/login"
+                  variant="tonal"
+                  color="warning"
+                  block
+                >
+                  <v-icon icon="mdi-account-outline"  class="mr-2" size="large"></v-icon>
+                  <strong class="text-orange-lighten-1">¿Ya tienes cuenta?</strong>
+                </v-btn>
+                </v-card-text>
+              </v-card>
+            </div>
+          </v-form>
+
         </v-sheet>
       </v-col>
 
@@ -111,14 +135,37 @@
 <script>
 export default {
   name: "CrearRestauranteView",
-  data() {
-    return {
-      visible: false,
-    };
-  },
+  data: () => ({
+    visible: false,
+    correo: "",
+    nombre: "",
+    password: "",
+    passwordConfirm: "",
+    rules: {
+      required: (value) => {
+        return !!value || "Este campo es requerido";
+      },
+      email: (value) => {
+        return /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+          value || ""
+        ) || "Por favor ingresa un correo valido";
+      },
+    },
+  }),
   methods: {
-    redirectToLogin() {
-      this.$router.push("/loginRestaurante");
+    async onSubmit() {
+      const valid = await this.validateFields()
+      if (valid) {
+        console.log("Formulario válido");
+      }else{
+        console.log("Formulario no válido");
+      }
+    },
+    async validateFields () {
+      const { valid } = await this.$refs.form.validate()
+
+      if (valid) return true
+      else return false
     },
   },
 };
