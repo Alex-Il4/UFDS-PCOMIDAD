@@ -97,7 +97,7 @@
         </v-sheet>
       </v-col>
 
-      <v-col class="pa-0 fill-height d-flex hide-on-sm-xs-md" cols="8" md="6" lg="6" xl="8" xxl="8">
+      <v-col class="pa-0 fill-height d-flex hide-on-sm-xs-md" cols="8" md="6" lg="6" >
         <v-sheet class="pa-0 fill-height caja4"></v-sheet>
       </v-col>
     </v-row>
