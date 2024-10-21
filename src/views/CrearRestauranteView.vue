@@ -3,7 +3,7 @@
     <v-container class="pa-0 ma-0 fill-height" fluid>
       <v-row class="no-gutters fill-height">
         <!-- Columna 1 con fondo rojo claro, ocupando el 100% del espacio horizontal -->
-        <v-col class="pa-0 fill-height d-flex" cols="4">
+        <v-col class="pa-2 ma-2 fill-height d-flex justify-center align-center" xs="12" sm="12" md="4" lg="4" xl="4" xxl="4">
           <v-sheet class="pa-0 fill-height" color="transparent">
             <div class="ConLogin">
               <v-card
@@ -95,7 +95,7 @@
         </v-col>
         
         <!-- Columna 2 con fondo azul claro, ocupando el 100% del espacio horizontal -->
-        <v-col class="pa-0 fill-height d-flex" cols="8">
+        <v-col class="pa-0 fill-height d-flex hide-on-sm-xs-md" cols="8" md="6" lg="6" xl="8" xxl="8">
           <v-sheet class="pa-0 fill-height caja3">
            
           </v-sheet>
@@ -131,13 +131,26 @@
     height: 100vh; /* 100% de la altura del viewport */
     width: 100vw;  /* 100% del ancho del viewport */
   }
+
+  .v-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  }
+
+
   .caja3 {
     
 background-image: url(../assets/compras.jpg);
-  background-size: cover; /* O puedes cambiarlo a contain según lo que desees */
+  background-size: 100%; /* O puedes cambiarlo a contain según lo que desees */
   background-position: center;
   background-repeat: no-repeat; /* Evita que la imagen se repita */
   /* Asegúrate de que ocupe toda la altura disponible */
+}
+@media (max-width: 950px) { /* xs and sm breakpoints */
+  .hide-on-sm-xs-md {
+    display: none !important;
+  }
 }
   </style>
   
