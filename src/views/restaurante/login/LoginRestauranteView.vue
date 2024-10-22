@@ -1,10 +1,10 @@
 <template>
   <v-container class="pa-0 ma-0 fill-height" fluid>
     <v-row class="no-gutters fill-height">
-      <v-col class="pa-0 fill-height d-flex" cols="4" xs="12" sm="12" md="4" lg="4" xl="4" xxl="4">
-        <v-sheet class="pa-0 fill-height d-flex align-center justify-center" color="transparent">
+      <v-col class=" fill-height d-flex" cols="4">
+        <v-sheet class=" fill-height d-flex align-center justify-center" color="transparent">
           <v-card
-            class="mx-auto pa-10 pb-2 "
+            class="mx-auto pa-10 pb-2"
             elevation="2"
             max-width="400"
             rounded="md"
@@ -20,7 +20,7 @@
                 Inicia sesion a tu dashboard!
               </p>
             </div>
-            <v-form fast-fail  ref="form">
+            <v-form fast-fail  ref="form" >
               <div class="text-subtitle-1 text-medium-emphasis">
                 <strong class="text-red-lighten-1">Correo</strong>
               </div>
@@ -122,6 +122,11 @@ export default {
           value || ""
         ) || "Por favor ingresa un correo valido";
       },
+      minLength: (value) => {
+        const min = 8;
+        const isvalidation = value.length >= min;
+        return isvalidation  || `El password debe tener al menos ${min} caracteres`;
+      },
     },
   }),
   methods: {
@@ -134,8 +139,18 @@ export default {
         };
         try {
           const response = await axios.post(`${process.env.VUE_APP_API_URL}/restaurantesLoginMethods/api/login/`, json);
-          const data = response.data;
-          console.log(data);
+          const respuesta = response.data.data;
+          console.log(respuesta);
+          if(respuesta.access){
+            localStorage.setItem("access", respuesta.access);
+            localStorage.setItem("refresh", respuesta.refresh);
+            localStorage.setItem("correoRestaurante", respuesta.correo);
+            localStorage.setItem("restauranteID", respuesta.restauranteID);
+            localStorage.setItem('nombreRestaurante', respuesta.nombre);
+            this.$router.push("/restaurante/dashboard");
+          }else{
+            this.dialog = true;
+          }
           this.$router.push("/restaurante/dashboard");
         } catch (error) {
           console.log(error);

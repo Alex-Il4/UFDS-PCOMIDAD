@@ -1,8 +1,8 @@
 <template>
-    <v-responsive class="border rounded">
+    <v-responsive>
         <v-app :theme="theme">
           <v-app-bar class="px-3" :elevation="0">
-            <v-app-bar-title>Title</v-app-bar-title>
+            <v-app-bar-title>Dashboard</v-app-bar-title>
             <v-spacer></v-spacer>
             <v-btn
               :prepend-icon="theme === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
@@ -10,6 +10,26 @@
               slim
               @click="onClick"
             ></v-btn>
+            <v-list-item
+                prepend-avatar="https://img.freepik.com/vector-premium/icono-avatar-camarero-estilo-color-gris-metalico-servicio-cafeteria-restaurante_755164-15887.jpg"
+                :subtitle="correoRestaurante"
+                :title="NombreRestaurante"
+            ></v-list-item>
+            <template v-slot:append>
+                <v-menu>
+                    <template v-slot:activator="{ props }">
+                      <v-btn icon="mdi-dots-vertical" variant="text" v-bind="props"></v-btn>
+                    </template>
+                    <v-list>
+                      <v-list-item
+                        v-for="(item, i) in items"
+                        :key="i"
+                      >
+                        <v-list-item-title>{{ item.title }}</v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+            </template>
           </v-app-bar>
           <v-main>
             <v-container>
@@ -44,7 +64,11 @@
 <script>
 export default {
     name: "DashboardMain",
-    data: () => ({ value: 0 }),
+    data: () => ({
+        value: 0,
+        NombreRestaurante: localStorage.getItem('nombreRestaurante'),
+        correoRestaurante: localStorage.getItem('correoRestaurante'),
+    }),
     computed: {
       color () {
         switch (this.value) {
