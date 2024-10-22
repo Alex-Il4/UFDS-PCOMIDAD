@@ -69,11 +69,13 @@
 
 <script>
 import ListaRestauranteComponent from '@/components/restauranteComponents/ListaRestauranteComponent.vue'
+import CrearRestauranteComponent from '@/components/restauranteComponents/CrearRestauranteComponent.vue'
 import axios from 'axios';
 export default {
     name: "DashboardMain",
     components: {
         ListaRestauranteComponent,
+        CrearRestauranteComponent,
     },
     data: () => ({
         value: 0,
@@ -90,35 +92,45 @@ export default {
             localStorage.removeItem('nombreRestaurante');
             this.$router.push("/restaurante/login");
         },
+        async GetRestaurantes(){
+          const access = localStorage.getItem('access');
+          const headers = {
+              'Authorization': `Bearer ${access}`,
+              'Content-Type': 'application/json',
+          };
+          const json = {
+              "usuarioRestauranteID": localStorage.getItem('restauranteID'),
+          };
+          try {
+              const response = await axios.post(`${process.env.VUE_APP_API_URL}/restaurantesMethods/api/listar/restaurantes/usuarioRestaurante/`, json, {headers});
+              const respuesta = response.data.data;
+              const tabla = respuesta.map(item => {
+                  return {
+                      id: item.id,
+                      nombre: item.nombre,
+                      puntaje: item.puntaje,
+                      telefono: item.telefono,
+                      tipoCocina: item.tipoCocina,
+                      descripcion: item.descripcion,
+                      ubicacion: item.ubicacion,
+                  }
+              });
+              console.log(respuesta);
+              this.ListaRestaurante = tabla;
+          } catch (error) {
+              console.log(error);
+          }
+        }
     },
     async created() {
-        const access = localStorage.getItem('access');
-        const headers = {
-            'Authorization': `Bearer ${access}`,
-            'Content-Type': 'application/json',
-        };
-        const json = {
-            "usuarioRestauranteID": localStorage.getItem('restauranteID'),
-        };
-        try {
-            const response = await axios.post(`${process.env.VUE_APP_API_URL}/restaurantesMethods/api/listar/restaurantes/usuarioRestaurante/`, json, {headers});
-            const respuesta = response.data.data;
-            const tabla = respuesta.map(item => {
-                return {
-                    id: item.id,
-                    nombre: item.nombre,
-                    puntaje: item.puntaje,
-                    telefono: item.telefono,
-                    tipoCocina: item.tipoCocina,
-                    descripcion: item.descripcion,
-                    ubicacion: item.ubicacion,
-                }
-            });
-            console.log(respuesta);
-            this.ListaRestaurante = tabla;
-        } catch (error) {
-            console.log(error);
+        await this.GetRestaurantes();
+    },
+    watch: {
+      value() {
+        if (this.value === 0) {
+          this.GetRestaurantes();
         }
+      }
     },
     computed: {
       color () {
