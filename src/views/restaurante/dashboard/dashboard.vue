@@ -22,30 +22,28 @@
                     ></v-list-item>
                     </template>
                     <v-list>
-                        <v-list-item
-                        v-for="(item, i) in items"
-                        :key="i"
-                        :to="item.redireccion"
-                      >
-                        <v-list-item-icon>
-                          <v-icon>{{ item.icon }}</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content>
-                          <v-list-item-title>{{ item.title }}</v-list-item-title>
-                        </v-list-item-content>
-                      </v-list-item>
+                        <v-list-item @click="logout"><v-icon>mdi-logout</v-icon>Salir de la cuenta</v-list-item>
                     </v-list>
                   </v-menu>
             </template>
           </v-app-bar>
           <v-main>
             <v-container>
-                <ListaRestauranteComponent :items="ListaRestaurante"></ListaRestauranteComponent>
+                <component :is="currentComponent"
+                           :items="ListaRestaurante"
+                           v-if="value === 0"
+                           :title-table="'Mis Restaurantes'"
+                           :color="color"
+                           :icon="'bi bi-building-check'">
+                </component>
+                <component :is="currentComponent" v-if="value === 1"></component>
+                <component :is="currentComponent" v-if="value === 2"></component>
+                <component :is="currentComponent" v-if="value === 3"></component>
                 <v-bottom-navigation
-                v-model="value"
-                :bg-color="color"
-                mode="shift"
-              >
+                    v-model="value"
+                    :bg-color="color"
+                    mode="shift"
+                >
                 <v-btn @click="value = 0">
                   <v-icon icon="bi bi-card-list"></v-icon>
                   <span>Mis Restaurantes</span>
@@ -81,16 +79,21 @@ export default {
         value: 0,
         NombreRestaurante: localStorage.getItem('nombreRestaurante'),
         correoRestaurante: localStorage.getItem('correoRestaurante'),
-        //opciones de menu
-        items: [
-            { title: 'Mis Restaurantes', icon: 'mdi-account-multiple', redireccion: '/restaurante/dashboard' },
-            { title: 'Todos Mis pedidos', icon: 'mdi-account-multiple', redireccion: '/pedidos'  },
-        ],
         ListaRestaurante: [],
     }),
+    methods: {
+        logout() {
+            localStorage.removeItem('access');
+            localStorage.removeItem('refresh');
+            localStorage.removeItem('correoRestaurante');
+            localStorage.removeItem('restauranteID');
+            localStorage.removeItem('nombreRestaurante');
+            this.$router.push("/restaurante/login");
+        },
+    },
     async created() {
         const access = localStorage.getItem('access');
-        const Headers = {
+        const headers = {
             'Authorization': `Bearer ${access}`,
             'Content-Type': 'application/json',
         };
@@ -98,10 +101,21 @@ export default {
             "usuarioRestauranteID": localStorage.getItem('restauranteID'),
         };
         try {
-            const response = await axios.post(`${process.env.VUE_APP_API_URL}/restaurantesMethods/api/listar/restaurantes/usuarioRestaurante/`, json, {Headers});
+            const response = await axios.post(`${process.env.VUE_APP_API_URL}/restaurantesMethods/api/listar/restaurantes/usuarioRestaurante/`, json, {headers});
             const respuesta = response.data.data;
+            const tabla = respuesta.map(item => {
+                return {
+                    id: item.id,
+                    nombre: item.nombre,
+                    puntaje: item.puntaje,
+                    telefono: item.telefono,
+                    tipoCocina: item.tipoCocina,
+                    descripcion: item.descripcion,
+                    ubicacion: item.ubicacion,
+                }
+            });
             console.log(respuesta);
-            this.ListaRestaurante = respuesta;
+            this.ListaRestaurante = tabla;
         } catch (error) {
             console.log(error);
         }
@@ -125,6 +139,15 @@ export default {
           default: return 'Dashboard'
         }
       },
+      currentComponent () {
+        switch (this.value) {
+          case 0: return 'ListaRestauranteComponent'
+          case 1: return 'PedidosComponent'
+          case 2: return 'CrearRestauranteComponent'
+          case 3: return 'ImageComponent'
+          default: return 'ListaRestauranteComponent'
+        }
+      }
     },
 }
 </script>
