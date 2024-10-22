@@ -34,7 +34,8 @@
                            v-if="value === 0"
                            :title-table="'Mis Restaurantes'"
                            :color="color"
-                           :icon="'bi bi-building-check'">
+                           :icon="'bi bi-building-check'"
+                           @refreshListaRestaurantes="GetRestaurantes">
                 </component>
                 <component :is="currentComponent" v-if="value === 1"></component>
                 <component :is="currentComponent" v-if="value === 2"></component>

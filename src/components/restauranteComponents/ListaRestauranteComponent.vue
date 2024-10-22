@@ -80,7 +80,7 @@
     <v-card
       :color="colorAlert"
       max-width="400"
-      prepend-icon="mdi-update"
+      :prepend-icon="iconAlert"
       :text="textAlert"
       :title="titleAlert"
     >
@@ -88,7 +88,7 @@
         <v-btn
           class="ms-auto"
           text="Ok"
-          @click="isVisible = false"
+          @click="isVisible = false;"
         ></v-btn>
       </template>
     </v-card>
@@ -192,6 +192,7 @@ export default {
           const response = await axios.post(`${process.env.VUE_APP_API_URL}/restaurantesMethods/api/editar/restaurante/`, formData, {headers});
           const respuesta = response.data;
           if (respuesta.data) {
+            this.$emit("refreshListaRestaurantes");
             this.isVisible = true;
             this.colorAlert = 'success';
             this.iconAlert = 'mdi-check-circle-outline';
@@ -233,8 +234,42 @@ export default {
       });
       this.dialog = true;
     },
-    deleteRestaurant(id) {
-      console.log("Eliminar restaurante con ID:", id);
+    async deleteRestaurant(id) {
+      const headers = {
+        'Authorization': `Bearer ${localStorage.getItem("access")}`,
+        'Content-Type': 'multipart/form-data',
+      }
+      const json = {
+        "restauranteID": id,
+      };
+      try {
+        const response = await axios.post(`${process.env.VUE_APP_API_URL}/restaurantesMethods/api/eliminar/restaurante/`, json, {headers});
+        const respuesta = response.data;
+        if (respuesta.data) {
+          this.$emit("refreshListaRestaurantes");
+          this.isVisible = true;
+          this.colorAlert = 'success';
+          this.iconAlert = 'bi bi-archive-fill';
+          this.titleAlert = 'Eliminado';
+          this.textAlert = 'El restaurante ha sido eliminado exitosamente';
+          this.dialog = false;
+        }else {
+          this.isVisible = true;
+          this.colorAlert = 'error';
+          this.iconAlert = 'bi bi-x-octagon-fill';
+          this.titleAlert = 'Error';
+          this.textAlert = 'Hubo un error al eliminar el restaurante';
+          this.dialog = false;
+        }
+      } catch (error) {
+        console.log(error);
+        this.isVisible = true;
+        this.colorAlert = 'deep-orange-darken-3';
+        this.iconAlert = 'bi bi-shield-fill-x';
+        this.titleAlert = 'Error';
+        this.textAlert = 'Hubo un error al acceder al servidor';
+        this.dialog = false;
+      }
     },
     getColor(puntaje) {
       if (puntaje > 3) return "red";
