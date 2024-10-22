@@ -3,6 +3,7 @@ import LoginUserView from '@/views/LoginUserView.vue'
 import NewAccountUser from '@/views/NewAccountUser.vue'
 import LoginRestauranteView from '@/views/restaurante/login/LoginRestauranteView.vue'
 import CrearRestauranteView from '@/views/restaurante/login/CrearRestauranteView.vue'
+import DashboardMain from '@/views/restaurante/dashboard/dashboard.vue'
 
 const routes = [
   {
@@ -25,7 +26,11 @@ const routes = [
     name: 'crearRestauranteView',
     component: CrearRestauranteView
   },
-
+  {
+    path: '/restaurante/dashboard',
+    name: 'dashboard',
+    component: DashboardMain
+  },
 ]
 
 const router = createRouter({

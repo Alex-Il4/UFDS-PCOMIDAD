@@ -4,7 +4,7 @@
       <v-col class="pa-0 fill-height d-flex" cols="4" xs="12" sm="12" md="4" lg="4" xl="4" xxl="4">
         <v-sheet class="pa-0 fill-height d-flex align-center justify-center" color="transparent">
           <v-card
-            class="mx-auto pa-10 pb-2 fill-height"
+            class="mx-auto pa-10 pb-2 "
             elevation="2"
             max-width="400"
             rounded="md"
@@ -43,6 +43,7 @@
                 <strong class="text-red-lighten-1">Contraseña</strong>
               </div>
               <v-text-field
+                v-model="password"
                 :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'"
                 :type="visible ? 'text' : 'password'"
                 density="compact"
@@ -105,11 +106,13 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: "LoginRestauranteView",
   data: () => ({
     visible: false,
     correo: "",
+    password: "",
     rules: {
       required: (value) => {
         return !!value || "Este campo es requerido";
@@ -125,7 +128,18 @@ export default {
     async onSubmit() {
       const valid = await this.validateFields()
       if (valid) {
-        console.log("Formulario válido");
+        const json = {
+          "correo": this.correo,
+          "password": this.password,
+        };
+        try {
+          const response = await axios.post(`${process.env.VUE_APP_API_URL}/restaurantesLoginMethods/api/login/`, json);
+          const data = response.data;
+          console.log(data);
+          this.$router.push("/restaurante/dashboard");
+        } catch (error) {
+          console.log(error);
+        }
       }else{
         console.log("Formulario no válido");
       }
