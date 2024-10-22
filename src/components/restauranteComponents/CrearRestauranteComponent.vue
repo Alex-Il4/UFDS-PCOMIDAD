@@ -147,10 +147,10 @@ export default {
         async onSubmit() {
             const valid = await this.validateFields()
             const token_access = localStorage.getItem("access")
-            const restauranteID = localStorage.getItem("restauranteID")
+            const usuarioRestauranteID = localStorage.getItem("usuarioRestauranteID")
             if (valid) {
                 const formData = new FormData();
-                formData.append("usuarioRestaurante",restauranteID );
+                formData.append("usuarioRestaurante",usuarioRestauranteID );
                 formData.append("nombre", this.nombre);
                 formData.append("ubicacion", this.ubicacion);
                 formData.append("descripcion", this.descripcion);
