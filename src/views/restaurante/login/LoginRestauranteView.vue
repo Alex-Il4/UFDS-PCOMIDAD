@@ -145,7 +145,7 @@ export default {
             localStorage.setItem("access", respuesta.access);
             localStorage.setItem("refresh", respuesta.refresh);
             localStorage.setItem("correoRestaurante", respuesta.correo);
-            localStorage.setItem("restauranteID", respuesta.restauranteID);
+            localStorage.setItem("usuarioRestauranteID", respuesta.restauranteID);
             localStorage.setItem('nombreRestaurante', respuesta.nombre);
             this.$router.push("/restaurante/dashboard");
           }else{
