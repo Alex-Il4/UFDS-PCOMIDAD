@@ -89,7 +89,7 @@ export default {
             localStorage.removeItem('access');
             localStorage.removeItem('refresh');
             localStorage.removeItem('correoRestaurante');
-            localStorage.removeItem('restauranteID');
+            localStorage.removeItem('usuarioRestauranteID');
             localStorage.removeItem('nombreRestaurante');
             this.$router.push("/restaurante/login");
         },
@@ -100,24 +100,29 @@ export default {
               'Content-Type': 'application/json',
           };
           const json = {
-              "usuarioRestauranteID": localStorage.getItem('restauranteID'),
+              "usuarioRestauranteID": localStorage.getItem('usuarioRestauranteID'),
           };
           try {
               const response = await axios.post(`${process.env.VUE_APP_API_URL}/restaurantesMethods/api/listar/restaurantes/usuarioRestaurante/`, json, {headers});
               const respuesta = response.data.data;
-              const tabla = respuesta.map(item => {
-                  return {
-                      id: item.id,
-                      nombre: item.nombre,
-                      puntaje: item.puntaje,
-                      telefono: item.telefono,
-                      tipoCocina: item.tipoCocina,
-                      descripcion: item.descripcion,
-                      ubicacion: item.ubicacion,
-                  }
-              });
               console.log(respuesta);
-              this.ListaRestaurante = tabla;
+              if (respuesta) {
+                const tabla = respuesta.map(item => {
+                    return {
+                        id: item.id,
+                        nombre: item.nombre,
+                        puntaje: item.puntaje,
+                        telefono: item.telefono,
+                        tipoCocina: item.tipoCocina,
+                        descripcion: item.descripcion,
+                        ubicacion: item.ubicacion,
+                    }
+                });
+                console.log(respuesta);
+                this.ListaRestaurante = tabla
+              }else {
+                console.error(respuesta.error);
+              }
           } catch (error) {
               console.log(error);
           }

@@ -88,7 +88,7 @@
       <v-card
         :color="colorAlert"
         max-width="400"
-        prepend-icon="mdi-update"
+        :prepend-icon="iconAlert"
         :text="textAlert"
         :title="titleAlert"
       >
@@ -185,7 +185,12 @@ export default {
                         this.textAlert = 'Hubo un error al crear el restaurante';
                     }
                 } catch (error) {
-                    console.log(error);
+                  this.isVisible = true;
+                  this.colorAlert = 'deep-orange-darken-3';
+                  this.iconAlert = 'bi bi-shield-fill-x';
+                  this.titleAlert = 'Error';
+                  this.textAlert = 'Hubo un error al acceder al servidor';
+                  this.dialog = false;
                 }
             }else{
                 console.log("Formulario no válido");
