@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card class="mx-auto" :title="titleTable" :color="color" :prepend-icon="icon">
-      <v-data-table :items="items" :headers="headers" height="70vh">
+      <v-data-table :items="items" :headers="headers" height="68vh">
         <template v-slot:[`item.actions`]="{ item }">
           <div class="d-flex justify-space-between">
             <v-icon color="success" small class="mr-2" icon="bi bi-file-text-fill" @click="getID(item.id)"></v-icon>

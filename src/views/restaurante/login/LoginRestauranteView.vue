@@ -141,7 +141,7 @@ export default {
           const response = await axios.post(`${process.env.VUE_APP_API_URL}/restaurantesLoginMethods/api/login/`, json);
           const respuesta = response.data.data;
           console.log(respuesta);
-          if(respuesta.access){
+          if(respuesta.data){
             localStorage.setItem("access", respuesta.access);
             localStorage.setItem("refresh", respuesta.refresh);
             localStorage.setItem("correoRestaurante", respuesta.correo);
@@ -149,6 +149,7 @@ export default {
             localStorage.setItem('nombreRestaurante', respuesta.nombre);
             this.$router.push("/restaurante/dashboard");
           }else{
+            console.log(respuesta.error);
             this.dialog = true;
           }
           this.$router.push("/restaurante/dashboard");
