@@ -103,7 +103,9 @@
 </template>
 
 <script>
+import router from '@/router';
 import axios from 'axios';
+import { useRouter, useRoute } from 'vue-router';
 export default {
   name: "ListaRestauranteComponent",
   props: {
@@ -289,8 +291,17 @@ export default {
       else return false
     },
     redirectMetdosRestaurante(id) {
-      this.$router.push(`/restaurante/metodos/${id}`);
+      router.push(`/restaurante/metodos/${id}`);
     },
+  },
+  setup() {
+    const router = useRouter();
+    const route = useRoute();
+    console.log(route.params.id);
+    return {
+      router,
+      route,
+    };
   },
 };
 </script>

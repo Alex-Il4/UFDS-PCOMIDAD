@@ -52,7 +52,7 @@
         localStorage.removeItem('access');
         localStorage.removeItem('refresh');
         localStorage.removeItem('correoRestaurante');
-        localStorage.removeItem('restauranteID');
+        localStorage.removeItem('usuarioRestauranteID');
         localStorage.removeItem('nombreRestaurante');
         this.$router.push("/restaurante/login");
       }

@@ -102,6 +102,26 @@
         <v-sheet class="pa-0 fill-height caja4"></v-sheet>
       </v-col>
     </v-row>
+    <v-dialog
+        v-model="isVisible"
+        width="auto"
+    >
+      <v-card
+        :color="colorAlert"
+        max-width="400"
+        :prepend-icon="iconAlert"
+        :text="textAlert"
+        :title="titleAlert"
+      >
+        <template v-slot:actions>
+          <v-btn
+            class="ms-auto"
+            text="Ok"
+            @click="isVisible = false;"
+          ></v-btn>
+        </template>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -128,6 +148,12 @@ export default {
         return isvalidation  || `El password debe tener al menos ${min} caracteres`;
       },
     },
+    dialog: false,
+    colorAlert: '',
+    iconAlert: '',
+    titleAlert: '',
+    textAlert: '',
+    isVisible: false,
   }),
   methods: {
     async onSubmit() {
@@ -139,22 +165,43 @@ export default {
         };
         try {
           const response = await axios.post(`${process.env.VUE_APP_API_URL}/restaurantesLoginMethods/api/login/`, json);
-          const respuesta = response.data.data;
-          console.log(respuesta);
-          if(respuesta.data){
-            localStorage.setItem("access", respuesta.access);
-            localStorage.setItem("refresh", respuesta.refresh);
-            localStorage.setItem("correoRestaurante", respuesta.correo);
-            localStorage.setItem("usuarioRestauranteID", respuesta.restauranteID);
-            localStorage.setItem('nombreRestaurante', respuesta.nombre);
-            this.$router.push("/restaurante/dashboard");
+          if (response.status === 200) {
+            const respuesta = response.data.data;
+
+            if(respuesta){
+              console.log(JSON.stringify(respuesta, null, 2));
+              this.isVisible = true;
+              this.colorAlert = 'success';
+              this.iconAlert = 'mdi-check-circle-outline';
+              this.titleAlert = 'Login exitoso';
+              this.textAlert = 'Se ha realizado el login con exito';
+              this.dialog = false;
+              localStorage.setItem("access", respuesta.access);
+              localStorage.setItem("refresh", respuesta.refresh);
+              localStorage.setItem("correoRestaurante", respuesta.correo);
+              localStorage.setItem("usuarioRestauranteID", respuesta.restauranteID);
+              localStorage.setItem('nombreRestaurante', respuesta.nombre);
+              setTimeout(() => {
+                this.$router.push("/restaurante/dashboard");
+              }, 2000);
+            }else{
+              this.isVisible = true;
+              this.colorAlert = 'error';
+              this.iconAlert = 'mdi-alert-circle-outline';
+              this.titleAlert = 'Error';
+              this.textAlert = 'Hubo un error al iniciar sesión';
+              this.dialog = false;
+            }
           }else{
-            console.log(respuesta.error);
-            this.dialog = true;
+            this.isVisible = true;
+            this.colorAlert = 'error';
+            this.iconAlert = 'mdi-alert-circle-outline';
+            this.titleAlert = 'Error';
+            this.textAlert = 'Hubo un error acceder al servidor';
+            this.dialog = false;
           }
-          this.$router.push("/restaurante/dashboard");
         } catch (error) {
-          console.log(error);
+          console.log('Hubo un error al acceder al servidor', error);
         }
       }else{
         console.log("Formulario no válido");
