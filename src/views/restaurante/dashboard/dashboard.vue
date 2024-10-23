@@ -1,88 +1,57 @@
 <template>
-    <v-responsive>
-        <v-app :theme="theme">
-          <v-app-bar class="px-3" :elevation="0">
-            <v-app-bar-title>{{ currentTitle }}</v-app-bar-title>
-            <v-spacer></v-spacer>
-            <v-btn
-              :prepend-icon="theme === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
-              text="Toggle Theme"
-              slim
-              @click="onClick"
-            ></v-btn>
-
-            <template v-slot:append>
-                <v-menu>
-                    <template v-slot:activator="{ props }">
-                    <v-list-item
-                        prepend-avatar="https://img.freepik.com/vector-premium/icono-avatar-camarero-estilo-color-gris-metalico-servicio-cafeteria-restaurante_755164-15887.jpg"
-                        :subtitle="correoRestaurante"
-                        :title="NombreRestaurante"
-                        v-bind="props"
-                    ></v-list-item>
-                    </template>
-                    <v-list>
-                        <v-list-item @click="logout"><v-icon>mdi-logout</v-icon>Salir de la cuenta</v-list-item>
-                    </v-list>
-                  </v-menu>
-            </template>
-          </v-app-bar>
-          <v-main>
-            <v-container>
-                <component :is="currentComponent"
-                           :items="ListaRestaurante"
-                           v-if="value === 0"
-                           :title-table="'Mis Restaurantes'"
-                           :color="color"
-                           :icon="'bi bi-building-check'"
-                           @refreshListaRestaurantes="GetRestaurantes">
-                </component>
-                <component :is="currentComponent" v-if="value === 1"></component>
-                <component :is="currentComponent" v-if="value === 2"></component>
-                <component :is="currentComponent" v-if="value === 3"></component>
-                <v-bottom-navigation
-                    v-model="value"
-                    :bg-color="color"
-                    mode="shift"
-                >
-                <v-btn @click="value = 0">
-                  <v-icon icon="bi bi-card-list"></v-icon>
-                  <span>Mis Restaurantes</span>
-                </v-btn>
-                <v-btn @click="value = 1">
-                  <v-icon icon="bi bi-bookmarks-fill"></v-icon>
-                  <span>Todos Mis pedidos</span>
-                </v-btn>
-                <v-btn @click="value = 2">
-                  <v-icon icon="bi bi-building-add"></v-icon>
-                  <span>Crear Restaurantes</span>
-                </v-btn>
-                <v-btn @click="value = 3">
-                  <v-icon>mdi-image</v-icon>
-                  <span>Image</span>
-                </v-btn>
-              </v-bottom-navigation>
-            </v-container>
-          </v-main>
-        </v-app>
-    </v-responsive>
+  <v-responsive>
+    <v-app :theme="theme">
+      <menu-component :current-title="currentTitle" :theme="theme" @toggle-theme="onClick" />
+      <v-main>
+        <v-container>
+          <component :is="currentComponent" :items="ListaRestaurante" v-if="value === 0"
+            :title-table="'Mis Restaurantes'" :color="color" :icon="'bi bi-building-check'"
+            @refreshListaRestaurantes="GetRestaurantes" />
+          <component :is="currentComponent" v-if="value === 1"></component>
+          <component :is="currentComponent" v-if="value === 2"></component>
+          <component :is="currentComponent" v-if="value === 3"></component>
+          <v-bottom-navigation v-model="value" :bg-color="color" mode="shift">
+            <v-btn @click="value = 0">
+              <v-icon icon="bi bi-card-list"></v-icon>
+              <span>Mis Restaurantes</span>
+            </v-btn>
+            <v-btn @click="value = 1">
+              <v-icon icon="bi bi-bookmarks-fill"></v-icon>
+              <span>Todos Mis pedidos</span>
+            </v-btn>
+            <v-btn @click="value = 2">
+              <v-icon icon="bi bi-building-add"></v-icon>
+              <span>Crear Restaurantes</span>
+            </v-btn>
+            <v-btn @click="value = 3">
+              <v-icon>mdi-image</v-icon>
+              <span>Image</span>
+            </v-btn>
+          </v-bottom-navigation>
+        </v-container>
+      </v-main>
+    </v-app>
+  </v-responsive>
 </template>
 
 <script>
 import ListaRestauranteComponent from '@/components/restauranteComponents/ListaRestauranteComponent.vue'
 import CrearRestauranteComponent from '@/components/restauranteComponents/CrearRestauranteComponent.vue'
+import MenuComponent from '@/components/restauranteComponents/MenuRestauranteComponent.vue'
 import axios from 'axios';
 export default {
     name: "DashboardMain",
     components: {
         ListaRestauranteComponent,
         CrearRestauranteComponent,
+        MenuComponent,
     },
     data: () => ({
         value: 0,
         NombreRestaurante: localStorage.getItem('nombreRestaurante'),
         correoRestaurante: localStorage.getItem('correoRestaurante'),
         ListaRestaurante: [],
+        theme: 'light'
     }),
     methods: {
         logout() {
@@ -126,6 +95,9 @@ export default {
           } catch (error) {
               console.log(error);
           }
+        },
+        onClick() {
+          this.theme = this.theme === 'light' ? 'dark' : 'light';
         }
     },
     async created() {
@@ -170,15 +142,7 @@ export default {
 }
 </script>
 
-<script setup>
-  import { ref } from 'vue'
 
-  const theme = ref('light')
-
-  function onClick () {
-    theme.value = theme.value === 'light' ? 'dark' : 'light'
-  }
-</script>
 
 <style scoped>
 
