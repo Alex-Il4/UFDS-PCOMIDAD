@@ -1,7 +1,17 @@
 <template>
   <div>
-    <v-card class="mx-auto" :title="titleTable" :color="color" :prepend-icon="icon">
-      <v-data-table :items="items" :headers="headers" height="68vh">
+    <v-card class="mx-auto" :title="titleTable" :color="color" :prepend-icon="icon" :search="search" >
+      <template v-slot:text>
+        <v-text-field
+          v-model="search"
+          label="Buscar restaurante"
+          prepend-inner-icon="mdi-magnify"
+          variant="outlined"
+          hide-details
+          single-line
+        ></v-text-field>
+    </template>
+      <v-data-table :items="items" :headers="headers" height="68vh" :search="search" >
         <template v-slot:[`item.actions`]="{ item }">
           <div class="">
             <v-chip append-icon="bi bi-file-text-fill" color="success" class="d-flex justify-center align-center mb-2 mt-2" small @click="getID(item.id)">Editar restaurante</v-chip>
@@ -176,6 +186,7 @@ export default {
     puntaje: '',
     tipoCocina: '',
     imagen: '',
+    search: '',
   }),
   methods: {
     async EditRestaurant() {
