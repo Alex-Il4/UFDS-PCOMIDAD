@@ -1,13 +1,29 @@
 <template>
   <div>
-    <v-card class="mx-auto" :title="titleTable" :color="color" :prepend-icon="icon">
-      <v-data-table :items="items" :headers="headers" height="68vh">
+    <v-card class="mx-auto" :title="titleTable" :color="color" :prepend-icon="icon" :search="search" >
+      <template v-slot:text>
+        <v-text-field
+          v-model="search"
+          label="Buscar restaurante"
+          prepend-inner-icon="mdi-magnify"
+          variant="outlined"
+          hide-details
+          single-line
+        ></v-text-field>
+    </template>
+      <v-data-table :items="items" :headers="headers" height="68vh" :search="search" >
         <template v-slot:[`item.actions`]="{ item }">
-          <div class="d-flex justify-space-between">
-            <v-icon color="success" small class="mr-2" icon="bi bi-file-text-fill" @click="getID(item.id)"></v-icon>
+          <div class="">
+            <v-chip append-icon="bi bi-file-text-fill" color="success" class="d-flex justify-center align-center mb-2 mt-2" small @click="getID(item.id)">Editar restaurante</v-chip>
 
-            <v-icon color="error" small class="mr-2" icon="bi bi-trash3-fill"
-              @click="deleteRestaurant(item.id)"></v-icon>
+            <v-chip color="error" class="d-flex justify-center align-center mb-2" small append-icon="bi bi-trash3-fill" @click="deleteRestaurant(item.id)">
+              Eliminar restaurante
+            </v-chip>
+
+            <v-chip color="warning" class="d-flex justify-center align-center mb-2" small append-icon="bi bi-arrow-up-right-square-fill" @click="redirectMetdosRestaurante(item.id)">
+              Funciones restaurante
+            </v-chip>
+
           </div>
         </template>
         <template v-slot:[`item.puntaje`]="{ item }">
@@ -97,7 +113,9 @@
 </template>
 
 <script>
+import router from '@/router';
 import axios from 'axios';
+import { useRouter, useRoute } from 'vue-router';
 export default {
   name: "ListaRestauranteComponent",
   props: {
@@ -168,6 +186,7 @@ export default {
     puntaje: '',
     tipoCocina: '',
     imagen: '',
+    search: '',
   }),
   methods: {
     async EditRestaurant() {
@@ -282,6 +301,18 @@ export default {
       if (valid) return true
       else return false
     },
+    redirectMetdosRestaurante(id) {
+      router.push(`/restaurante/metodos/${id}`);
+    },
+  },
+  setup() {
+    const router = useRouter();
+    const route = useRoute();
+    console.log(route.params.id);
+    return {
+      router,
+      route,
+    };
   },
 };
 </script>

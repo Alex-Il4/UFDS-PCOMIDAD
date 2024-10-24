@@ -4,6 +4,7 @@ import NewAccountUser from '@/views/NewAccountUser.vue'
 import LoginRestauranteView from '@/views/restaurante/login/LoginRestauranteView.vue'
 import CrearRestauranteView from '@/views/restaurante/login/CrearRestauranteView.vue'
 import DashboardMain from '@/views/restaurante/dashboard/dashboard.vue'
+import restaurantesMethodsView from '@/views/restaurante/dashboard/Methods/RestauranteMethodsView.vue'
 
 const routes = [
   {
@@ -25,6 +26,11 @@ const routes = [
     path: '/restaurante/crear',
     name: 'crearRestauranteView',
     component: CrearRestauranteView
+  },
+  {
+    path: '/restaurante/metodos/:id',
+    name: 'metodos',
+    component: restaurantesMethodsView
   },
   {
     path: '/restaurante/dashboard',
