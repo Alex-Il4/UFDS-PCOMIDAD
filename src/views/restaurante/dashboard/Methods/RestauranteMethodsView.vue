@@ -5,7 +5,8 @@
             <v-main>
                 <!-- Contenido principal -->
                 <component :is="currentComponent" v-if="value === 0" titleTable="Mis pedidos" color="red-lighten-1"
-                    icon="bi bi-cart4" :items="ListaPedidos" :headers="headers" />
+                    icon="bi bi-cart4" :items="ListaPedidos" :headers="headersPedidos" :idRestaurante="restauranteID" textEliminar="Eliminar pedido"
+                    textEditar="Editar pedido"/>
                 <component :is="currentComponent" v-if="value === 1" titleTable="Agregar menú" color="orange-lighten-1"
                     icon="bi bi-plus-circle" :idRestaurante="restauranteID" />
 
@@ -47,11 +48,13 @@ export default {
             { label: 'Mis Menús', icon: 'bi bi-cart4' },
 
         ],
-        headers: [
+        headersPedidos: [
             { title: "ID", value: "id", align: "start", key: "id" },
-            { title: "cliente", value: "cliente", align: "start", key: "nombre" },
-            { title: "tiempoEstimado", value: "tiempoEstimado", align: "start", key: "puntaje" },
-            { title: "menus", value: "menus", align: "start", key: "telefono" },
+            { title: "Cliente", value: "cliente", align: "start", key: "cliente" },
+            { title: "Ubicacion", value: "ubicacion", align: "start", key: "ubicacion" },
+            { title: "Tiempo estimado", value: "tiempoEstimado", align: "start", key: "tiempoEstimado" },
+            { title: "menus", value: "menus", align: "start", key: "menus" },
+            { title: "status", value: "status", align: "start", key: "status" },
             { title: "Actions", key: "actions", sortable: false },
         ],
         headersMenu: [
@@ -86,14 +89,14 @@ export default {
                 console.log(respuesta);
                 if (respuesta) {
                     const tabla = respuesta.map(item => {
+                        console.log("cliente: ",);
                         return {
                             id: item.id,
-                            nombre: item.nombre,
-                            puntaje: item.puntaje,
-                            telefono: item.telefono,
-                            tipoCocina: item.tipoCocina,
-                            descripcion: item.descripcion,
-                            ubicacion: item.ubicacion,
+                            cliente: item.cliente.correo,
+                            tiempoEstimado: item.tiempoEstimado,
+                            menus: item.menus[0].titulo,
+                            status: item.status,
+                            ubicacion: item.ubicacionEntrega,
                         }
                     });
                     console.log(respuesta);
