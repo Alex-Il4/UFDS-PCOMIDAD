@@ -93,15 +93,51 @@ export default {
   name: 'NewAccountUser',
   data() {
     return {
-      visible: false // Define la propiedad visible en el data
+      visible: false,// Define la propiedad visible en el data
+      nombre: "",
+      correo: "",
+      apellido: "",
+      password: ""
     };
   },
   methods: {
     redirectToLogin() {
       this.$router.push('/'); // Cambia la ruta a '/'
+    },
+
+
+     //con este metodo se creara el usuario en la db
+     async crearUsuario() {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/loginMethods/api/create/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            nombre: this.nombre,
+            correo: this.correo,
+            apellido: this.apellido,
+            password: this.password
+          })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          alert('Usuario creado exitosamente');
+          this.redirectToLogin(); // Redirige a login si es exitoso
+        } else {
+          alert(`Error: ${data.message || 'No se pudo crear el usuario'}`);
+        }
+      } catch (error) {
+        console.error(error);
+        alert('Hubo un problema al crear el usuario');
+      }
     }
   }
+
 }
+
 </script>
 
 <style scoped>
