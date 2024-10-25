@@ -64,6 +64,7 @@ export default {
             { title: "Precio", value: "precio", align: "start", key: "precio" },
             { title: "Status", value: "status", align: "start", key: "status" },
             { title: "Fecha", value: "fecha", align: "start", key: "fecha" },
+            { title: "Imagen", value: "imagen", align: "center", key: "imagen" },
             { title: "Actions", key: "actions", sortable: false },
         ],
     }),
@@ -130,7 +131,7 @@ export default {
                             precio: item.precio,
                             status: item.status,
                             fecha: item.fecha,
-                            imagen: item.imagen,
+                            imagen: item.imagen ? item.imagen : null,
                         }
                     });
                     console.log("tabla", tabla);
