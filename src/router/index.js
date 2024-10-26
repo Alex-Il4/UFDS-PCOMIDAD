@@ -5,6 +5,7 @@ import LoginRestauranteView from '@/views/restaurante/login/LoginRestauranteView
 import CrearRestauranteView from '@/views/restaurante/login/CrearRestauranteView.vue'
 import DashboardMain from '@/views/restaurante/dashboard/dashboard.vue'
 import restaurantesMethodsView from '@/views/restaurante/dashboard/Methods/RestauranteMethodsView.vue'
+import PerfilView from '@/views/PerfilView.vue'
 
 const routes = [
   {
@@ -36,6 +37,11 @@ const routes = [
     path: '/restaurante/dashboard',
     name: 'dashboard',
     component: DashboardMain
+  },
+  {
+    path: '/perfil',
+    name: 'perfil',
+    component: PerfilView
   },
 ]
 
