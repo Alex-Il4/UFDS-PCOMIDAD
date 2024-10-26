@@ -14,7 +14,7 @@
           <v-col cols="12" class="text-center">
             <h2>Información de Perfil</h2><br>
             <v-list class="info mx-auto">
-              <v-list-item class="infoPerfil">
+              <v-list-item class="infoPerfil"  style="text-align: left;">
                 <strong>Nombre:</strong> {{ user.name }} <br>
                 <strong>Email:</strong> {{ user.email }} <br>
                 <strong>Teléfono:</strong> {{ user.tel }} <br>
@@ -29,14 +29,14 @@
             <h2>Historial de Pedidos</h2><br>
             <v-list class="Listaorden" v-if="orders.length">
               <v-list-item-group>
-                <v-list-item v-for="order in orders" :key="order.id" class="order">
+                <v-list-item v-for="order in orders" :key="order.id" class="order"  style="text-align: left;">
                   <p><strong>Pedido #{{ order.id }}</strong></p>
                   <p>Fecha: {{ order.date }}</p>
                   <p>Total: ${{ order.total.toFixed(2) }}</p>
                 </v-list-item>
               </v-list-item-group>
             </v-list>
-            <p v-else class="noOrders">Aun no tienes pedidos</p>
+            <p v-else class="noOrders" style="text-align: left;">Aun no tienes pedidos</p>
           </v-col>
         </v-row>
   
@@ -172,7 +172,7 @@
     flex-direction: column; /* Cambia a columna en pantallas más pequeñas */
     align-items: center; /* Centra los botones */
   }
-  
+
   .btnEditar {
     background-color: #e59336;
     color: white;
