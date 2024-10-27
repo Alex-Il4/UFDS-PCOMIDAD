@@ -191,9 +191,11 @@ export default {
         value() {
             if (this.value === 0) {
                 this.getPedidosByRestauranteID();
+                this.isEditMode = false;
             }
             if (this.value === 2) {
                 this.getMenuByRestauranteID();
+                this.isEditMode = false;
             }
         },
         onDeleteMenu:{
