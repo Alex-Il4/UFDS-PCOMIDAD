@@ -5,7 +5,7 @@ import LoginRestauranteView from '@/views/restaurante/login/LoginRestauranteView
 import CrearRestauranteView from '@/views/restaurante/login/CrearRestauranteView.vue'
 import DashboardMain from '@/views/restaurante/dashboard/dashboard.vue'
 import restaurantesMethodsView from '@/views/restaurante/dashboard/Methods/RestauranteMethodsView.vue'
-import EditMenu from '@/views/restaurante/dashboard/Methods/MisMenus/EditMenu.vue'
+import EditPedidoView from '@/views/restaurante/dashboard/Methods/EditPedidoView.vue'
 
 const routes = [
   {
@@ -34,9 +34,9 @@ const routes = [
     component: restaurantesMethodsView
   },
   {
-    path: '/restaurante/metodos/edit/:id',
-    name: 'editMenu',
-    component: EditMenu
+    path: '/restaurante/pedidos/edit/:id',
+    name: 'editPedido',
+    component: EditPedidoView
   },
   {
     path: '/restaurante/dashboard',
