@@ -182,6 +182,10 @@ export default {
             this.menuId = menuId;
             this.value = 1;
         },
+        resetEditMode() {
+            this.menuId = null;
+            this.isEditMode = false;
+        },
     },
     watch: {
         value() {
