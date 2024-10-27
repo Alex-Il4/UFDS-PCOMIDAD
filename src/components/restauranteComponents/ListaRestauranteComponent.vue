@@ -4,7 +4,7 @@
       <template v-slot:text>
         <v-text-field
           v-model="search"
-          label="Buscar restaurante"
+          label="Buscar elemento"
           prepend-inner-icon="mdi-magnify"
           variant="outlined"
           hide-details
