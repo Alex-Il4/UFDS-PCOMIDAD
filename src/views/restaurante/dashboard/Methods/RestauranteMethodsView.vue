@@ -12,11 +12,13 @@
 
                 <component :is="currentComponent" v-if="value === 2" titleTable="Mis menús" color="warning"
                     icon="bi bi-cart4" :items="ListaMenu" :headers="headersMenu" :textEliminar="'Eliminar menú'"
-                    :textEditar="'Editar menú'" />
+                    :textEditar="'Editar menú'"  @delete-item="onDeleteMenu"  @edit-item="onEditMenu"/>
                 <!-- Menú inferior reutilizable -->
                 <bottom-navigation-menu :menu-items="menuItems" :current-value="value" :bg-color="color"
                     @menu-item-click="onMenuItemClick" />
             </v-main>
+            <edit-dialog-component :title="titleDialog" :text="textDialog" :color="colorDialog" :icon="iconDialog"
+                @confirm="onConfirmDeleteMenu" />
         </v-app>
     </v-responsive>
 </template>
@@ -26,6 +28,7 @@ import MenuComponent from '@/components/restauranteComponents/MenuComponent/Menu
 import BottomNavigationMenu from '@/components/restauranteComponents/MenuComponent/BottomNavigationMenu.vue'
 import TablaInformacionComponent from '@/components/restauranteComponents/ViewDataComponent/TablaInformacionComponent.vue'
 import AgregarMenuComponent from '@/components/restauranteComponents/MenusRestaurantesComponents/AgregarMenuComponent.vue'
+import EditDialogComponent from '@/components/restauranteComponents/ViewDataComponent/EditDialogComponent.vue'
 import axios from 'axios';
 import { useRoute, useRouter } from 'vue-router';
 export default {
@@ -34,7 +37,8 @@ export default {
         MenuComponent,
         BottomNavigationMenu,
         TablaInformacionComponent,
-        AgregarMenuComponent
+        AgregarMenuComponent,
+        EditDialogComponent
     },
     data: () => ({
         value: 0,
@@ -143,6 +147,30 @@ export default {
                 console.log(error);
             }
         },
+        async onDeleteMenu(item) {
+            /*Función para eliminar menú de la base de datos*/
+            console.log("item", item);
+            const access = localStorage.getItem('access');
+            const headers = {
+                'Authorization': `Bearer ${access}`,
+                'Content-Type': 'application/json',
+            };
+            const json = {
+                "menuID": item,
+            };
+            try {
+                const response = await axios.post(`${process.env.VUE_APP_API_URL}/restaurantesMethods/api/eliminar/restaurante/menu/`, json, { headers });
+                const respuesta = response.data.data;
+                if (respuesta) {
+                    console.log("respuesta", respuesta);
+                    this.getMenuByRestauranteID();
+                } else {
+                    console.error(respuesta.error);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        },
     },
     watch: {
         value() {
@@ -150,6 +178,12 @@ export default {
                 this.getPedidosByRestauranteID();
             }
             if (this.value === 2) {
+                this.getMenuByRestauranteID();
+            }
+        },
+        onDeleteMenu:{
+            deep: true,
+            handler() {
                 this.getMenuByRestauranteID();
             }
         }
