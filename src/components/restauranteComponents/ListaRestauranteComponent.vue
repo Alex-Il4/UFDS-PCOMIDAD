@@ -11,7 +11,7 @@
           single-line
         ></v-text-field>
     </template>
-      <v-data-table :items="items" :headers="headers" height="68vh" :search="search" >
+      <v-data-table :items="items" :headers="headers" height="60vh" :search="search" >
         <template v-slot:[`item.actions`]="{ item }">
           <div class="">
             <v-chip append-icon="bi bi-file-text-fill" color="success" class="d-flex justify-center align-center mb-2 mt-2" small @click="getID(item.id)">Editar restaurante</v-chip>
