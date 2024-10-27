@@ -7,12 +7,17 @@
                 <component :is="currentComponent" v-if="value === 0" titleTable="Mis pedidos" color="red-lighten-1"
                     icon="bi bi-cart4" :items="ListaPedidos" :headers="headersPedidos" :idRestaurante="restauranteID" textEliminar="Eliminar pedido"
                     textEditar="Editar pedido"/>
-                <component :is="currentComponent" v-if="value === 1" titleTable="Agregar menú" color="orange-lighten-1"
-                    icon="bi bi-plus-circle" :idRestaurante="restauranteID" />
+                <component :is="currentComponent" v-if="value === 1" :titleTable="isEditMode ? 'Editar menú' : 'Agregar menú'"
+                    icon="bi bi-plus-circle" :idRestaurante="restauranteID"
+                    :menuId="menuId"
+                    :isEditMode="isEditMode"
+                    @finish-edit="resetEditMode"
+                />
 
                 <component :is="currentComponent" v-if="value === 2" titleTable="Mis menús" color="warning"
                     icon="bi bi-cart4" :items="ListaMenu" :headers="headersMenu" :textEliminar="'Eliminar menú'"
                     :textEditar="'Editar menú'"  @delete-item="onDeleteMenu"  @edit-item="onEditMenu"/>
+
                 <!-- Menú inferior reutilizable -->
                 <bottom-navigation-menu :menu-items="menuItems" :current-value="value" :bg-color="color"
                     @menu-item-click="onMenuItemClick" />
@@ -27,7 +32,7 @@
 import MenuComponent from '@/components/restauranteComponents/MenuComponent/MenuRestauranteComponent.vue'
 import BottomNavigationMenu from '@/components/restauranteComponents/MenuComponent/BottomNavigationMenu.vue'
 import TablaInformacionComponent from '@/components/restauranteComponents/ViewDataComponent/TablaInformacionComponent.vue'
-import AgregarMenuComponent from '@/components/restauranteComponents/MenusRestaurantesComponents/AgregarMenuComponent.vue'
+import AgregarMenuComponent from '@/components/restauranteComponents/MenusRestaurantesComponents/MethodsMenuComponent.vue'
 import EditDialogComponent from '@/components/restauranteComponents/ViewDataComponent/EditDialogComponent.vue'
 import axios from 'axios';
 import { useRoute, useRouter } from 'vue-router';
@@ -43,6 +48,7 @@ export default {
     data: () => ({
         value: 0,
         restauranteID: null,
+        menuID: null,
         ListaPedidos: [],
         ListaMenu: [],
         theme: 'light',
@@ -124,7 +130,7 @@ export default {
                 "restauranteID": this.restauranteID,
             };
             try {
-                const response = await axios.post(`${process.env.VUE_APP_API_URL}/restaurantesMethods/api/listar/restaurante/menu/`, json, { headers });
+                const response = await axios.post(`${process.env.VUE_APP_API_URL}/restaurantesMethods/api/listar/restaurante/menu/todos/`, json, { headers });
                 const respuesta = response.data.data;
                 if (respuesta) {
                     const tabla = respuesta.map(item => {
@@ -171,6 +177,11 @@ export default {
                 console.log(error);
             }
         },
+        onEditMenu(menuId) {
+            this.isEditMode = true;
+            this.menuId = menuId;
+            this.value = 1;
+        },
     },
     watch: {
         value() {
@@ -186,7 +197,15 @@ export default {
             handler() {
                 this.getMenuByRestauranteID();
             }
-        }
+        },
+        onEditMenu: {
+            deep: true,
+            handler() {
+                this.getMenuByRestauranteID();
+                this.isEditMode = false;
+                this.menuId = null;
+            }
+        },
     },
     async created() {
         this.restauranteID = this.route.params.id;
