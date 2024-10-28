@@ -6,7 +6,7 @@ import CrearRestauranteView from '@/views/restaurante/login/CrearRestauranteView
 import DashboardMain from '@/views/restaurante/dashboard/dashboard.vue'
 import restaurantesMethodsView from '@/views/restaurante/dashboard/Methods/RestauranteMethodsView.vue'
 import EditPedidoView from '@/views/restaurante/dashboard/Methods/EditPedidoView.vue'
-
+import perfilView from '@/views/restaurante/dashboard/Methods/perfilView.vue'
 const routes = [
   {
     path: '/',
@@ -37,6 +37,11 @@ const routes = [
     path: '/restaurante/pedidos/edit/:id',
     name: 'editPedido',
     component: EditPedidoView
+  },
+  {
+    path: '/restaurante/perfil',
+    name: 'perfil',
+    component: perfilView
   },
   {
     path: '/restaurante/dashboard',

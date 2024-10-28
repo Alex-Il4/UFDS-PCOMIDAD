@@ -1,7 +1,13 @@
 <template>
     <v-responsive>
         <v-app :theme="theme">
-            <menu-component :current-title="currentTitle" :theme="theme" @toggle-theme="onClick" />
+            <menu-component
+                :current-title="currentTitle"
+                :theme="theme"
+                @toggle-theme="onClick"
+                is-dashboard="false"
+                @edit-profile="onEditProfile"
+             />
             <v-main>
                 <!-- Contenido principal -->
                 <component :is="currentComponent" v-if="value === 0" titleTable="Mis pedidos" color="red-lighten-1"
@@ -209,6 +215,9 @@ export default {
         onEditPedido(pedidoId) {
             //redirect a la vista de edición de pedido
             this.$router.push(`/restaurante/pedidos/edit/${pedidoId}`);
+        },
+        onEditProfile() {
+            this.$router.push("/restaurante/perfil");
         },
     },
     watch: {
