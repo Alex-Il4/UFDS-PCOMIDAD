@@ -1,7 +1,13 @@
 <template>
     <v-responsive>
         <v-app :theme="theme">
-            <menu-restaurante-component :current-title="currentTitle" :theme="theme" @toggle-theme="onClick" />
+            <menu-restaurante-component
+                :current-title="currentTitle"
+                :theme="theme"
+                @toggle-theme="onClick"
+                is-dashboard="false"
+                @edit-profile="onEditProfile"
+            />
             <v-main>
                 <v-container max-width="45%">
                     <v-card prepend-icon="mdi-cart-plus" :title="currentTitle" color="blue-darken-2" class="mb-4"></v-card>
@@ -220,8 +226,9 @@ export default {
                 console.log(error);
             }
         },
-
-
+        onEditProfile() {
+            this.$router.push("/restaurante/perfil");
+        },
     },
     async created() {
         await this.loadPedido();

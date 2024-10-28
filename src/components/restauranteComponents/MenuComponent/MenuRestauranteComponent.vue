@@ -3,7 +3,7 @@
       <v-app-bar-title>{{ currentTitle }}</v-app-bar-title>
       <v-spacer></v-spacer>
       <v-btn
-        v-if="currentTitle != 'Dashboard'"
+        v-if="isDashboard"
         prepend-icon="mdi-arrow-left"
         text="Atras"
         @click="$router.go(-1)"
@@ -27,8 +27,8 @@
             ></v-list-item>
           </template>
           <v-list>
+            <v-list-item @click="$emit('edit-profile')"><v-icon class="mr-2">mdi-account-circle</v-icon>Mi Perfil</v-list-item>
             <v-list-item @click="logout"><v-icon class="mr-2">mdi-logout</v-icon>Salir de la cuenta</v-list-item>
-            <v-list-item @click="onPerfil"><v-icon class="mr-2">mdi-account-circle</v-icon>Mi Perfil</v-list-item>
           </v-list>
         </v-menu>
       </template>
@@ -46,7 +46,11 @@
       theme: {
         type: String,
         required: true
-      }
+      },
+      isDashboard: {
+        type: Boolean,
+        required: true
+      },
     },
     data: () => ({
         nombreRestaurante: localStorage.getItem('nombreRestaurante'),
@@ -70,4 +74,3 @@
     }
   };
   </script>
-  
