@@ -14,8 +14,8 @@ const routes = [
     component: LoginUserView
   },
   {
-    path: '/AccountUser',
-    name: 'NewAccountUser',
+    path: '/crear-cuenta',
+    name: 'crearCuenta',
     component: NewAccountUser
   },
   {

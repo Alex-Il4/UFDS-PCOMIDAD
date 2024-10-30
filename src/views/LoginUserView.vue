@@ -50,7 +50,7 @@
               </v-btn>
 
               <v-card-text class="text-center">
-                <span class="text-blue text-decoration-none" style="cursor: pointer;" @click="this.$router.push('/AccountUser')">
+                <span class="text-blue text-decoration-none" style="cursor: pointer;" @click="this.$router.push('/crear-cuenta')">
                   <strong class="text-amber-darken-3">No tienes cuenta?</strong>
                 </span>
               </v-card-text>
