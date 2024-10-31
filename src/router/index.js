@@ -7,7 +7,7 @@ import DashboardMain from '@/views/restaurante/dashboard/dashboard.vue'
 import restaurantesMethodsView from '@/views/restaurante/dashboard/Methods/RestauranteMethodsView.vue'
 import EditPedidoView from '@/views/restaurante/dashboard/Methods/EditPedidoView.vue'
 import perfilView from '@/views/restaurante/dashboard/Methods/perfilView.vue'
-import UserHome from '@/views/UserHome.vue'
+import HomeView from '@/views/Cliente/home/HomeView.vue'
 const routes = [
   {
     path: '/',
@@ -15,8 +15,8 @@ const routes = [
     component: LoginUserView
   },
   {
-    path: '/AccountUser',
-    name: 'NewAccountUser',
+    path: '/crear-cuenta',
+    name: 'crearCuenta',
     component: NewAccountUser
   },
   {
@@ -49,13 +49,13 @@ const routes = [
     name: 'dashboard',
     component: DashboardMain
   },
+  /*Rutas para los clientes de la aplicacion */
   {
-    path: '/UserHome',
-    name: 'UserHome',
-    component: UserHome
+    path: '/home',
+    name: 'home',
+    component: HomeView
   },
 ]
-
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes

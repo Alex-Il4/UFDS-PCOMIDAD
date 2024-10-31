@@ -50,7 +50,7 @@
               </v-btn>
 
               <v-card-text class="text-center">
-                <span class="text-blue text-decoration-none" style="cursor: pointer;" @click="this.$router.push('/AccountUser')">
+                <span class="text-blue text-decoration-none" style="cursor: pointer;" @click="this.$router.push('/crear-cuenta')">
                   <strong class="text-amber-darken-3">No tienes cuenta?</strong>
                 </span>
               </v-card-text>
@@ -145,9 +145,9 @@ export default {
               this.dialog = false;
               localStorage.setItem("access", respuesta.access);
               localStorage.setItem("refresh", respuesta.refresh);
-              localStorage.setItem("correoRestaurante", respuesta.correo);
-              localStorage.setItem("usuarioRestauranteID", respuesta.restauranteID);
-              localStorage.setItem('nombreRestaurante', respuesta.nombre);
+              localStorage.setItem("CorreoCliente", respuesta.correo);
+              localStorage.setItem("ClienteID", respuesta.usuarioID);
+              localStorage.setItem('NombreCliente', respuesta.nombre);
               setTimeout(() => {
                 this.$router.push("/home");
               }, 2000);
