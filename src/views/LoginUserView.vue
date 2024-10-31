@@ -145,9 +145,9 @@ export default {
               this.dialog = false;
               localStorage.setItem("access", respuesta.access);
               localStorage.setItem("refresh", respuesta.refresh);
-              localStorage.setItem("correoRestaurante", respuesta.correo);
-              localStorage.setItem("usuarioRestauranteID", respuesta.restauranteID);
-              localStorage.setItem('nombreRestaurante', respuesta.nombre);
+              localStorage.setItem("CorreoCliente", respuesta.correo);
+              localStorage.setItem("ClienteID", respuesta.usuarioID);
+              localStorage.setItem('NombreCliente', respuesta.nombre);
               setTimeout(() => {
                 this.$router.push("/home");
               }, 2000);
