@@ -18,6 +18,7 @@
             <v-list-item prepend-icon="bi bi-shop" title="Inicio" value="home" to="/home"></v-list-item>
             <v-list-item prepend-icon="bi bi-file-person-fill" title="Perfil" value="account" to="/perfilCliente"></v-list-item>
             <v-list-item prepend-icon="bi bi-cart-plus-fill" title="Carrito" value="users" to="/carrito"></v-list-item>
+            <v-list-item prepend-icon="bi bi-door-open-fill" title="Cerrar sesión" value="logout" @click="logout"></v-list-item>
         </v-list>
     </v-navigation-drawer>
 
@@ -47,7 +48,7 @@
         localStorage.removeItem('CorreoCliente');
         localStorage.removeItem('ClienteID');
         localStorage.removeItem('NombreCliente');
-        this.$router.push("/login");
+        this.$router.push("/");
       },
       onPerfil() {
         this.$router.push("/perfil");
