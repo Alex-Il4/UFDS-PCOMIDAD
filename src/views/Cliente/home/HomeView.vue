@@ -48,7 +48,8 @@
                                         </v-card-text> <v-divider class="mx-4 mb-1">
                                         </v-divider>
                                         <v-card-actions>
-                                             <v-btn color="amber-darken-4" text="MENUS" block border></v-btn>
+                                             <v-btn color="amber-darken-4" text="MENUS" block border
+                                             @click="goMenus(item.id)"></v-btn>
                                         </v-card-actions> 
                                     </v-card>
                                 </v-col>
@@ -79,6 +80,9 @@ export default {
     methods: {
         onClick() {
             this.theme = this.theme === 'light' ? 'dark' : 'light';
+        },
+        async goMenus(id) {
+            this.$router.push(`/menus/restaurante/${id}`);
         },
         async ListarRestaurant() {
             try {
