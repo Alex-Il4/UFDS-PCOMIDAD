@@ -15,36 +15,42 @@
                         </v-text-field>
                         <div class="container">
                             <v-row class="mt-8">
-                                <v-col v-for="n in 6" :key="n" cols="12" sm="6" md="4">
+                                <v-col v-for="item in restaurantes" :key="item" cols="12" sm="6" md="4">
                                     <v-card class="mx-auto my-12" max-width="344">
                                         <template>
                                             <v-progress-linear color="deep-purple" height="4"
                                                 indeterminate></v-progress-linear>
                                         </template>
-                                        <v-img height="250"
-                                            src="https://t3.ftcdn.net/jpg/08/30/03/98/240_F_830039876_Jrvqi8UUd6FDnuWibRWUOrbBcp9rC3vg.jpg"
-                                            cover>
-                                        </v-img> <v-card-item>
-                                            <v-card-title>NOMBRE DEL RESTAURANTE</v-card-title>
+                                        <div v-if="item.imagen === null">
+                                            <v-img height="250" src="https://bitsofco.de/img/Qo5mfYDE5v-350.avif" cover>
+                                                
+                                            </v-img>
+                                        </div>
+                                        <div v-else>
+                                            <v-img height="250" :src="baseUrl+item.imagen" cover>
+                                            </v-img>
+                                        </div>
+                                        <v-card-item>
+                                            <v-card-title>{{ item.nombre }}</v-card-title>
                                             <v-card-subtitle>
-                                                <span class="me-1">UBUCACION</span>
-                                                <v-icon color="error" icon="mdi-fire-circle" size="small"></v-icon>
+                                                <v-chip color="warning"  small>{{ item.tipoCocina }}</v-chip>
                                             </v-card-subtitle>
                                         </v-card-item>
                                         <v-card-text>
-                                            <v-row align="center" class="mx-0">
-                                                <v-rating :model-value="4.5" color="amber" density="compact"
-                                                    size="small" half-increments readonly>
-                                                </v-rating>
-                                                <div class="text-grey ms-4"> PUNTAJE</div>
-                                            </v-row>
-                                            <div class="my-4 text-subtitle-1"> TIPO DE CUCINA </div>
-                                            <div> DESCRIPCION DEL RESTAURENTE
+                                            <v-row align="center" class="mx-0 mb-2 mt-1">
+                                                <v-rating :model-value="item.puntaje" color="amber" density="compact"
+                                                size="small" half-increments readonly>
+                                            </v-rating>
+                                        </v-row>
+                                        <span class="me-1 mt-1">{{item.ubicacion}}</span>
+                                            <div> {{ item.descripcion }}
                                             </div>
-                                        </v-card-text> <v-divider class="mx-4 mb-1"></v-divider>
-                                        <v-card-actions> <v-btn color="amber-darken-4" text="OPCIONES" block border
-                                                @click="reserve"></v-btn>
-                                        </v-card-actions> </v-card>
+                                        </v-card-text> <v-divider class="mx-4 mb-1">
+                                        </v-divider>
+                                        <v-card-actions>
+                                             <v-btn color="amber-darken-4" text="MENUS" block border></v-btn>
+                                        </v-card-actions> 
+                                    </v-card>
                                 </v-col>
                             </v-row>
                         </div>
@@ -68,7 +74,7 @@ export default {
         theme: 'light',
         restaurantes: [],
         loading: false,
-        selection: 1,
+        baseUrl: process.env.VUE_APP_API_URL,
     }),
     methods: {
         onClick() {
@@ -82,8 +88,20 @@ export default {
                     'Content-Type': 'application/json',
                 };
                 const response = await axios.get(`${process.env.VUE_APP_API_URL}/restaurantesMethods/api/listar/`, { headers }); // Pasa las cabeceras correctamente
-                this.restaurantes = response.data.data;
-                console.log(response.data);
+                const restauranteFormat = response.data.data.map(item => {
+                    return {
+                        id: item.id,
+                        nombre: item.nombre,
+                        ubicacion: item.ubicacion,
+                        tipoCocina: item.tipoCocina,
+                        descripcion: item.descripcion,
+                        puntaje: item.puntaje,
+                        imagen: item.imagen ? item.imagen : null,
+                    }
+                });
+    
+                this.restaurantes = restauranteFormat;
+                console.log(JSON.stringify(restauranteFormat, null, 2));
             } catch (error) {
                 console.log(error);
             }
