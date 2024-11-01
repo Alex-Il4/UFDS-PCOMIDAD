@@ -50,7 +50,6 @@ const routes = [
     name: 'dashboard',
     component: DashboardMain
   },
-
   /*Rutas para los clientes de la aplicacion */
   {
     path: '/home',
@@ -62,8 +61,8 @@ const routes = [
     name: 'menusRestaurante',
     component: MenusByRestaurantesView
   },
+  
 ]
-
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
