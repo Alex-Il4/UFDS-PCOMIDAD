@@ -1,4 +1,5 @@
 
+
 <template>
     <v-navigation-drawer v-model="drawer" :rail="rail" permanent @click="rail = false" color="">
         <v-list-item prepend-icon="bi bi-person-badge-fill" :title="nombre" nav class="justify-center text-capitalize">
