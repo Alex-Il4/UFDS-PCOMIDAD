@@ -56,16 +56,23 @@
 
                                             <v-card-title>Fecha de creación</v-card-title>
 
-                                            <div class="px-4 mb-2">
+                                            <div class="px-4 mb-4">
                                                 <v-chip-group v-model="selection"
                                                     selected-class="bg-deep-purple-lighten-2">
                                                     <v-chip>{{ item.raw.fecha }}</v-chip>
                                                 </v-chip-group>
                                             </div>
 
-                                            <v-card-actions>
-                                                <v-btn color="deep-purple-lighten-2" text="Reserve" block border
-                                                    @click="reserve"></v-btn>
+                                            <v-card-actions >
+                                                <v-spacer></v-spacer>
+                                                    <v-fab
+                                                        color="deep-purple-lighten-2"
+                                                        icon="mdi-cart-arrow-down"
+                                                        style="margin-top: 100px"
+                                                        size="54"
+                                                        app
+                                                        appear
+                                                    ></v-fab>
                                             </v-card-actions>
                                         </v-card>
                                     </v-col>

@@ -31,6 +31,23 @@
             variant="outlined"
             class="mb-2"
           ></v-text-field>
+          <v-text-field
+            v-model="descripcion"
+            :rules="[rules.Required]"
+            color="success"
+            label="Descripción"
+            variant="outlined"
+            class="mb-2"
+          ></v-text-field>
+          <v-text-field
+            v-model="puntaje"
+            :rules="[rules.Required, rules.onlyNumber]"
+            color="success"
+            label="Puntaje"
+            placeholder="Ingresa el puntaje del menú"
+            variant="outlined"
+            class="mb-2"
+          ></v-text-field>
           <v-select
             clearable
             v-model="status"
@@ -93,6 +110,8 @@
       status: null,
       fecha: null,
       imagen: '',
+      descripcion: '',
+      puntaje: '',
       rules: {
         imagen: (value) =>!value || !value.length || value[0].size < 2000000 || 'El tamaño de la imagen debe ser menor a 2 MB!',
         Required: (value) => !!value || 'El campo es requerido',
@@ -122,6 +141,8 @@
           formData.append("titulo", this.titulo);
           formData.append("nombre", this.nombre);
           formData.append("precio", this.precio);
+          formData.append("descripcion", this.descripcion);
+          formData.append("puntaje", this.puntaje);
           if (this.fecha) {
             formData.append("fecha", this.fecha);
           }
@@ -166,11 +187,13 @@
             const headers = { Authorization: `Bearer ${token_access}` };
             const response = await axios.post(`${process.env.VUE_APP_API_URL}/restaurantesMethods/api/datos/menu/`,json, { headers });
             console.log(JSON.stringify(response.data.data, null, 2));
-            const { titulo, nombre, precio, status} = response.data.data;
+            const { titulo, nombre, precio, status, descripcion, puntaje} = response.data.data;
             this.titulo = titulo;
             this.nombre = nombre;
             this.precio = precio;
             this.status = status;
+            this.descripcion = descripcion;
+            this.puntaje = puntaje;
           } catch (error) {
             this.showAlert(false, 'Error', 'No se pudo cargar el menú para editar');
           }
