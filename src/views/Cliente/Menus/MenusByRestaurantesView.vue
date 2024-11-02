@@ -9,31 +9,64 @@
                         <template v-slot:header>
                             <v-toolbar class="px-2">
                                 <v-text-field v-model="search" density="comfortable" placeholder="Busca un menu"
-                                    prepend-inner-icon="mdi-magnify"  variant="solo" clearable
+                                    prepend-inner-icon="mdi-magnify" variant="solo" clearable
                                     hide-details></v-text-field>
                             </v-toolbar>
                         </template>
                         <template v-slot:default="{ items }">
                             <v-container>
                                 <v-row dense>
-                                    <v-col cols="12" v-for="(item, index) in items" :key="index">
-                                        <v-card color="#e86e20">
-                                            <div class="d-flex flex-no-wrap justify-space-between">
-                                                <div>
-                                                    <v-card-title class="text-h5">
-                                                        {{ item.raw.titulo }}
-                                                    </v-card-title>
-                                                    <v-card-subtitle>
-                                                        <v-chip color="white" class="ma-2">{{ item.raw.status }}</v-chip>
-                                                    </v-card-subtitle>
-                                                    <v-card-actions>
-                                                        <v-btn class="ms-2" icon="mdi-play" variant="text"></v-btn>
-                                                    </v-card-actions>
+                                    <v-col  v-for="(item, index) in items" :key="index" >
+                                        <v-card :disabled="loading" :loading="loading" class="my-6"
+                                            max-width="355" max-height="550">
+                                            <template v-slot:loader="{ isActive }">
+                                                <v-progress-linear :active="isActive" color="deep-purple" height="4"
+                                                    indeterminate></v-progress-linear>
+                                            </template>
+
+                                            <v-img height="250" :src="item.raw.imagen"
+                                                cover></v-img>
+
+                                            <v-card-item>
+                                                <v-card-title>{{ item.raw.titulo }} </v-card-title>
+                                                <v-card-subtitle>
+                                                    <span class="me-1">{{ item.raw.restaurante }}</span>
+                                                    <v-icon color="error" icon="mdi-fire-circle" size="small"></v-icon>
+                                                </v-card-subtitle>
+                                            </v-card-item>
+
+                                            <v-card-text>
+                                                <v-row align="center" class="mx-0">
+                                                    <v-rating :model-value="item.raw.puntaje"  color="amber" density="compact"
+                                                        size="small" half-increments readonly></v-rating>
+
+                                                    <div class="text-grey ms-4">
+                                                        {{ item.raw.puntaje }} (413)
+                                                    </div>
+                                                </v-row>
+
+                                                <div class="my-4 text-subtitle-1">
+                                                    ${{ item.raw.precio }} • {{  item.raw. status}}
                                                 </div>
-                                                <v-avatar class="ma-3" rounded size="125"  v-if="item.raw.imagen !== null">
-                                                    <v-img :src="item.raw.imagen" cover></v-img>
-                                                </v-avatar>
+
+                                                <div>{{item.raw.descripcion}}</div>
+                                            </v-card-text>
+
+                                            <v-divider class="mx-4 mb-1"></v-divider>
+
+                                            <v-card-title>Fecha de creación</v-card-title>
+
+                                            <div class="px-4 mb-2">
+                                                <v-chip-group v-model="selection"
+                                                    selected-class="bg-deep-purple-lighten-2">
+                                                    <v-chip>{{ item.raw.fecha }}</v-chip>
+                                                </v-chip-group>
                                             </div>
+
+                                            <v-card-actions>
+                                                <v-btn color="deep-purple-lighten-2" text="Reserve" block border
+                                                    @click="reserve"></v-btn>
+                                            </v-card-actions>
                                         </v-card>
                                     </v-col>
                                 </v-row>
@@ -77,10 +110,14 @@ export default {
         loading: false,
         search: '',
         baseURL: process.env.VUE_APP_API_URL,
+        scrollInvoked: 0,
     }),
     methods: {
         onClick() {
             this.theme = this.theme === 'light' ? 'dark' : 'light';
+        },
+        onScroll () {
+            this.scrollInvoked++
         },
         async loadMenusByRestauranteData() {
             /*Aqui cargamos los menus del restaurante*/
@@ -101,6 +138,9 @@ export default {
                     imagen: item.imagen ? process.env.VUE_APP_API_URL + item.imagen : null,
                     fecha: item.fecha,
                     status: item.status ? "Activo" : "Inactivo",
+                    descripcion: item.descripcion,
+                    puntaje: item.puntaje,
+                    restaurante: item.restaurante.nombre,
                     id: item.id
                 }
             });

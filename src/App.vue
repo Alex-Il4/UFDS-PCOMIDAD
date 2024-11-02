@@ -16,3 +16,9 @@ export default {
   }),
 }
 </script>
+
+<style>
+.style-font {
+  font-family: 'ABeeZee', sans-serif;
+}
+</style>
