@@ -61,10 +61,17 @@
                                             </div>
 
                                             <v-card-actions>
-                                                <v-spacer></v-spacer>
-                                                <v-fab color="orange-darken-4" icon="mdi-cart-arrow-down"
-                                                    style="margin-top: 100px" size="54" app appear></v-fab>
+                                                <v-speed-dial location="top center" transition="slide-x-transition" >
+                                                    <template v-slot:activator="{ props: activatorProps }">
+                                                        <v-fab v-bind="activatorProps" color="orange-darken-4" icon="mdi-cart-arrow-down" size="50" app appear></v-fab>
+                                                    </template>
+                                                    <v-btn key="1" icon="$success"></v-btn>
+                                                    <v-btn key="2" icon="$info"></v-btn>
+                                                    <v-btn key="3" icon="$warning"></v-btn>
+                                                    <v-btn key="4" icon="$error"></v-btn>
+                                                </v-speed-dial>
                                             </v-card-actions>
+                                            <v-divider></v-divider>
                                         </v-card>
                                     </v-col>
                                 </v-row>
@@ -85,6 +92,17 @@
                             </div>
                         </template>
                     </v-data-iterator>
+                    <v-card class="text-white mt-2 ml-2 mb-4 mr-2" color="#26c6da" prepend-icon="bi bi-shop-window"
+                        :title="nombreRestaurante">
+                        <template v-slot:prepend>
+                            <v-icon size="x-large"></v-icon>
+                        </template>
+                        <v-rating :model-value="puntajeRestaurante" color="amber" density="compact" size="small"
+                            half-increments readonly class="ml-2"></v-rating>
+                        <v-card-text class="text-h5 py-2">
+                            " {{ descripcionRestaurante }} "
+                        </v-card-text>
+                    </v-card>
                 </v-main>
             </v-layout>
         </v-app>
@@ -107,7 +125,9 @@ export default {
         loading: false,
         search: '',
         baseURL: process.env.VUE_APP_API_URL,
-        scrollInvoked: 0,
+        nombreRestaurante: 'null',
+        descripcionRestaurante: 'null',
+        puntajeRestaurante: 0,
     }),
     methods: {
         onClick() {
@@ -164,6 +184,9 @@ export default {
             if (respuesta.data) {
                 const restaurante = respuesta.data;
                 this.imagenRestaurante = `${process.env.VUE_APP_API_URL}/restaurantesMethods/api${restaurante.imagen}`;
+                this.nombreRestaurante = restaurante.nombre;
+                this.descripcionRestaurante = restaurante.descripcion;
+                this.puntajeRestaurante = restaurante.puntaje;
             }
         },
         async loadRestaurante() {
