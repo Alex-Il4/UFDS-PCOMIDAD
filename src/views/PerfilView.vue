@@ -1,6 +1,6 @@
 <template>
   <v-container class="perfil">
-    <v-btn icon @click="$router.push('/')" class="btnHome">
+    <v-btn icon @click="$router.push('/home')" class="btnHome">
       <v-icon>mdi-arrow-left</v-icon>
     </v-btn>
 
