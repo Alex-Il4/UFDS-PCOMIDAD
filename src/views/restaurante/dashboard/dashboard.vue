@@ -1,31 +1,26 @@
 <template>
   <v-responsive>
     <v-app :theme="theme">
-      <menu-component :current-title="currentTitle" :theme="theme" @toggle-theme="onClick" />
+      <menu-component
+        :current-title="currentTitle"
+        :theme="theme"
+        @toggle-theme="onClick"
+        @edit-profile="onEditProfile"
+      />
       <v-main>
         <v-container>
           <component :is="currentComponent" :items="ListaRestaurante" v-if="value === 0"
             :title-table="'Mis Restaurantes'" :color="color" :icon="'bi bi-building-check'"
             @refreshListaRestaurantes="GetRestaurantes" />
-          <component :is="currentComponent" v-if="value === 1"></component>
           <component :is="currentComponent" v-if="value === 2"></component>
-          <component :is="currentComponent" v-if="value === 3"></component>
           <v-bottom-navigation v-model="value" :bg-color="color" mode="shift">
             <v-btn @click="value = 0">
-              <v-icon icon="bi bi-card-list"></v-icon>
+              <v-icon icon="bi bi-credit-card-2-front-fill"></v-icon>
               <span>Mis Restaurantes</span>
-            </v-btn>
-            <v-btn @click="value = 1">
-              <v-icon icon="bi bi-bookmarks-fill"></v-icon>
-              <span>Todos Mis pedidos</span>
             </v-btn>
             <v-btn @click="value = 2">
               <v-icon icon="bi bi-building-add"></v-icon>
               <span>Crear Restaurantes</span>
-            </v-btn>
-            <v-btn @click="value = 3">
-              <v-icon>mdi-image</v-icon>
-              <span>Image</span>
             </v-btn>
           </v-bottom-navigation>
         </v-container>
@@ -98,6 +93,9 @@ export default {
     },
     onClick() {
       this.theme = this.theme === 'light' ? 'dark' : 'light';
+    },
+    onEditProfile() {
+      this.$router.push("/restaurante/perfil");
     }
   },
   async created() {
@@ -114,27 +112,22 @@ export default {
     color() {
       switch (this.value) {
         case 0: return 'red-lighten-1'
-        case 1: return 'teal'
         case 2: return 'orange-darken-2'
-        case 3: return 'indigo'
+        case 3: return 'teal'
         default: return 'blue-grey'
       }
     },
     currentTitle() {
       switch (this.value) {
         case 0: return 'Mis Restaurantes'
-        case 1: return 'Todos Mis Pedidos'
         case 2: return 'Crear Restaurantes'
-        case 3: return 'Imagen'
         default: return 'Dashboard'
       }
     },
     currentComponent() {
       switch (this.value) {
         case 0: return 'ListaRestauranteComponent'
-        case 1: return 'PedidosComponent'
         case 2: return 'CrearRestauranteComponent'
-        case 3: return 'ImageComponent'
         default: return 'ListaRestauranteComponent'
       }
     }

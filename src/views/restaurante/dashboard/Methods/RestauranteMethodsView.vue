@@ -1,18 +1,28 @@
 <template>
     <v-responsive>
         <v-app :theme="theme">
-            <menu-component :current-title="currentTitle" :theme="theme" @toggle-theme="onClick" />
+            <menu-component
+                :current-title="currentTitle"
+                :theme="theme"
+                @toggle-theme="onClick"
+                is-dashboard="false"
+                @edit-profile="onEditProfile"
+             />
             <v-main>
                 <!-- Contenido principal -->
                 <component :is="currentComponent" v-if="value === 0" titleTable="Mis pedidos" color="red-lighten-1"
-                    icon="bi bi-cart4" :items="ListaPedidos" :headers="headersPedidos" :idRestaurante="restauranteID" textEliminar="Eliminar pedido"
-                    textEditar="Editar pedido"/>
-                <component :is="currentComponent" v-if="value === 1" titleTable="Agregar menú" color="orange-lighten-1"
-                    icon="bi bi-plus-circle" :idRestaurante="restauranteID" />
+                    icon="bi bi-cart4" :items="ListaPedidos" :headers="headersPedidos" :idRestaurante="restauranteID"
+                    textEliminar="Eliminar pedido" textEditar="Editar pedido" @delete-item="onDeletePedido"
+                    @edit-item="onEditPedido" />
+                <component :is="currentComponent" v-if="value === 1"
+                    :titleTable="isEditMode ? 'Editar menú' : 'Agregar menú'" icon="bi bi-plus-circle"
+                    :idRestaurante="restauranteID" :menuId="menuId" :isEditMode="isEditMode"
+                    @finish-edit="resetEditMode" />
 
                 <component :is="currentComponent" v-if="value === 2" titleTable="Mis menús" color="warning"
                     icon="bi bi-cart4" :items="ListaMenu" :headers="headersMenu" :textEliminar="'Eliminar menú'"
-                    :textEditar="'Editar menú'" />
+                    :textEditar="'Editar menú'" @delete-item="onDeleteMenu" @edit-item="onEditMenu" />
+
                 <!-- Menú inferior reutilizable -->
                 <bottom-navigation-menu :menu-items="menuItems" :current-value="value" :bg-color="color"
                     @menu-item-click="onMenuItemClick" />
@@ -25,7 +35,7 @@
 import MenuComponent from '@/components/restauranteComponents/MenuComponent/MenuRestauranteComponent.vue'
 import BottomNavigationMenu from '@/components/restauranteComponents/MenuComponent/BottomNavigationMenu.vue'
 import TablaInformacionComponent from '@/components/restauranteComponents/ViewDataComponent/TablaInformacionComponent.vue'
-import AgregarMenuComponent from '@/components/restauranteComponents/MenusRestaurantesComponents/AgregarMenuComponent.vue'
+import AgregarMenuComponent from '@/components/restauranteComponents/MenusRestaurantesComponents/MethodsMenuComponent.vue'
 import axios from 'axios';
 import { useRoute, useRouter } from 'vue-router';
 export default {
@@ -34,11 +44,12 @@ export default {
         MenuComponent,
         BottomNavigationMenu,
         TablaInformacionComponent,
-        AgregarMenuComponent
+        AgregarMenuComponent,
     },
     data: () => ({
         value: 0,
         restauranteID: null,
+        menuID: null,
         ListaPedidos: [],
         ListaMenu: [],
         theme: 'light',
@@ -64,6 +75,7 @@ export default {
             { title: "Precio", value: "precio", align: "start", key: "precio" },
             { title: "Status", value: "status", align: "start", key: "status" },
             { title: "Fecha", value: "fecha", align: "start", key: "fecha" },
+            { title: "Imagen", value: "imagen", align: "center", key: "imagen" },
             { title: "Actions", key: "actions", sortable: false },
         ],
     }),
@@ -119,7 +131,7 @@ export default {
                 "restauranteID": this.restauranteID,
             };
             try {
-                const response = await axios.post(`${process.env.VUE_APP_API_URL}/restaurantesMethods/api/listar/restaurante/menu/`, json, { headers });
+                const response = await axios.post(`${process.env.VUE_APP_API_URL}/restaurantesMethods/api/listar/restaurante/menu/todos/`, json, { headers });
                 const respuesta = response.data.data;
                 if (respuesta) {
                     const tabla = respuesta.map(item => {
@@ -130,7 +142,7 @@ export default {
                             precio: item.precio,
                             status: item.status,
                             fecha: item.fecha,
-                            imagen: item.imagen,
+                            imagen: item.imagen ? item.imagen : null,
                         }
                     });
                     console.log("tabla", tabla);
@@ -142,16 +154,97 @@ export default {
                 console.log(error);
             }
         },
+        async onDeleteMenu(item) {
+            /*Función para eliminar menú de la base de datos*/
+            console.log("item", item);
+            const access = localStorage.getItem('access');
+            const headers = {
+                'Authorization': `Bearer ${access}`,
+                'Content-Type': 'application/json',
+            };
+            const json = {
+                "menuID": item,
+            };
+            try {
+                const response = await axios.post(`${process.env.VUE_APP_API_URL}/restaurantesMethods/api/eliminar/restaurante/menu/`, json, { headers });
+                const respuesta = response.data.data;
+                if (respuesta) {
+                    console.log("respuesta", respuesta);
+                    this.getMenuByRestauranteID();
+                } else {
+                    console.error(respuesta.error);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        onEditMenu(menuId) {
+            this.isEditMode = true;
+            this.menuId = menuId;
+            this.value = 1;
+        },
+        resetEditMode() {
+            this.menuId = null;
+            this.isEditMode = false;
+        },
+
+        async onDeletePedido(item) {
+            /*Función para eliminar pedido de la base de datos*/
+            console.log("item", item);
+            const access = localStorage.getItem('access');
+            const headers = {
+                'Authorization': `Bearer ${access}`,
+                'Content-Type': 'application/json',
+            };
+            const json = {
+                "pedidoID": item,
+            };
+            try {
+                const response = await axios.post(`${process.env.VUE_APP_API_URL}/pedidosMethods/api/eliminar/pedido/`, json, { headers });
+                const respuesta = response.data.data;
+                if (respuesta) {
+                    console.log("respuesta", respuesta);
+                    this.getPedidosByRestauranteID();
+                } else {
+                    console.error(respuesta.error);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        onEditPedido(pedidoId) {
+            //redirect a la vista de edición de pedido
+            this.$router.push(`/restaurante/pedidos/edit/${pedidoId}`);
+        },
+        onEditProfile() {
+            this.$router.push("/restaurante/perfil");
+        },
     },
     watch: {
         value() {
             if (this.value === 0) {
                 this.getPedidosByRestauranteID();
+                this.isEditMode = false;
             }
             if (this.value === 2) {
                 this.getMenuByRestauranteID();
+                this.isEditMode = false;
             }
-        }
+        },
+        onDeleteMenu:{
+            deep: true,
+            handler() {
+                this.getMenuByRestauranteID();
+            }
+        },
+        onEditMenu: {
+            deep: true,
+            handler() {
+                this.getMenuByRestauranteID();
+                this.isEditMode = false;
+                this.menuId = null;
+            }
+        },
     },
     async created() {
         this.restauranteID = this.route.params.id;

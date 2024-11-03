@@ -69,34 +69,34 @@ data() {
     ],
   };
 },
-methods: {
-  editProfile() {
-    //editar perfil
-  },
-  salir() {
-    // cerrar Sesion
-  },
-}
+  methods: {
+    editProfile() {
+      //editar perfil
+    },
+    salir() {
+      // cerrar Sesion
+    },
+  }
 };
 </script>
 
 <style scoped>
-/* Botón de regreso al inicio */
-.btnHome {
-position: absolute;
-top: 15px;
-left: 15px;
-color: #444;
-}
+  
+  .btnHome {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    color: #444;
+  }
 
-.perfil {
-display: flex;
-flex-direction: column;
-align-items: center;
-padding: 30px;
-background-color: #f9f9fb;
-font-family: 'Arial', sans-serif;
-}
+  .perfil {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+    background-color: #f9f9fb;
+    font-family: 'Arial', sans-serif;
+  }
   
   .namepic {
     text-align: center;
@@ -204,11 +204,11 @@ font-family: 'Arial', sans-serif;
   }
 
 
-@media (min-width: 600px) {
-    .actions {
-        flex-direction: row; /* Mantiene el diseño en fila en pantallas más grandes */
-    }
-}
+  @media (min-width: 600px) {
+      .actions {
+          flex-direction: row; /* Mantiene el diseño en fila en pantallas más grandes */
+      }
+  }
 
-  </style>
+</style>
   
