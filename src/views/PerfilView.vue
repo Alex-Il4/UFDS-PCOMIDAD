@@ -34,13 +34,22 @@
           <v-list class="Listaorden" v-if="orders.length">
             <v-list-item-group>
               <v-list-item v-for="order in orders" :key="order.id" class="order" style="text-align: left;">
-                <p><strong>Pedido #{{ order.id }}</strong></p>
-                <p>Fecha: {{ order.date }}</p>
-                <p>Total: ${{ order.total.toFixed(2) }}</p>
+                <div class="order-content">
+                  <div class="order-info">
+                    <p><strong>Pedido #{{ order.id }}</strong></p>
+                    <p>Fecha: {{ order.date }}</p>
+                    <p>Total: ${{ order.total.toFixed(2) }}</p>
+                  </div>
+                  <v-btn @click="deleteOrder(order.id)" class="btnDeleteOrder" icon>
+                    <v-icon>mdi-delete</v-icon>
+                  </v-btn>
+                </div>
               </v-list-item>
             </v-list-item-group>
           </v-list>
           <p v-else class="noOrders" style="text-align: left;">Aun no tienes pedidos</p>
+          <!-- Botón para eliminar todos los pedidos -->
+          <v-btn @click="clearOrders" class="btnClearOrders" v-if="orders.length">Eliminar Historial</v-btn>
         </v-col>
       </v-row>
 
@@ -54,21 +63,21 @@
 
 <script>
 export default {
-name: 'PerfilView',
-data() {
-  return {
-    user: {
-      name: 'Alguien Cualquiera',
-      email: 'alguien@example.com',
-      tel: '8888-8888',
-      address: 'Calle Cualquiera',
-    },
-    orders: [
-      { id: 1, date: '2024-10-01', total: 25.5 },
-      { id: 2, date: '2024-10-05', total: 40.0 },
-    ],
-  };
-},
+  name: 'PerfilView',
+  data() {
+    return {
+      user: {
+        name: 'Alguien Cualquiera',
+        email: 'alguien@example.com',
+        tel: '8888-8888',
+        address: 'Calle Cualquiera',
+      },
+      orders: [
+        { id: 1, date: '2024-10-01', total: 25.5 },
+        { id: 2, date: '2024-10-05', total: 40.0 },
+      ],
+    };
+  },
   methods: {
     editProfile() {
       //editar perfil
@@ -76,17 +85,46 @@ data() {
     salir() {
       // cerrar Sesion
     },
+    clearOrders() {
+      this.orders = [];
+    },
+    deleteOrder(orderId) {
+      this.orders = this.orders.filter(order => order.id !== orderId);
+    }
   }
 };
 </script>
 
 <style scoped>
-  
   .btnHome {
     position: absolute;
     top: 15px;
     left: 15px;
     color: #444;
+  }
+
+  .btnClearOrders {
+    background-color: #ff6b6b;
+    color: white;
+    margin-top: 15px;
+  }
+  .btnClearOrders:hover {
+    background-color: #ff5252;
+  }
+
+  .order-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .btnDeleteOrder {
+    background-color: transparent;
+    color: #ff6b6b;
+    padding: 0;
+  }
+  .btnDeleteOrder:hover {
+    color: #ff5252;
   }
 
   .perfil {
