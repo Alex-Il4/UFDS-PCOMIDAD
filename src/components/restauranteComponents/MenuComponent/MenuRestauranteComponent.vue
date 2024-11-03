@@ -3,8 +3,15 @@
       <v-app-bar-title>{{ currentTitle }}</v-app-bar-title>
       <v-spacer></v-spacer>
       <v-btn
+        v-if="isDashboard"
+        prepend-icon="mdi-arrow-left"
+        text="Atras"
+        @click="$router.go(-1)"
+      >
+      </v-btn>
+      <v-btn
         :prepend-icon="theme === 'light' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
-        text="Toggle Theme"
+        text="Cambiar tema"
         slim
         @click="onClick"
       ></v-btn>
@@ -20,7 +27,8 @@
             ></v-list-item>
           </template>
           <v-list>
-            <v-list-item @click="logout"><v-icon>mdi-logout</v-icon>Salir de la cuenta</v-list-item>
+            <v-list-item @click="$emit('edit-profile')"><v-icon class="mr-2">mdi-account-circle</v-icon>Mi Perfil</v-list-item>
+            <v-list-item @click="logout"><v-icon class="mr-2">mdi-logout</v-icon>Salir de la cuenta</v-list-item>
           </v-list>
         </v-menu>
       </template>
@@ -38,7 +46,11 @@
       theme: {
         type: String,
         required: true
-      }
+      },
+      isDashboard: {
+        type: Boolean,
+        required: true
+      },
     },
     data: () => ({
         nombreRestaurante: localStorage.getItem('nombreRestaurante'),
@@ -55,8 +67,10 @@
         localStorage.removeItem('usuarioRestauranteID');
         localStorage.removeItem('nombreRestaurante');
         this.$router.push("/restaurante/login");
+      },
+      onPerfil() {
+        this.$router.push("/restaurante/perfil");
       }
     }
   };
   </script>
-  

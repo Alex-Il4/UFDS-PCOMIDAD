@@ -50,7 +50,7 @@
   
   <script>
   export default {
-    name: 'PerfilView',
+    name: 'UserPerfilView',
     data() {
       return {
         user: {

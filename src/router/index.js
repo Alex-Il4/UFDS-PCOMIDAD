@@ -5,8 +5,12 @@ import LoginRestauranteView from '@/views/restaurante/login/LoginRestauranteView
 import CrearRestauranteView from '@/views/restaurante/login/CrearRestauranteView.vue'
 import DashboardMain from '@/views/restaurante/dashboard/dashboard.vue'
 import restaurantesMethodsView from '@/views/restaurante/dashboard/Methods/RestauranteMethodsView.vue'
-import PerfilView from '@/views/PerfilView.vue'
+import UserPerfilView from '@/views/PerfilView.vue'
 
+import EditPedidoView from '@/views/restaurante/dashboard/Methods/EditPedidoView.vue'
+import perfilView from '@/views/restaurante/dashboard/Methods/perfilView.vue'
+import HomeView from '@/views/Cliente/home/HomeView.vue'
+import MenusByRestaurantesView from '@/views/Cliente/Menus/MenusByRestaurantesView.vue'
 const routes = [
   {
     path: '/',
@@ -14,8 +18,8 @@ const routes = [
     component: LoginUserView
   },
   {
-    path: '/AccountUser',
-    name: 'NewAccountUser',
+    path: '/crear-cuenta',
+    name: 'crearCuenta',
     component: NewAccountUser
   },
   {
@@ -34,6 +38,16 @@ const routes = [
     component: restaurantesMethodsView
   },
   {
+    path: '/restaurante/pedidos/edit/:id',
+    name: 'editPedido',
+    component: EditPedidoView
+  },
+  {
+    path: '/restaurante/perfil',
+    name: 'perfil',
+    component: perfilView
+  },
+  {
     path: '/restaurante/dashboard',
     name: 'dashboard',
     component: DashboardMain
@@ -41,10 +55,21 @@ const routes = [
   {
     path: '/perfil',
     name: 'perfil',
-    component: PerfilView
+    component: UserPerfilView
+  },
+
+  /*Rutas para los clientes de la aplicacion */
+  {
+    path: '/home',
+    name: 'home',
+    component: HomeView
+  },
+  {
+    path: '/menus/restaurante/:id',
+    name: 'menusRestaurante',
+    component: MenusByRestaurantesView
   },
 ]
-
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
