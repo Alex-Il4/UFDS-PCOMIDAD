@@ -9,6 +9,7 @@ import EditPedidoView from '@/views/restaurante/dashboard/Methods/EditPedidoView
 import perfilView from '@/views/restaurante/dashboard/Methods/perfilView.vue'
 import HomeView from '@/views/Cliente/home/HomeView.vue'
 import MenusByRestaurantesView from '@/views/Cliente/Menus/MenusByRestaurantesView.vue'
+import CarritoView from '@/views/Cliente/carrito/CarritoView.vue'
 const routes = [
   {
     path: '/',
@@ -61,6 +62,11 @@ const routes = [
     name: 'menusRestaurante',
     component: MenusByRestaurantesView
   },
+  {
+    path: '/carrito/carrito',
+    name: 'carrito',
+    component: CarritoView
+  }
   
 ]
 const router = createRouter({
