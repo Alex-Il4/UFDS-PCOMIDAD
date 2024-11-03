@@ -3,18 +3,18 @@
         <v-app :theme="theme">
             <v-layout>
                 <SideBarComponent :theme="theme" @toggle-theme="onClick"></SideBarComponent>
-                <v-main style="height: 250px">
+                <v-main style="height: 250px" :style="{ height: '100vh', overflowY: 'auto' }">
                     <v-img class="bg-grey-lighten-2" max-height="200" :src="imagenRestaurante" cover></v-img>
-                    <v-data-iterator :items="menusByRestaurante" :items-per-page="3" :search="search">
+                    <v-data-iterator :items="menusByRestaurante" :items-per-page="4" :search="search">
                         <template v-slot:header>
-                            <v-text-field class="px-2 mt-2" v-model="search" density="comfortable" placeholder="Busca un menu"
-                            prepend-inner-icon="mdi-magnify" variant="outlined" clearable
-                            hide-details color="orange-darken-2"></v-text-field>
+                            <v-text-field class="px-2 mt-2" v-model="search" density="comfortable"
+                                placeholder="Busca un menu" prepend-inner-icon="mdi-magnify" variant="outlined"
+                                clearable hide-details color="orange-darken-2"></v-text-field>
                         </template>
                         <template v-slot:default="{ items }">
                             <v-container>
                                 <v-row dense>
-                                    <v-col v-for="(item, index) in items" :key="index" >
+                                    <v-col v-for="(item, index) in items" :key="index">
                                         <v-card :disabled="loading" :loading="loading" class="my-3" max-width="355"
                                             max-height="560">
                                             <template v-slot:loader="{ isActive }">
@@ -46,7 +46,7 @@
                                                 <div class="my-4 text-subtitle-1">
                                                     ${{ item.raw.precio }} • <v-chip
                                                         :color="item.raw.status ? 'success' : 'error'" small>{{
-                                                        item.raw.status}}</v-chip>
+                                                            item.raw.status }}</v-chip>
                                                 </div>
 
                                                 <div>{{ item.raw.descripcion }}</div>
@@ -72,7 +72,7 @@
                         </template>
 
                         <template v-slot:footer="{ page, pageCount, prevPage, nextPage }">
-                            <div class="d-flex align-center justify-center">
+                            <div class="d-flex align-center justify-center mb-4">
                                 <v-btn :disabled="page === 1" density="comfortable" icon="mdi-arrow-left"
                                     variant="tonal" rounded @click="prevPage"></v-btn>
 
@@ -127,24 +127,28 @@ export default {
             };
             const response = await axios.post(`${process.env.VUE_APP_API_URL}/restaurantesMethods/api/listar/restaurante/menu/todos/`, json, { headers });
             const menusData = response.data.data;
-            const menu = menusData.map(item => {
-                const fecha = this.formatDate(item.fecha);
-                return {
-                    nombre: item.nombre,
-                    titulo: item.titulo,
-                    precio: item.precio,
-                    imagen: item.imagen ? process.env.VUE_APP_API_URL + item.imagen : null,
-                    fecha: fecha,
-                    status: item.status ? "Activo" : "Inactivo",
-                    descripcion: item.descripcion,
-                    puntaje: item.puntaje ? item.puntaje : 0,
-                    restaurante: item.restaurante.nombre,
-                    id: item.id
-                }
-            });
+            const menu = menusData
+                .filter(item => item.status === true)
+                .map(item => {
+                    const fecha = this.formatDate(item.fecha);
+                    return {
+                        nombre: item.nombre,
+                        titulo: item.titulo,
+                        precio: item.precio,
+                        imagen: item.imagen ? process.env.VUE_APP_API_URL + item.imagen : null,
+                        fecha: fecha,
+                        status: "Activo",
+                        descripcion: item.descripcion,
+                        puntaje: item.puntaje ? item.puntaje : 0,
+                        restaurante: item.restaurante.nombre,
+                        id: item.id
+                    }
+                });
+
             console.log(JSON.stringify(menusData, null, 2));
-            console.log(menu)
+            console.log(menu);
             this.menusByRestaurante = menu;
+
         },
         async loadRestauranteData() {
             /*Aqui cargamos toda la informacion del restaurante*/
