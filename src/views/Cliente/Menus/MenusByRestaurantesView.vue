@@ -7,38 +7,36 @@
                     <v-img class="bg-grey-lighten-2" max-height="200" :src="imagenRestaurante" cover></v-img>
                     <v-data-iterator :items="menusByRestaurante" :items-per-page="3" :search="search">
                         <template v-slot:header>
-                            <v-toolbar class="px-2">
-                                <v-text-field v-model="search" density="comfortable" placeholder="Busca un menu"
-                                    prepend-inner-icon="mdi-magnify" variant="solo" clearable
-                                    hide-details></v-text-field>
-                            </v-toolbar>
+                            <v-text-field class="px-2 mt-2" v-model="search" density="comfortable" placeholder="Busca un menu"
+                            prepend-inner-icon="mdi-magnify" variant="outlined" clearable
+                            hide-details color="orange-darken-2"></v-text-field>
                         </template>
                         <template v-slot:default="{ items }">
                             <v-container>
                                 <v-row dense>
-                                    <v-col  v-for="(item, index) in items" :key="index" >
-                                        <v-card :disabled="loading" :loading="loading" class="my-6"
-                                            max-width="355" max-height="550">
+                                    <v-col v-for="(item, index) in items" :key="index" >
+                                        <v-card :disabled="loading" :loading="loading" class="my-3" max-width="355"
+                                            max-height="560">
                                             <template v-slot:loader="{ isActive }">
                                                 <v-progress-linear :active="isActive" color="deep-purple" height="4"
                                                     indeterminate></v-progress-linear>
                                             </template>
 
-                                            <v-img height="250" :src="item.raw.imagen"
-                                                cover></v-img>
+                                            <v-img height="250" :src="item.raw.imagen" cover></v-img>
 
                                             <v-card-item>
                                                 <v-card-title>{{ item.raw.titulo }} </v-card-title>
                                                 <v-card-subtitle>
-                                                    <span class="me-1">{{ item.raw.restaurante }}</span>
+                                                    <span class="me-1">Restaurante • {{ item.raw.restaurante }}</span>
                                                     <v-icon color="error" icon="mdi-fire-circle" size="small"></v-icon>
                                                 </v-card-subtitle>
                                             </v-card-item>
 
                                             <v-card-text>
                                                 <v-row align="center" class="mx-0">
-                                                    <v-rating :model-value="item.raw.puntaje"  color="amber" density="compact"
-                                                        size="small" half-increments readonly></v-rating>
+                                                    <v-rating :model-value="item.raw.puntaje" color="amber"
+                                                        density="compact" size="small" half-increments
+                                                        readonly></v-rating>
 
                                                     <div class="text-grey ms-4">
                                                         {{ item.raw.puntaje }} (413)
@@ -46,10 +44,12 @@
                                                 </v-row>
 
                                                 <div class="my-4 text-subtitle-1">
-                                                    ${{ item.raw.precio }} • {{  item.raw. status}}
+                                                    ${{ item.raw.precio }} • <v-chip
+                                                        :color="item.raw.status ? 'success' : 'error'" small>{{
+                                                        item.raw.status}}</v-chip>
                                                 </div>
 
-                                                <div>{{item.raw.descripcion}}</div>
+                                                <div>{{ item.raw.descripcion }}</div>
                                             </v-card-text>
 
                                             <v-divider class="mx-4 mb-1"></v-divider>
@@ -57,22 +57,13 @@
                                             <v-card-title>Fecha de creación</v-card-title>
 
                                             <div class="px-4 mb-4">
-                                                <v-chip-group v-model="selection"
-                                                    selected-class="bg-deep-purple-lighten-2">
-                                                    <v-chip>{{ item.raw.fecha }}</v-chip>
-                                                </v-chip-group>
+                                                <v-chip color="orange-darken-3">{{ item.raw.fecha }}</v-chip>
                                             </div>
 
-                                            <v-card-actions >
+                                            <v-card-actions>
                                                 <v-spacer></v-spacer>
-                                                    <v-fab
-                                                        color="deep-purple-lighten-2"
-                                                        icon="mdi-cart-arrow-down"
-                                                        style="margin-top: 100px"
-                                                        size="54"
-                                                        app
-                                                        appear
-                                                    ></v-fab>
+                                                <v-fab color="orange-darken-4" icon="mdi-cart-arrow-down"
+                                                    style="margin-top: 100px" size="54" app appear></v-fab>
                                             </v-card-actions>
                                         </v-card>
                                     </v-col>
@@ -81,7 +72,7 @@
                         </template>
 
                         <template v-slot:footer="{ page, pageCount, prevPage, nextPage }">
-                            <div class="d-flex align-center justify-center pa-4">
+                            <div class="d-flex align-center justify-center">
                                 <v-btn :disabled="page === 1" density="comfortable" icon="mdi-arrow-left"
                                     variant="tonal" rounded @click="prevPage"></v-btn>
 
@@ -94,7 +85,6 @@
                             </div>
                         </template>
                     </v-data-iterator>
-
                 </v-main>
             </v-layout>
         </v-app>
@@ -123,7 +113,7 @@ export default {
         onClick() {
             this.theme = this.theme === 'light' ? 'dark' : 'light';
         },
-        onScroll () {
+        onScroll() {
             this.scrollInvoked++
         },
         async loadMenusByRestauranteData() {
@@ -138,15 +128,16 @@ export default {
             const response = await axios.post(`${process.env.VUE_APP_API_URL}/restaurantesMethods/api/listar/restaurante/menu/todos/`, json, { headers });
             const menusData = response.data.data;
             const menu = menusData.map(item => {
+                const fecha = this.formatDate(item.fecha);
                 return {
                     nombre: item.nombre,
                     titulo: item.titulo,
                     precio: item.precio,
                     imagen: item.imagen ? process.env.VUE_APP_API_URL + item.imagen : null,
-                    fecha: item.fecha,
+                    fecha: fecha,
                     status: item.status ? "Activo" : "Inactivo",
                     descripcion: item.descripcion,
-                    puntaje: item.puntaje,
+                    puntaje: item.puntaje ? item.puntaje : 0,
                     restaurante: item.restaurante.nombre,
                     id: item.id
                 }
@@ -174,7 +165,15 @@ export default {
         async loadRestaurante() {
             await this.loadMenusByRestauranteData();
             await this.loadRestauranteData();
-        }
+        },
+        formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('es-ES', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+            });
+        },
     },
     created() {
         this.restauranteID = this.$route.params.id;

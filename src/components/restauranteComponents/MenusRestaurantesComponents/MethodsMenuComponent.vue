@@ -33,7 +33,7 @@
           ></v-text-field>
           <v-text-field
             v-model="descripcion"
-            :rules="[rules.Required]"
+            :rules="[rules.Required, rules.maxText]"
             color="success"
             label="Descripción"
             variant="outlined"
@@ -117,6 +117,7 @@
         Required: (value) => !!value || 'El campo es requerido',
         onlyString: (value) => /^[a-zA-Z\s]+$/.test(value) || 'Numeros no permitidos',
         onlyNumber: (value) => /^\d+(?:[.,]\d+)?$/.test(value) || 'Solo se perminen numeros',
+        maxText: (value) => value.length <= 100 || 'El texto no puede superar los 100 caracteres',
       },
       colorAlert: '',
       iconAlert: '',
