@@ -21,8 +21,20 @@
             <v-list-item class="infoPerfil" style="text-align: left;">
               <strong>Nombre:</strong> {{ user.name }} <br>
               <strong>Email:</strong> {{ user.email }} <br>
-              <strong>Teléfono:</strong> {{ user.tel }} <br>
-              <strong>Dirección:</strong> {{ user.address }} <br>
+
+              <!-- form condicional de edicion -->
+              <template v-if="isEditing">
+                <strong>Teléfono:</strong>
+                <v-text-field v-model="editUser.tel" label="Teléfono" />
+                <strong>Dirección:</strong>
+                <v-text-field v-model="editUser.address" label="Dirección" />
+                <v-btn @click="saveProfile" class="btnGuardar">Guardar</v-btn>
+                <v-btn @click="cancelEdit" class="btnCancelar">Cancelar</v-btn>
+              </template>
+              <template v-else>
+                <strong>Teléfono:</strong> {{ user.tel }} <br>
+                <strong>Dirección:</strong> {{ user.address }} <br>
+              </template>
             </v-list-item>
           </v-list>
         </v-col>
@@ -47,14 +59,12 @@
               </v-list-item>
             </v-list-item-group>
           </v-list>
-          <p v-else class="noOrders" style="text-align: left;">Aun no tienes pedidos</p>
-          <!-- Botón para eliminar todos los pedidos -->
-          <v-btn @click="clearOrders" class="btnClearOrders" v-if="orders.length">Eliminar Historial</v-btn>
+          <p v-else class="noOrders" style="text-align: center;">Aun no tienes pedidos</p>
         </v-col>
       </v-row>
 
       <v-row class="section actions" justify="space-between">
-        <v-btn @click="editProfile" class="btnEditar">Editar Perfil</v-btn>
+        <v-btn @click="editProfile" v-if="!isEditing" class="btnEditar">Editar Perfil</v-btn>
         <v-btn @click="salir" class="btnSalir">Cerrar Sesión</v-btn>
       </v-row>
     </v-container>
@@ -72,44 +82,67 @@ export default {
         tel: '8888-8888',
         address: 'Calle Cualquiera',
       },
+      editUser: {
+        tel: '',
+        address: '',
+      },
       orders: [
         { id: 1, date: '2024-10-01', total: 25.5 },
         { id: 2, date: '2024-10-05', total: 40.0 },
       ],
+      isEditing: false,
     };
   },
   methods: {
     editProfile() {
-      //editar perfil
+      this.editUser.tel = this.user.tel;
+      this.editUser.address = this.user.address;
+      this.isEditing = true;
+    },
+    saveProfile() {
+      this.user.tel = this.editUser.tel;
+      this.user.address = this.editUser.address;
+      this.isEditing = false;
+    },
+    cancelEdit() {
+      this.isEditing = false;
     },
     salir() {
-      // cerrar Sesion
-    },
-    clearOrders() {
-      this.orders = [];
+      localStorage.removeItem('authToken');
+      this.user = {};
+      this.$router.push('/login');
     },
     deleteOrder(orderId) {
       this.orders = this.orders.filter(order => order.id !== orderId);
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
+
+  .btnGuardar {
+    background-color: #4CAF50;
+    color: white;
+    margin-right: 10px;
+  }
+  .btnGuardar:hover {
+    background-color: #388E3C;
+  }
+
+  .btnCancelar {
+    background-color: #f44336;
+    color: white;
+  }
+  .btnCancelar:hover {
+    background-color: #d32f2f;
+  }
+
   .btnHome {
     position: absolute;
     top: 15px;
     left: 15px;
     color: #444;
-  }
-
-  .btnClearOrders {
-    background-color: #ff6b6b;
-    color: white;
-    margin-top: 15px;
-  }
-  .btnClearOrders:hover {
-    background-color: #ff5252;
   }
 
   .order-content {
@@ -132,8 +165,9 @@ export default {
     flex-direction: column;
     align-items: center;
     padding: 30px;
-    background-color: #f9f9fb;
+    background-color: white; 
     font-family: 'Arial', sans-serif;
+    min-height: 100vh; 
   }
   
   .namepic {
@@ -157,7 +191,7 @@ export default {
   .container {
     width: 100%;
     max-width: 600px;
-    background: #fff;
+    background: #f9f9fb;
     padding: 25px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -212,15 +246,15 @@ export default {
     font-size: 1em;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    width: 100%; /* Hacer que los botones ocupen el 100% del contenedor */
-    max-width: 200px; /* Establece un ancho máximo para los botones */
-    margin: 5px; /* Espaciado entre los botones */
+    width: 100%; 
+    max-width: 200px; 
+    margin: 5px;
   }
 
   .actions {
     display: flex;
-    flex-direction: column; /* Cambia a columna en pantallas más pequeñas */
-    align-items: center; /* Centra los botones */
+    flex-direction: column; 
+    align-items: center; 
   }
 
   .btnEditar {
