@@ -93,22 +93,9 @@
                             </div>
                         </template>
                     </v-data-iterator>
-                    <div class="border-sm border-info pa-4">
-                        <div v-for="(item, index) in comentariosRestaurantes" :key="index" class="pa-3">
-                            <v-alert
-                                border="start"
-                                variant="tonal"
-                                color="warning"
-                                icon="mdi-comment-text"
-                                class="text-capitalize"
-                            >
-                            {{ item.comentario }}
-                            <div class="text-caption d-flex justify-end">
-                                <v-icon icon="bi bi-person-bounding-box" class="align-self-end mr-2"></v-icon>
-                                {{ item.usuario }} • {{ item.fecha }}
-                            </div>
-                          </v-alert>
-                        </div>
+                    <div>
+                        <SendComentarioComponent></SendComentarioComponent>
+                        <TableComentariosComponent :Comentarios="comentariosRestaurantes"></TableComentariosComponent>
                     </div>
                     <v-snackbar v-model="isActive" :timeout="2000" color="deep-purple-accent-4" elevation="24">
                         Snackbar with <strong>elevation="24"</strong>.
@@ -121,11 +108,15 @@
 
 <script>
 import SideBarComponent from '@/components/ClienteComponents/SidebarComponent/SideBarComponent.vue'
+import TableComentariosComponent from '@/components/ClienteComponents/ComentariosComponents/TableComentariosComponent.vue'
+import SendComentarioComponent from '@/components/ClienteComponents/ComentariosComponents/SendComentarioComponent.vue'
 import axios from 'axios';
 export default {
     name: 'MenusByRestaurantesView',
     components: {
-        SideBarComponent
+        SideBarComponent,
+        TableComentariosComponent,
+        SendComentarioComponent
     },
     data: () => ({
         theme: 'light',
