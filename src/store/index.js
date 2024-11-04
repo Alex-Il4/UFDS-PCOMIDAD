@@ -9,10 +9,16 @@ export default createStore({
   },
   mutations: {
     agregarItemAlCarrito(state, menuData) {
-      state.carrito.push(menuData); // Agrega el objeto del menú al carrito
+      // Verifica si el item ya existe en el carrito
+      const existingItem = state.carrito.find(item => item.id === menuData.id);
+      if (existingItem) {
+        existingItem.cantidad++; // Incrementa la cantidad si ya existe
+      } else {
+        // Agrega el nuevo item con cantidad 1 si no existe
+        state.carrito.push({ ...menuData, cantidad: 1 });
+      }
     },
     eliminarItemDelCarrito(state, id) {
-      // Elimina el ítem del carrito basado en su ID
       state.carrito = state.carrito.filter(item => item.id !== id);
     }
   },

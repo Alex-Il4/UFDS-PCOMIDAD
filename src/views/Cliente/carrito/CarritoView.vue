@@ -14,6 +14,7 @@
             <v-card-text>
               <div>{{ item.descripcion }}</div>
               <div><strong>Precio: ${{ item.precio }}</strong></div> <!-- Añadido: Precio del menú -->
+              <div><strong>Cantidad: {{ item.cantidad }}</strong></div> <!-- Añadido: Cantidad del menú -->
             </v-card-text>
             <!-- Botón para eliminar el elemento -->
             <v-card-actions>
@@ -59,8 +60,8 @@ export default {
       return this.obtenerCarrito; // Obtiene el carrito desde el store
     },
     total() {
-      // Calcula la suma total de los precios en el carrito
-      return this.carrito.reduce((acc, item) => acc + item.precio, 0).toFixed(2);
+      // Calcula la suma total de los precios en el carrito, multiplicando por la cantidad
+      return this.carrito.reduce((acc, item) => acc + (item.precio * item.cantidad), 0).toFixed(2);
     }
   },
   methods: {
