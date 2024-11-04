@@ -6,10 +6,18 @@
       <v-row>
         <v-col v-for="(item, index) in carrito" :key="index">
           <v-card>
-            <v-card-title>ID del Menú: {{ item }}</v-card-title>
+            <v-img :src="item.imagen" height="200" contain></v-img> <!-- Añadido: Imagen del menú -->
+            <v-card-title>{{ item.titulo }}</v-card-title>
+            <v-card-subtitle>
+              <v-rating :value="item.puntaje" color="amber" dense readonly></v-rating>
+            </v-card-subtitle>
+            <v-card-text>
+              <div>{{ item.descripcion }}</div>
+              <div><strong>Precio: ${{ item.precio }}</strong></div> <!-- Añadido: Precio del menú -->
+            </v-card-text>
             <!-- Botón para eliminar el elemento -->
             <v-card-actions>
-              <v-btn color="red" @click="eliminarDelCarrito(item)">
+              <v-btn color="red" @click="eliminarDelCarrito(item.id)">
                 Eliminar
               </v-btn>
             </v-card-actions>
@@ -22,18 +30,17 @@
 
 <script>
 import { mapGetters, mapMutations } from 'vuex';
-import SideBarComponent from '@/components/ClienteComponents/SidebarComponent/SideBarComponent.vue'
-
+import SideBarComponent from '@/components/ClienteComponents/SidebarComponent/SideBarComponent.vue';
 
 export default {
   name: 'CarritoView',
   components: {
-        SideBarComponent
-    },
+    SideBarComponent
+  },
   computed: {
     ...mapGetters(['obtenerCarrito']),
     carrito() {
-      return this.obtenerCarrito;
+      return this.obtenerCarrito; // Obtiene el carrito desde el store
     }
   },
   methods: {

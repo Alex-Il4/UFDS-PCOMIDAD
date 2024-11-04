@@ -8,11 +8,12 @@ export default createStore({
     obtenerCarrito: (state) => state.carrito
   },
   mutations: {
-    agregarItemAlCarrito(state, id) {
-      state.carrito.push(id);
+    agregarItemAlCarrito(state, menuData) {
+      state.carrito.push(menuData); // Agrega el objeto del menú al carrito
     },
     eliminarItemDelCarrito(state, id) {
-      state.carrito = state.carrito.filter(item => item !== id);
+      // Elimina el ítem del carrito basado en su ID
+      state.carrito = state.carrito.filter(item => item.id !== id);
     }
   },
   actions: {
