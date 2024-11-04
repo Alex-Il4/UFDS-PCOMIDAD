@@ -1,39 +1,46 @@
 <template>
+  <div>
+    <h2>Carrito de Compras</h2>
     <v-container>
-        <h2>Carrito de Compras</h2>
-        <v-row>
-            <v-col v-for="item in cartItems" :key="item.id" cols="12" md="4">
-                <v-card>
-                    <v-img :src="item.imagen" height="200px"></v-img>
-                    <v-card-title>{{ item.titulo }}</v-card-title>
-                    <v-card-subtitle>{{ item.restaurante }}</v-card-subtitle>
-                    <v-card-text>
-                        <div>Precio: ${{ item.precio }}</div>
-                        <div>{{ item.descripcion }}</div>
-                        <v-rating :model-value="item.puntaje" color="amber" density="compact" size="small" readonly></v-rating>
-                    </v-card-text>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn @click="removeMenuFromCart(item.id)" color="red" icon>
-                            <v-icon>mdi-delete</v-icon>
-                        </v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-col>
-        </v-row>
+      <SideBarComponent :theme="theme" @toggle-theme="onClick"></SideBarComponent>
+      <v-row>
+        <v-col v-for="(item, index) in carrito" :key="index">
+          <v-card>
+            <v-card-title>ID del Menú: {{ item }}</v-card-title>
+            <!-- Botón para eliminar el elemento -->
+            <v-card-actions>
+              <v-btn color="red" @click="eliminarDelCarrito(item)">
+                Eliminar
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
     </v-container>
+  </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
+import SideBarComponent from '@/components/ClienteComponents/SidebarComponent/SideBarComponent.vue'
+
 
 export default {
-    name: 'CarritoView',
-    computed: {
-        ...mapGetters('cart', ['cartItems'])
+  name: 'CarritoView',
+  components: {
+        SideBarComponent
     },
-    methods: {
-        ...mapActions('cart', ['removeMenuFromCart'])
+  computed: {
+    ...mapGetters(['obtenerCarrito']),
+    carrito() {
+      return this.obtenerCarrito;
     }
+  },
+  methods: {
+    ...mapMutations(['eliminarItemDelCarrito']),
+    eliminarDelCarrito(id) {
+      this.eliminarItemDelCarrito(id); // Llama a la mutación para eliminar el elemento
+    }
+  }
 };
 </script>

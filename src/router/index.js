@@ -63,8 +63,8 @@ const routes = [
     component: MenusByRestaurantesView
   },
   {
-    path: '/carrito/carrito',
-    name: 'carrito',
+    path: '/carrito',
+    name: 'CarritoView',
     component: CarritoView
   }
   

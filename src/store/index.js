@@ -1,49 +1,23 @@
 import { createStore } from 'vuex';
 
-// Módulo del carrito de compras
-const cartModule = {
-  state: () => ({
-    cart: []
-  }),
-  getters: {
-    cartItems: state => state.cart,
-  },
-  mutations: {
-    addToCart(state, menu) {
-      state.cart.push(menu);
-    },
-    removeFromCart(state, menuID) {
-      state.cart = state.cart.filter(menu => menu.id !== menuID);
-    }
-  },
-  actions: {
-    addMenuToCart({ commit }, menu) {
-      commit('addToCart', menu);
-    },
-    removeMenuFromCart({ commit }, menuID) {
-      commit('removeFromCart', menuID);
-    }
-  }
-};
-
 export default createStore({
   state: {
-    menuID: null,
+    carrito: []
   },
   getters: {
-    menuID: state => state.menuID,
+    obtenerCarrito: (state) => state.carrito
   },
   mutations: {
-    setMenuID(state, menuID) {
-      state.menuID = menuID;
+    agregarItemAlCarrito(state, id) {
+      state.carrito.push(id);
     },
+    eliminarItemDelCarrito(state, id) {
+      state.carrito = state.carrito.filter(item => item !== id);
+    }
   },
   actions: {
     setMenuID({ commit }, menuID) {
       commit('setMenuID', menuID);
     },
   },
-  modules: {
-    cart: cartModule
-  }
 });
