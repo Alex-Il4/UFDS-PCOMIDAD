@@ -24,6 +24,22 @@
           </v-card>
         </v-col>
       </v-row>
+
+      <!-- Muestra el total -->
+      <v-row>
+        <v-col>
+          <h3>Total: ${{ total }}</h3>
+        </v-col>
+      </v-row>
+
+      <!-- Botón para hacer un pedido -->
+      <v-row>
+        <v-col>
+          <v-btn color="green" @click="hacerPedido">
+            Pedir
+          </v-btn>
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
@@ -41,12 +57,20 @@ export default {
     ...mapGetters(['obtenerCarrito']),
     carrito() {
       return this.obtenerCarrito; // Obtiene el carrito desde el store
+    },
+    total() {
+      // Calcula la suma total de los precios en el carrito
+      return this.carrito.reduce((acc, item) => acc + item.precio, 0).toFixed(2);
     }
   },
   methods: {
     ...mapMutations(['eliminarItemDelCarrito']),
     eliminarDelCarrito(id) {
       this.eliminarItemDelCarrito(id); // Llama a la mutación para eliminar el elemento
+    },
+    hacerPedido() {
+      // Función para el botón "Pedir" (sin funcionalidad por el momento)
+      console.log("Pedir clicked!"); // Puedes agregar lógica más adelante
     }
   }
 };
