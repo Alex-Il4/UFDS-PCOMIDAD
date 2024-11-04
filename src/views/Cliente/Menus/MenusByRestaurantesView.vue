@@ -8,27 +8,42 @@
                         <v-fab color="orange-darken-4" icon="bi bi-chat-left-dots-fill" app
                             appear @click="isComentarioDialog = true"></v-fab>
                     </v-img>
+                     <!-- Alerta de pantalla completa -->
+                    <v-alert 
+                        v-if="alertVisible" 
+                        type="success" 
+                        dismissible 
+                        transition="scale-transition" 
+                    >
+                        <span style="font-size: 24px; font-weight: bold; text-align: center;">Menú agregado al carrito</span>
+                    </v-alert>
                     <v-data-iterator :items="menusByRestaurante" :items-per-page="4" :search="search">
                         <template v-slot:header>
-                            <v-text-field class="px-2 mt-2" v-model="search" density="comfortable"
-                                placeholder="Busca un menu" prepend-inner-icon="mdi-magnify" variant="outlined"
-                                clearable hide-details color="orange-darken-2"></v-text-field>
+                            <v-text-field 
+                                class="px-2 mt-2" 
+                                v-model="search" 
+                                density="comfortable"
+                                placeholder="Busca un menu" 
+                                prepend-inner-icon="mdi-magnify" 
+                                variant="outlined"
+                                clearable 
+                                hide-details 
+                                color="orange-darken-2">
+                            </v-text-field>
                         </template>
                         <template v-slot:default="{ items }">
                             <v-container>
                                 <v-row dense>
                                     <v-col v-for="(item, index) in items" :key="index">
-                                        <v-card :disabled="loading" :loading="loading" class="my-3" max-width="355"
-                                            max-height="560">
+                                        <v-card :disabled="loading" :loading="loading" class="my-3" max-width="355" max-height="560">
                                             <template v-slot:loader="{ isActive }">
-                                                <v-progress-linear :active="isActive" color="deep-purple" height="4"
-                                                    indeterminate></v-progress-linear>
+                                                <v-progress-linear :active="isActive" color="deep-purple" height="4" indeterminate></v-progress-linear>
                                             </template>
 
                                             <v-img height="250" :src="item.raw.imagen" cover></v-img>
 
                                             <v-card-item>
-                                                <v-card-title>{{ item.raw.titulo }} </v-card-title>
+                                                <v-card-title>{{ item.raw.id }} {{ item.raw.titulo }}</v-card-title>
                                                 <v-card-subtitle>
                                                     <span class="me-1">Restaurante • {{ item.raw.restaurante }}</span>
                                                     <v-icon color="error" icon="mdi-fire-circle" size="small"></v-icon>
@@ -37,19 +52,13 @@
 
                                             <v-card-text>
                                                 <v-row align="center" class="mx-0">
-                                                    <v-rating :model-value="item.raw.puntaje" color="amber"
-                                                        density="compact" size="small" half-increments
-                                                        readonly></v-rating>
-
-                                                    <div class="text-grey ms-4">
-                                                        {{ item.raw.puntaje }} (413)
-                                                    </div>
+                                                    <v-rating :model-value="item.raw.puntaje" color="amber" density="compact" size="small" half-increments readonly></v-rating>
+                                                    <div class="text-grey ms-4">{{ item.raw.puntaje }} (413)</div>
                                                 </v-row>
 
                                                 <div class="my-4 text-subtitle-1">
-                                                    ${{ item.raw.precio }} • <v-chip
-                                                        :color="item.raw.status ? 'success' : 'error'" small>{{
-                                                            item.raw.status }}</v-chip>
+                                                    ${{ item.raw.precio }} • 
+                                                    <v-chip :color="item.raw.status ? 'success' : 'error'" small>{{ item.raw.status }}</v-chip>
                                                 </div>
 
                                                 <div>{{ item.raw.descripcion }}</div>
@@ -58,7 +67,6 @@
                                             <v-divider class="mx-4 mb-1"></v-divider>
 
                                             <v-card-title>Fecha de creación</v-card-title>
-
                                             <div class="px-4 mb-4">
                                                 <v-chip color="orange-darken-3">{{ item.raw.fecha }}</v-chip>
                                             </div>
@@ -67,7 +75,7 @@
                                                 <v-speed-dial location="top center" transition="slide-x-transition">
                                                     <template v-slot:activator="{ props: activatorProps }">
                                                         <v-fab v-bind="activatorProps" color="orange-darken-4"
-                                                            icon="mdi-cart-arrow-down" size="50" app appear></v-fab>
+                                                            icon="mdi-cart-arrow-down" size="50" app appear @click="agregarAlCarrito(item.raw)" ></v-fab>
                                                     </template>
                                                     <v-btn key="1" icon="$success"></v-btn>
                                                     <v-btn key="2" icon="$info"></v-btn>
@@ -84,15 +92,9 @@
 
                         <template v-slot:footer="{ page, pageCount, prevPage, nextPage }">
                             <div class="d-flex align-center justify-center mb-4">
-                                <v-btn :disabled="page === 1" density="comfortable" icon="mdi-arrow-left"
-                                    variant="tonal" rounded @click="prevPage"></v-btn>
-
-                                <div class="mx-2 text-caption">
-                                    Menus {{ page }} de {{ pageCount }}
-                                </div>
-
-                                <v-btn :disabled="page >= pageCount" density="comfortable" icon="mdi-arrow-right"
-                                    variant="tonal" rounded @click="nextPage"></v-btn>
+                                <v-btn :disabled="page === 1" density="comfortable" icon="mdi-arrow-left" variant="tonal" rounded @click="prevPage"></v-btn>
+                                <div class="mx-2 text-caption">Menus {{ page }} de {{ pageCount }}</div>
+                                <v-btn :disabled="page >= pageCount" density="comfortable" icon="mdi-arrow-right" variant="tonal" rounded @click="nextPage"></v-btn>
                             </div>
                         </template>
                     </v-data-iterator>
@@ -150,9 +152,11 @@
 </template>
 
 <script>
+
 import SideBarComponent from '@/components/ClienteComponents/SidebarComponent/SideBarComponent.vue'
 import TableComentariosComponent from '@/components/ClienteComponents/ComentariosComponents/TableComentariosComponent.vue'
 import axios from 'axios';
+
 export default {
     name: 'MenusByRestaurantesView',
     components: {
@@ -192,10 +196,7 @@ export default {
             this.theme = this.theme === 'light' ? 'dark' : 'light';
         },
         async loadMenusByRestauranteData() {
-            /*Aqui cargamos los menus del restaurante*/
-            const json = {
-                "restauranteID": this.restauranteID
-            }
+            const json = { "restauranteID": this.restauranteID };
             const headers = {
                 'Authorization': `Bearer ${localStorage.getItem('access')}`,
                 'Content-Type': 'application/json',
@@ -219,17 +220,10 @@ export default {
                         id: item.id
                     }
                 });
-
-            console.log(JSON.stringify(menusData, null, 2));
-            console.log(menu);
             this.menusByRestaurante = menu;
-
         },
         async loadRestauranteData() {
-            /*Aqui cargamos toda la informacion del restaurante*/
-            const json = {
-                "restauranteID": this.restauranteID
-            }
+            const json = { "restauranteID": this.restauranteID };
             const headers = {
                 'Authorization': `Bearer ${localStorage.getItem('access')}`,
                 'Content-Type': 'application/json',
@@ -301,6 +295,27 @@ export default {
                 console.log(error);
                 this.isComentarioDialog = false
             }
+        },
+        agregarAlCarrito(item) {
+            const menuData = {
+                id: item.id,
+                titulo: item.titulo,
+                precio: item.precio,
+                imagen: item.imagen,
+                descripcion: item.descripcion,
+                puntaje: item.puntaje,
+                restaurante: item.restaurante,
+                fecha: item.fecha,
+                status: item.status
+            };
+
+            this.$store.commit('agregarItemAlCarrito', menuData); // Agrega el objeto del menú al carrito en Vuex
+            this.alertVisible = true; // Muestra la alerta
+
+            // Oculta la alerta después de 2 segundos
+            setTimeout(() => {
+                this.alertVisible = false;
+            }, 2000);
         },
     },
     created() {
