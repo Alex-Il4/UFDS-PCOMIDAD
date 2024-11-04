@@ -75,12 +75,19 @@
                                                 <v-speed-dial location="top center" transition="slide-x-transition">
                                                     <template v-slot:activator="{ props: activatorProps }">
                                                         <v-fab v-bind="activatorProps" color="orange-darken-4"
-                                                            icon="mdi-cart-arrow-down" size="50" app appear @click="agregarAlCarrito(item.raw)" ></v-fab>
+                                                            icon="mdi-cart-arrow-down" size="50" app appear  ></v-fab>
                                                     </template>
-                                                    <v-btn key="1" icon="$success"></v-btn>
-                                                    <v-btn key="2" icon="$info"></v-btn>
-                                                    <v-btn key="3" icon="$warning"></v-btn>
-                                                    <v-btn key="4" icon="$error"></v-btn>
+                                                    <v-tooltip text="Agregar al carrito">
+                                                        <template v-slot:activator="{ props }">
+                                                            <v-btn key="1" v-bind="props" color="orange-darken-4" icon="mdi-cart" @click="agregarAlCarrito(item.raw)"></v-btn>
+                                                        </template>
+                                                    </v-tooltip>
+
+                                                    <v-tooltip text="Comentar menú">
+                                                        <template v-slot:activator="{ props }">
+                                                        <v-btn key="2" v-bind="props" color="orange-darken-4" icon="bi bi-chat-square-quote-fill"></v-btn>
+                                                        </template>
+                                                    </v-tooltip>
                                                 </v-speed-dial>
                                             </v-card-actions>
                                             <v-divider></v-divider>
