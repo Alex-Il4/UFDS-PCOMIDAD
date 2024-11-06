@@ -116,43 +116,45 @@
                     </v-row>
                     <v-dialog v-model="isComentarioDialog" max-width="600" persistent>
                         <v-card title="Haz un comentario">
-                            <template v-slot:prepend>
-                                <v-icon icon="bi bi-chat-square-dots-fill" size="large" color="warning"></v-icon>
-                            </template>
-                            <v-card-text>
-                                <v-row dense>
-                                    <v-col cols="12">
-                                        <v-text-field v-model="comentario" label="Comentario" type="text"
-                                            variant="outlined" clearable color="warning"
-                                            :rules="[rules.maxlength, rules.required]">
-                                            <template v-slot:prepend>
-                                                <v-icon color="warning">bi bi-chat-quote-fill</v-icon>
-                                            </template>
-                                        </v-text-field>
-                                    </v-col>
-                                    <v-col cols="12">
-                                        <v-select :items="[1, 2, 3, 4,5]" label="Puntaje*"
-                                            required
-                                            variant="outlined"
-                                            color="warning"
-                                            v-model="puntajeComentario"
-                                            :rules="[rules.required, rules.onlyNumber, rules.puntajeValido]"
-                                        >
-                                            <template v-slot:prepend>
-                                                <v-icon color="warning">bi bi-chat-quote-fill</v-icon>
-                                            </template>
-                                        </v-select>
-                                    </v-col>
-                                    <v-col cols="12" v-if="menuID">
-                                        <TableComentariosComponent :Comentarios="ComentariosByMenu"></TableComentariosComponent>
-                                    </v-col>
-                                </v-row>
-                                <v-card-actions>
-                                    <v-spacer></v-spacer>
-                                    <v-btn text="Cerrar" variant="plain" @click="cerrarDialogComentarios()"></v-btn>
-                                    <v-btn color="primary" text="Comentar" variant="tonal" @click="handleComentario()" ></v-btn>
-                                </v-card-actions>
-                            </v-card-text>
+                            <v-form ref="form" fast-fail>
+                                <template v-slot:prepend>
+                                    <v-icon icon="bi bi-chat-square-dots-fill" size="large" color="warning"></v-icon>
+                                </template>
+                                <v-card-text>
+                                    <v-row dense>
+                                        <v-col cols="12">
+                                            <v-text-field v-model="comentario" label="Comentario" type="text"
+                                                variant="outlined" clearable color="warning"
+                                                :rules="[rules.maxlength, rules.required]">
+                                                <template v-slot:prepend>
+                                                    <v-icon color="warning">bi bi-chat-quote-fill</v-icon>
+                                                </template>
+                                            </v-text-field>
+                                        </v-col>
+                                        <v-col cols="12">
+                                            <v-select :items="[1, 2, 3, 4,5]" label="Puntaje*"
+                                                required
+                                                variant="outlined"
+                                                color="warning"
+                                                v-model="puntajeComentario"
+                                                :rules="[rules.required, rules.onlyNumber, rules.puntajeValido]"
+                                            >
+                                                <template v-slot:prepend>
+                                                    <v-icon color="warning">bi bi-chat-quote-fill</v-icon>
+                                                </template>
+                                            </v-select>
+                                        </v-col>
+                                        <v-col cols="12" v-if="menuID">
+                                            <TableComentariosComponent :Comentarios="ComentariosByMenu"></TableComentariosComponent>
+                                        </v-col>
+                                    </v-row>
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn text="Cerrar" variant="plain" @click="cerrarDialogComentarios()"></v-btn>
+                                        <v-btn color="primary" text="Comentar" variant="tonal" @click="handleComentario()" ></v-btn>
+                                    </v-card-actions>
+                                </v-card-text>
+                            </v-form>
                         </v-card>
                     </v-dialog>
                 </v-main>
@@ -202,6 +204,7 @@ export default {
         isComentarioDialog: false,
         ComentariosByMenu : [],
         menuID: null,
+        alertVisible: false,
     }),
     methods: {
         onClick() {
@@ -304,57 +307,69 @@ export default {
         },
 
         async sendComentarioRestaurante() {
-            const json = {
-                "restaurante": Number(this.restauranteID),
-                "usuario": Number(localStorage.getItem("ClienteID")),
-                "comentario": this.comentario,
-                "puntaje": this.puntajeComentario
-            };
-            console.log(json);
-            const headers = {
-                'Authorization': `Bearer ${localStorage.getItem('access')}`,
-                'Content-Type': 'application/json',
-            };
-            try {
-                const response = await axios.post(`${process.env.VUE_APP_API_URL}/comentariosMethods/api/comentarios/restautante-crear/`, json, { headers });
-                const respuesta = response.data.data;
-                console.log(respuesta);
-                if (respuesta) {
-                    this.comentarioRestaurante = '';
-                    this.loadComentariosRestaurantes();
-                    this.isComentarioDialog = false
+            const valid = await this.validateFields()
+            if (valid) {
+                const json = {
+                    "restaurante": Number(this.restauranteID),
+                    "usuario": Number(localStorage.getItem("ClienteID")),
+                    "comentario": this.comentario,
+                    "puntaje": this.puntajeComentario
+                };
+                console.log(json);
+                const headers = {
+                    'Authorization': `Bearer ${localStorage.getItem('access')}`,
+                    'Content-Type': 'application/json',
+                };
+                try {
+                    const response = await axios.post(`${process.env.VUE_APP_API_URL}/comentariosMethods/api/comentarios/restautante-crear/`, json, { headers });
+                    const respuesta = response.data.data;
+                    console.log(respuesta);
+                    if (respuesta) {
+                        this.comentarioRestaurante = '';  // Limpiar el comentario
+                        this.loadComentariosRestaurantes(); // Recargar los comentarios del restaurante
+                        this.isComentarioDialog = false;
+                    }
+                    this.isComentarioDialog = false;
+                } catch (error) {
+                    console.log(error);
+                    this.isComentarioDialog = false;
                 }
-                this.isComentarioDialog = false
-            } catch (error) {
-                console.log(error);
-                this.isComentarioDialog = false
+            }
+            else {
+                console.log('no valido');
             }
         },
         async sendComentarioMenu() {
-            const json = {
-                "menu": Number(this.menuID),
-                "usuario": Number(localStorage.getItem("ClienteID")),
-                "comentario": this.comentario,
-                "puntaje": this.puntajeComentario
-            };
-            console.log(json);
-            const headers = {
-                'Authorization': `Bearer ${localStorage.getItem('access')}`,
-                'Content-Type': 'application/json',
-            };
-            try {
-                const response = await axios.post(`${process.env.VUE_APP_API_URL}/comentariosMethods/api/comentarios/menu-crear/`, json, { headers });
-                const respuesta = response.data.data;
-                console.log(respuesta);
-                if (respuesta) {
-                    this.comentario = '';  // Limpiar el comentario
-                    this.loadComentariosMenus(); // Recargar los comentarios del menú
+            const valid = await this.validateFields()
+            if (valid) {
+                const json = {
+                    "menu": Number(this.menuID),
+                    "usuario": Number(localStorage.getItem("ClienteID")),
+                    "comentario": this.comentario,
+                    "puntaje": this.puntajeComentario
+                };
+                console.log(json);
+                const headers = {
+                    'Authorization': `Bearer ${localStorage.getItem('access')}`,
+                    'Content-Type': 'application/json',
+                };
+                try {
+                    const response = await axios.post(`${process.env.VUE_APP_API_URL}/comentariosMethods/api/comentarios/menu-crear/`, json, { headers });
+                    const respuesta = response.data.data;
+                    console.log(respuesta);
+                    if (respuesta) {
+                        this.comentario = '';  // Limpiar el comentario
+                        this.loadComentariosMenus(); // Recargar los comentarios del menú
+                        this.isComentarioDialog = false;
+                    }
+                    this.isComentarioDialog = false;
+                } catch (error) {
+                    console.log(error);
                     this.isComentarioDialog = false;
                 }
-                this.isComentarioDialog = false;
-            } catch (error) {
-                console.log(error);
-                this.isComentarioDialog = false;
+            }
+            else {
+                console.log('no valido');
             }
         },
         agregarAlCarrito(item) {
@@ -400,6 +415,11 @@ export default {
             this.isComentarioDialog = true;
             this.menuID = idMenu;
             this.loadComentariosMenu(idMenu);
+        },
+        async validateFields () {
+            const { valid } = await this.$refs.form.validate()
+            if (valid) return true
+            else return false
         },
     },
     created() {
