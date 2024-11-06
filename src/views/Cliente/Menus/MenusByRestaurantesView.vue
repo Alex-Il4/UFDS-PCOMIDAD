@@ -85,7 +85,7 @@
 
                                                     <v-tooltip text="Comentar menú">
                                                         <template v-slot:activator="{ props }">
-                                                        <v-btn key="2" v-bind="props" color="orange-darken-4" icon="bi bi-chat-square-quote-fill"></v-btn>
+                                                        <v-btn key="2" v-bind="props" color="orange-darken-4" icon="bi bi-chat-square-quote-fill" @click="abrirComentarioMenu(item.raw.id)"></v-btn>
                                                         </template>
                                                     </v-tooltip>
                                                 </v-speed-dial>
@@ -114,7 +114,7 @@
                             </TableComentariosComponent>
                         </v-col>
                     </v-row>
-                    <v-dialog v-model="isComentarioDialog" max-width="600">
+                    <v-dialog v-model="isComentarioDialog" max-width="600" persistent>
                         <v-card title="Haz un comentario">
                             <template v-slot:prepend>
                                 <v-icon icon="bi bi-chat-square-dots-fill" size="large" color="warning"></v-icon>
@@ -143,11 +143,14 @@
                                             </template>
                                         </v-select>
                                     </v-col>
+                                    <v-col cols="12" v-if="menuID">
+                                        <TableComentariosComponent :Comentarios="ComentariosByMenu"></TableComentariosComponent>
+                                    </v-col>
                                 </v-row>
                                 <v-card-actions>
                                     <v-spacer></v-spacer>
-                                    <v-btn text="Cerrar" variant="plain" @click="isComentarioDialog = false"></v-btn>
-                                    <v-btn color="primary" text="Comentar" variant="tonal" @click="sendComentarioRestaurante()" ></v-btn>
+                                    <v-btn text="Cerrar" variant="plain" @click="cerrarDialogComentarios()"></v-btn>
+                                    <v-btn color="primary" text="Comentar" variant="tonal" @click="handleComentario()" ></v-btn>
                                 </v-card-actions>
                             </v-card-text>
                         </v-card>
@@ -197,10 +200,27 @@ export default {
         comentario: '',
         puntajeComentario: 0,
         isComentarioDialog: false,
+        ComentariosByMenu : [],
+        menuID: null,
     }),
     methods: {
         onClick() {
             this.theme = this.theme === 'light' ? 'dark' : 'light';
+        },
+        cerrarDialogComentarios() {
+            this.isComentarioDialog = false;
+            this.comentarioRestaurante = '';
+            this.comentario = '';
+            this.puntajeComentario = 0;
+            this.menuID = null;
+            this.ComentariosByMenu = [];
+        },
+        async handleComentario() {
+            if (this.menuID) {
+                this.sendComentarioMenu();
+            } else {
+                this.sendComentarioRestaurante();
+            }
         },
         async loadMenusByRestauranteData() {
             const json = { "restauranteID": this.restauranteID };
@@ -310,6 +330,33 @@ export default {
                 this.isComentarioDialog = false
             }
         },
+        async sendComentarioMenu() {
+            const json = {
+                "menu": Number(this.menuID),
+                "usuario": Number(localStorage.getItem("ClienteID")),
+                "comentario": this.comentario,
+                "puntaje": this.puntajeComentario
+            };
+            console.log(json);
+            const headers = {
+                'Authorization': `Bearer ${localStorage.getItem('access')}`,
+                'Content-Type': 'application/json',
+            };
+            try {
+                const response = await axios.post(`${process.env.VUE_APP_API_URL}/comentariosMethods/api/comentarios/menu-crear/`, json, { headers });
+                const respuesta = response.data.data;
+                console.log(respuesta);
+                if (respuesta) {
+                    this.comentario = '';  // Limpiar el comentario
+                    this.loadComentariosMenus(); // Recargar los comentarios del menú
+                    this.isComentarioDialog = false;
+                }
+                this.isComentarioDialog = false;
+            } catch (error) {
+                console.log(error);
+                this.isComentarioDialog = false;
+            }
+        },
         agregarAlCarrito(item) {
             const menuData = {
                 id: item.id,
@@ -330,6 +377,29 @@ export default {
             setTimeout(() => {
                 this.alertVisible = false;
             }, 2000);
+        },
+
+        async loadComentariosMenu(menuID) {
+            const headers = {
+                'Authorization': `Bearer ${localStorage.getItem('access')}`,
+                'Content-Type': 'application/json',
+            };
+            const response = await axios.get(`${process.env.VUE_APP_API_URL}/comentariosMethods/api/comentarios/menu-listar/${menuID}`, { headers });
+            const comentariosData = response.data.data;
+            this.ComentariosByMenu = comentariosData
+                ? comentariosData.map(item => ({
+                      id: item.id,
+                      comentario: item.comentario,
+                      fecha: this.formatDate(item.fecha),
+                      usuario: item.usuario ? item.usuario.nombre : 'Usuario sin nombre',
+                      puntaje: item.puntaje,
+                  }))
+                : [];
+        },
+        abrirComentarioMenu(idMenu) {
+            this.isComentarioDialog = true;
+            this.menuID = idMenu;
+            this.loadComentariosMenu(idMenu);
         },
     },
     created() {
