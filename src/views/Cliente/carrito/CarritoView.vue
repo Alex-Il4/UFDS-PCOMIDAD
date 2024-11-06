@@ -32,7 +32,10 @@
           <h3>Total: ${{ total }}</h3>
         </v-col>
       </v-row>
+      <!-- Muestra la posición actual del usuario -->
 
+      <div ref="mapdiv" style="width: 80%; height: 400px"/>
+      
       <!-- Botón para hacer un pedido -->
       <v-row>
         <v-col>
@@ -46,13 +49,42 @@
 </template>
 
 <script>
+/* eslint-disable no-undef */
 import { mapGetters, mapMutations } from 'vuex';
 import SideBarComponent from '@/components/ClienteComponents/SidebarComponent/SideBarComponent.vue';
+import { computed, onMounted, ref } from 'vue';
+import { useLocationMap } from '@/components/Location/LocationMap.js';
+import { Loader } from "@googlemaps/js-api-loader";
+
+const GOOGLE_MAPS_API_KEY = 'AIzaSyCZuDDfQThAulzTnrjDVTOeFpkTTaeFtQE';
 
 export default {
   name: 'CarritoView',
   components: {
     SideBarComponent
+  },
+
+  setup() {
+    const { Coordenates } = useLocationMap();
+    const CurPos = computed(() => ({
+      lat: Coordenates.value.latitude,
+      lng: Coordenates.value.longitude
+    }))
+    const loader = new Loader({
+      apiKey: GOOGLE_MAPS_API_KEY,
+      version: 'weekly',
+      libraries: ['places']
+    });
+
+    const mapdiv = ref(null);
+    const defaultCoordinates = { lat: 13.67371411848531, lng: -89.27905661071419 }; // Coordenadas por defecto
+    
+    onMounted(async () => {
+      await loader.load();
+      new google.maps.Map(mapdiv.value, {center: defaultCoordinates, zoom: 15}); // Utiliza las coordenadas por defecto
+    });
+
+    return {CurPos, mapdiv};
   },
   computed: {
     ...mapGetters(['obtenerCarrito']),
