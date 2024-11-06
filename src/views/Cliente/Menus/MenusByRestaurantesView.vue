@@ -122,7 +122,7 @@
                             <v-card-text>
                                 <v-row dense>
                                     <v-col cols="12">
-                                        <v-text-field v-model="comentarioRestaurante" label="Comentario" type="text"
+                                        <v-text-field v-model="comentario" label="Comentario" type="text"
                                             variant="outlined" clearable color="warning"
                                             :rules="[rules.maxlength, rules.required]">
                                             <template v-slot:prepend>
@@ -194,7 +194,7 @@ export default {
                 return /^[1-5]$/.test(value) || 'Solo se permiten valores de 1 a 5'
             },
         },
-        comentarioRestaurante: '',
+        comentario: '',
         puntajeComentario: 0,
         isComentarioDialog: false,
     }),
@@ -260,27 +260,34 @@ export default {
                 'Authorization': `Bearer ${localStorage.getItem('access')}`,
                 'Content-Type': 'application/json',
             };
-            const response = await axios.get(`${process.env.VUE_APP_API_URL}/comentariosMethods/api/comentarios/restautante-listar`, { headers });
+            const response = await axios.get(`${process.env.VUE_APP_API_URL}/comentariosMethods/api/comentarios/restautante-listar/${this.restauranteID}`, { headers });
             const comentariosData = response.data.data;
-            const formatComentarios = comentariosData.map(item => {
-                const fecha = this.formatDate(item.fecha);
-                return {
-                    id: item.id,
-                    comentario: item.comentario,
-                    fecha: fecha,
-                    usuario: item.usuario ? item.usuario.nombre : 'Usuario sin nombre',
-                    imagen: item.imagen ? process.env.VUE_APP_API_URL + item.imagen : null,
-                    puntaje: item.puntaje,
-                }
-            });
-            this.comentariosRestaurantes = formatComentarios;
+            //hacer validacion si comentarioData esta vacio
+            console.log(comentariosData);
+            if (comentariosData === null) {
+                this.comentariosRestaurantes = [];
+                return;
+            }else{
+                const formatComentarios = comentariosData.map(item => {
+                    const fecha = this.formatDate(item.fecha);
+                    return {
+                        id: item.id,
+                        comentario: item.comentario,
+                        fecha: fecha,
+                        usuario: item.usuario ? item.usuario.nombre : 'Usuario sin nombre',
+                        imagen: item.imagen ? process.env.VUE_APP_API_URL + item.imagen : null,
+                        puntaje: item.puntaje,
+                    }
+                });
+                this.comentariosRestaurantes = formatComentarios;
+            }
         },
 
         async sendComentarioRestaurante() {
             const json = {
-                "restaurante": this.restauranteID,
-                "usuario": localStorage.getItem("ClienteID"),
-                "comentario": this.comentarioRestaurante,
+                "restaurante": Number(this.restauranteID),
+                "usuario": Number(localStorage.getItem("ClienteID")),
+                "comentario": this.comentario,
                 "puntaje": this.puntajeComentario
             };
             console.log(json);
