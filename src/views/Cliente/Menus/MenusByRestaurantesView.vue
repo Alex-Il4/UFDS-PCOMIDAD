@@ -35,7 +35,7 @@
                             <v-container>
                                 <v-row dense>
                                     <v-col v-for="(item, index) in items" :key="index">
-                                        <v-card :disabled="loading" :loading="loading" class="my-3" max-width="355" max-height="560">
+                                        <v-card :disabled="loading" :loading="loading" class="my-3" max-width="355" >
                                             <template v-slot:loader="{ isActive }">
                                                 <v-progress-linear :active="isActive" color="deep-purple" height="4" indeterminate></v-progress-linear>
                                             </template>
