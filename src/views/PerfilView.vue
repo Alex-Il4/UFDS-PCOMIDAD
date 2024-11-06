@@ -22,12 +22,14 @@
               <strong>Nombre:</strong> {{ user.name }} <br>
               <strong>Email:</strong> {{ user.email }} <br>
 
-              <!-- form condicional de edicion -->
+              <!-- Solo aparece cuando se presiona el boton para editar-->
               <template v-if="isEditing">
-                <strong>Teléfono:</strong>
-                <v-text-field v-model="editUser.tel" label="Teléfono" />
-                <strong>Dirección:</strong>
-                <v-text-field v-model="editUser.address" label="Dirección" />
+                <strong>Nombre:</strong>
+                <v-text-field v-model="editUser.name" label="Nombre" />
+                
+                <strong>Contraseña:</strong>
+                <v-text-field v-model="editUser.password" label="Contraseña" type="password" />
+
                 <v-btn @click="saveProfile" class="btnGuardar">Guardar</v-btn>
                 <v-btn @click="cancelEdit" class="btnCancelar">Cancelar</v-btn>
               </template>
@@ -59,7 +61,7 @@
               </v-list-item>
             </v-list-item-group>
           </v-list>
-          <p v-else class="noOrders" style="text-align: center;">Aun no tienes pedidos</p>
+          <p v-else class="noOrders" style="text-align: center;">Aún no tienes pedidos</p>
         </v-col>
       </v-row>
 
@@ -68,41 +70,81 @@
         <v-btn @click="salir" class="btnSalir">Cerrar Sesión</v-btn>
       </v-row>
     </v-container>
+    <v-snackbar v-model="snackbar.show" :color="snackbar.color" timeout="3000">
+      {{ snackbar.message }}
+    </v-snackbar>
   </v-container>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'PerfilView',
   data() {
     return {
-      user: {
-        name: 'Alguien Cualquiera',
-        email: 'alguien@example.com',
-        tel: '8888-8888',
-        address: 'Calle Cualquiera',
-      },
+      user: {},
       editUser: {
-        tel: '',
-        address: '',
+        name: '',
+        password: '',
       },
-      orders: [
-        { id: 1, date: '2024-10-01', total: 25.5 },
-        { id: 2, date: '2024-10-05', total: 40.0 },
-      ],
+      orders: [],
       isEditing: false,
+      snackbar: {
+        show: false,
+        message: '',
+        color: 'success',
+      },
     };
   },
+  created() {
+    this.fetchUserProfile();
+    this.fetchUserOrders();
+  },
   methods: {
+    async fetchUserProfile() {
+      try {
+        const response = await axios.get('/api/user', {
+          headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
+        });
+        this.user = response.data;
+      } catch (error) {
+        this.showSnackbar('Error al cargar el perfil', 'error');
+        console.error("Error al cargar el perfil:", error);
+      }
+    },
+    async fetchUserOrders() {
+      try {
+        const response = await axios.get('/api/orders', {
+          headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
+        });
+        this.orders = response.data;
+      } catch (error) {
+        this.showSnackbar('Error al cargar los pedidos', 'error');
+        console.error("Error al cargar los pedidos:", error);
+      }
+    },
     editProfile() {
-      this.editUser.tel = this.user.tel;
-      this.editUser.address = this.user.address;
+      this.editUser.name = this.user.name;
+      this.editUser.password = ''; // Resetea el campo de contraseña
       this.isEditing = true;
     },
-    saveProfile() {
-      this.user.tel = this.editUser.tel;
-      this.user.address = this.editUser.address;
-      this.isEditing = false;
+    async saveProfile() {
+      try {
+        const payload = {
+          name: this.editUser.name,
+          password: this.editUser.password
+        };
+        await axios.put('/api/user', payload, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
+        });
+        this.user.name = this.editUser.name;
+        this.isEditing = false;
+        this.showSnackbar('Perfil actualizado exitosamente', 'success');
+      } catch (error) {
+        this.showSnackbar('Error al actualizar el perfil', 'error');
+        console.error("Error al actualizar el perfil:", error);
+      }
     },
     cancelEdit() {
       this.isEditing = false;
@@ -112,8 +154,22 @@ export default {
       this.user = {};
       this.$router.push('/login');
     },
-    deleteOrder(orderId) {
-      this.orders = this.orders.filter(order => order.id !== orderId);
+    async deleteOrder(orderId) {
+      try {
+        await axios.delete(`/api/orders/${orderId}`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
+        });
+        this.orders = this.orders.filter(order => order.id !== orderId);
+        this.showSnackbar('Pedido eliminado exitosamente', 'success');
+      } catch (error) {
+        this.showSnackbar('Error al eliminar el pedido', 'error');
+        console.error("Error al eliminar el pedido:", error);
+      }
+    },
+    showSnackbar(message, color) {
+      this.snackbar.message = message;
+      this.snackbar.color = color;
+      this.snackbar.show = true;
     },
   },
 };
@@ -278,9 +334,8 @@ export default {
 
   @media (min-width: 600px) {
       .actions {
-          flex-direction: row; /* Mantiene el diseño en fila en pantallas más grandes */
+          flex-direction: row; 
       }
   }
 
 </style>
-  
