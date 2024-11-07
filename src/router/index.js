@@ -53,11 +53,6 @@ const routes = [
     name: 'dashboard',
     component: DashboardMain
   },
-  {
-    path: '/perfil',
-    name: 'perfil',
-    component: UserPerfilView
-  },
 
   /*Rutas para los clientes de la aplicacion */
   {
@@ -71,10 +66,15 @@ const routes = [
     component: MenusByRestaurantesView
   },
   {
-    path: '/carrito',
+    path: '/cliente/carrito',
     name: 'CarritoView',
     component: CarritoView
-  }
+  },
+  {
+    path: '/cliente/perfil',
+    name: 'perfil',
+    component: UserPerfilView
+  },
 
 ]
 const router = createRouter({
