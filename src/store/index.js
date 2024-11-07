@@ -1,22 +1,30 @@
-import { createStore } from 'vuex'
+import { createStore } from 'vuex';
 
 export default createStore({
   state: {
-    menuID : null,
+    carrito: []
   },
   getters: {
-    menuID: state => state.menuID,
+    obtenerCarrito: (state) => state.carrito
   },
   mutations: {
-    setMenuID(state, menuID) {
-      state.menuID = menuID;
+    agregarItemAlCarrito(state, menuData) {
+      // Verifica si el item ya existe en el carrito
+      const existingItem = state.carrito.find(item => item.id === menuData.id);
+      if (existingItem) {
+        existingItem.cantidad++; // Incrementa la cantidad si ya existe
+      } else {
+        // Agrega el nuevo item con cantidad 1 si no existe
+        state.carrito.push({ ...menuData, cantidad: 1 });
+      }
     },
+    eliminarItemDelCarrito(state, id) {
+      state.carrito = state.carrito.filter(item => item.id !== id);
+    }
   },
   actions: {
     setMenuID({ commit }, menuID) {
       commit('setMenuID', menuID);
     },
   },
-  modules: {
-  }
-})
+});
