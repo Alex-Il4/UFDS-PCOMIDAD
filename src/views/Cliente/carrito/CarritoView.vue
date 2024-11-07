@@ -5,8 +5,7 @@
         <v-card
         :disabled="loading"
         :loading="loading"
-        class="mx-auto my-12"
-        max-width="auto"
+        class="my-3" max-width="355"
       >
         <template v-slot:loader="{ isActive }">
           <v-progress-linear
@@ -17,7 +16,7 @@
           ></v-progress-linear>
         </template>
     
-        <v-img :src="item.imagen" height="200" contain></v-img>
+        <v-img :src="item.imagen" height="250" cover></v-img>
     
         <v-card-item>
           <v-card-title>{{ item.titulo }}</v-card-title>
