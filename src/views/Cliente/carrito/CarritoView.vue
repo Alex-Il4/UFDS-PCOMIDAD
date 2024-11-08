@@ -53,9 +53,7 @@
   </v-container>
 
   <v-container>
-    
     <SideBarComponent :theme="theme" @toggle-theme="onClick"></SideBarComponent>
-    
     <v-row class="mt-4 justify-center">
       <v-col cols="12" md="6" class="text-center">
         <v-btn color="green darken-1" @click="hacerPedido" large>
