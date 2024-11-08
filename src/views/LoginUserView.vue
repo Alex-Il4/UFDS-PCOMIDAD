@@ -135,7 +135,7 @@ export default {
           if (response.status === 200) {
             const respuesta = response.data.data;
 
-            if(respuesta){
+            if(respuesta.isCliente){
               console.log(JSON.stringify(respuesta, null, 2));
               this.isVisible = true;
               this.colorAlert = 'success';
@@ -156,7 +156,7 @@ export default {
               this.colorAlert = 'error';
               this.iconAlert = 'mdi-alert-circle-outline';
               this.titleAlert = 'Error';
-              this.textAlert = 'Hubo un error al iniciar sesión';
+              this.textAlert = 'No eres un cliente';
               this.dialog = false;
             }
           }else{
