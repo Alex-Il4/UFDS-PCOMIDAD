@@ -59,13 +59,17 @@
 
       </v-card>
       </v-col>
+
     </v-row>
+       <v-row class="mt-4">
+        <v-col cols="12">
+          <h3>Total: ${{ total }}</h3>
+        </v-col>
+      </v-row>
   </v-container>
 
-
-  <div>
-    <h2>Carrito de Compras</h2>
     <v-container>
+      <h2>Carrito de Compras</h2>
       <SideBarComponent :theme="theme" @toggle-theme="onClick"></SideBarComponent>
       
       <!-- Botón para hacer un pedido -->
@@ -77,7 +81,7 @@
         </v-col>
       </v-row>
     </v-container>
-  </div>
+  
 </template>
 
 <script>
