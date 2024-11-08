@@ -4,9 +4,11 @@
             <v-layout>
                 <SideBarComponent :theme="theme" @toggle-theme="onClick"></SideBarComponent>
                 <v-main style="height: 250px" :style="{ height: '100vh', overflowY: 'auto' }">
-                    <v-img class="bg-grey-lighten-2" max-height="200" :src="imagenRestaurante" cover></v-img>
-
-                    <!-- Alerta de pantalla completa -->
+                    <v-img class="bg-grey-lighten-2" max-height="200" :src="imagenRestaurante" cover>
+                        <v-fab color="orange-darken-4" icon="bi bi-chat-left-dots-fill" app
+                            appear @click="isComentarioDialog = true"></v-fab>
+                    </v-img>
+                     <!-- Alerta de pantalla completa -->
                     <v-alert 
                         v-if="alertVisible" 
                         type="success" 
@@ -15,7 +17,6 @@
                     >
                         <span style="font-size: 24px; font-weight: bold; text-align: center;">Menú agregado al carrito</span>
                     </v-alert>
-
                     <v-data-iterator :items="menusByRestaurante" :items-per-page="4" :search="search">
                         <template v-slot:header>
                             <v-text-field 
@@ -34,7 +35,7 @@
                             <v-container>
                                 <v-row dense>
                                     <v-col v-for="(item, index) in items" :key="index">
-                                        <v-card :disabled="loading" :loading="loading" class="my-3" max-width="355" max-height="560">
+                                        <v-card :disabled="loading" :loading="loading" class="my-3" max-width="355" >
                                             <template v-slot:loader="{ isActive }">
                                                 <v-progress-linear :active="isActive" color="deep-purple" height="4" indeterminate></v-progress-linear>
                                             </template>
@@ -71,16 +72,25 @@
                                             </div>
 
                                             <v-card-actions>
-                                                <v-spacer></v-spacer>
-                                                <v-fab 
-                                                    color="orange-darken-4" 
-                                                    icon="mdi-cart-arrow-down" 
-                                                    style="margin-top: 100px" 
-                                                    size="54" 
-                                                    @click="agregarAlCarrito(item.raw)" 
-                                                    app>
-                                                </v-fab>
+                                                <v-speed-dial location="top center" transition="slide-x-transition">
+                                                    <template v-slot:activator="{ props: activatorProps }">
+                                                        <v-fab v-bind="activatorProps" color="orange-darken-4"
+                                                            icon="mdi-cart-arrow-down" size="50" app appear  ></v-fab>
+                                                    </template>
+                                                    <v-tooltip text="Agregar al carrito">
+                                                        <template v-slot:activator="{ props }">
+                                                            <v-btn key="1" v-bind="props" color="orange-darken-4" icon="mdi-cart" @click="agregarAlCarrito(item.raw)"></v-btn>
+                                                        </template>
+                                                    </v-tooltip>
+
+                                                    <v-tooltip text="Comentar menú">
+                                                        <template v-slot:activator="{ props }">
+                                                        <v-btn key="2" v-bind="props" color="orange-darken-4" icon="bi bi-chat-square-quote-fill" @click="abrirComentarioMenu(item.raw.id)"></v-btn>
+                                                        </template>
+                                                    </v-tooltip>
+                                                </v-speed-dial>
                                             </v-card-actions>
+                                            <v-divider></v-divider>
                                         </v-card>
                                     </v-col>
                                 </v-row>
@@ -95,6 +105,58 @@
                             </div>
                         </template>
                     </v-data-iterator>
+                    <v-row>
+                        <v-col cols="12">
+                            <v-alert icon="bi bi-chat-quote-fill" color="info" variant="outlined"
+                                :title="`Comentarios de ${nombreRestaurante}`" class="mr-8 ml-8">
+                            </v-alert>
+                            <TableComentariosComponent :Comentarios="comentariosRestaurantes">
+                            </TableComentariosComponent>
+                        </v-col>
+                    </v-row>
+                    <v-dialog v-model="isComentarioDialog" max-width="600" persistent>
+                        <v-card title="Haz un comentario">
+                            <v-form ref="form" fast-fail>
+                                <template v-slot:prepend>
+                                    <v-icon icon="bi bi-chat-square-dots-fill" size="large" color="warning"></v-icon>
+                                </template>
+                                <v-card-text>
+                                    <v-row dense>
+                                        <v-col cols="12">
+                                            <v-text-field v-model="comentario" label="Comentario" type="text"
+                                                variant="outlined" clearable color="warning"
+                                                :rules="[rules.maxlength, rules.required]">
+                                                <template v-slot:prepend>
+                                                    <v-icon color="warning">bi bi-chat-quote-fill</v-icon>
+                                                </template>
+                                            </v-text-field>
+                                        </v-col>
+                                        <v-col cols="12">
+                                            <v-select :items="[1, 2, 3, 4,5]" label="Puntaje*"
+                                                required
+                                                variant="outlined"
+                                                color="warning"
+                                                v-model="puntajeComentario"
+                                                :rules="[rules.required, rules.onlyNumber, rules.puntajeValido]"
+                                            >
+                                                <template v-slot:prepend>
+                                                    <v-icon color="warning">bi bi-chat-quote-fill</v-icon>
+                                                </template>
+                                            </v-select>
+                                        </v-col>
+                                        <v-col cols="12" v-if="menuID">
+                                            <TableComentariosComponent :Comentarios="ComentariosByMenu"></TableComentariosComponent>
+                                        </v-col>
+                                    </v-row>
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn text="Cerrar" variant="plain" @click="cerrarDialogComentarios()"></v-btn>
+                                        <v-btn color="primary" text="Comentar" variant="tonal" @click="handleComentario()" ></v-btn>
+                                    </v-card-actions>
+                                </v-card-text>
+                            </v-form>
+                        </v-card>
+                    </v-dialog>
                 </v-main>
             </v-layout>
         </v-app>
@@ -102,31 +164,66 @@
 </template>
 
 <script>
-import SideBarComponent from '@/components/ClienteComponents/SidebarComponent/SideBarComponent.vue';
+
+import SideBarComponent from '@/components/ClienteComponents/SidebarComponent/SideBarComponent.vue'
+import TableComentariosComponent from '@/components/ClienteComponents/ComentariosComponents/TableComentariosComponent.vue'
 import axios from 'axios';
 
 export default {
     name: 'MenusByRestaurantesView',
     components: {
-        SideBarComponent
+        SideBarComponent,
+        TableComentariosComponent,
     },
     data: () => ({
         theme: 'light',
+        isActive: false,
         restauranteID: null,
         imagenRestaurante: null,
         menusByRestaurante: [],
         loading: false,
         search: '',
         baseURL: process.env.VUE_APP_API_URL,
-        scrollInvoked: 0,
-        alertVisible: false // Estado para mostrar la alerta
+        nombreRestaurante: 'null',
+        descripcionRestaurante: 'null',
+        puntajeRestaurante: 0,
+        comentariosRestaurantes: [],
+        rules: {
+            required: value => !!value || 'El campo es requerido',
+            maxlength: value => value.length <= 255 || 'El texto no puede superar los 255 caracteres',
+            onlyNumber: (value) => {
+                //expresion regular solo acepte numeros enteros
+                return /^\d$/.test(value) || 'Solo se perminen numeros'
+            },
+            puntajeValido: (value) => {
+                return /^[1-5]$/.test(value) || 'Solo se permiten valores de 1 a 5'
+            },
+        },
+        comentario: '',
+        puntajeComentario: 0,
+        isComentarioDialog: false,
+        ComentariosByMenu : [],
+        menuID: null,
+        alertVisible: false,
     }),
     methods: {
         onClick() {
             this.theme = this.theme === 'light' ? 'dark' : 'light';
         },
-        onScroll() {
-            this.scrollInvoked++;
+        cerrarDialogComentarios() {
+            this.isComentarioDialog = false;
+            this.comentarioRestaurante = '';
+            this.comentario = '';
+            this.puntajeComentario = 0;
+            this.menuID = null;
+            this.ComentariosByMenu = [];
+        },
+        async handleComentario() {
+            if (this.menuID) {
+                this.sendComentarioMenu();
+            } else {
+                this.sendComentarioRestaurante();
+            }
         },
         async loadMenusByRestauranteData() {
             const json = { "restauranteID": this.restauranteID };
@@ -166,6 +263,7 @@ export default {
             if (respuesta.data) {
                 const restaurante = respuesta.data;
                 this.imagenRestaurante = `${process.env.VUE_APP_API_URL}/restaurantesMethods/api${restaurante.imagen}`;
+                this.nombreRestaurante = restaurante.nombre;
             }
         },
         async loadRestaurante() {
@@ -179,6 +277,100 @@ export default {
                 month: '2-digit',
                 year: 'numeric',
             });
+        },
+        async loadComentariosRestaurantes() {
+            const headers = {
+                'Authorization': `Bearer ${localStorage.getItem('access')}`,
+                'Content-Type': 'application/json',
+            };
+            const response = await axios.get(`${process.env.VUE_APP_API_URL}/comentariosMethods/api/comentarios/restautante-listar/${this.restauranteID}`, { headers });
+            const comentariosData = response.data.data;
+            //hacer validacion si comentarioData esta vacio
+            console.log(comentariosData);
+            if (comentariosData === null) {
+                this.comentariosRestaurantes = [];
+                return;
+            }else{
+                const formatComentarios = comentariosData.map(item => {
+                    const fecha = this.formatDate(item.fecha);
+                    return {
+                        id: item.id,
+                        comentario: item.comentario,
+                        fecha: fecha,
+                        usuario: item.usuario ? item.usuario.nombre : 'Usuario sin nombre',
+                        imagen: item.imagen ? process.env.VUE_APP_API_URL + item.imagen : null,
+                        puntaje: item.puntaje,
+                    }
+                });
+                this.comentariosRestaurantes = formatComentarios;
+            }
+        },
+
+        async sendComentarioRestaurante() {
+            const valid = await this.validateFields()
+            if (valid) {
+                const json = {
+                    "restaurante": Number(this.restauranteID),
+                    "usuario": Number(localStorage.getItem("ClienteID")),
+                    "comentario": this.comentario,
+                    "puntaje": this.puntajeComentario
+                };
+                console.log(json);
+                const headers = {
+                    'Authorization': `Bearer ${localStorage.getItem('access')}`,
+                    'Content-Type': 'application/json',
+                };
+                try {
+                    const response = await axios.post(`${process.env.VUE_APP_API_URL}/comentariosMethods/api/comentarios/restautante-crear/`, json, { headers });
+                    const respuesta = response.data.data;
+                    console.log(respuesta);
+                    if (respuesta) {
+                        this.comentarioRestaurante = '';  // Limpiar el comentario
+                        this.loadComentariosRestaurantes(); // Recargar los comentarios del restaurante
+                        this.isComentarioDialog = false;
+                    }
+                    this.isComentarioDialog = false;
+                } catch (error) {
+                    console.log(error);
+                    this.isComentarioDialog = false;
+                }
+            }
+            else {
+                console.log('no valido');
+            }
+        },
+        async sendComentarioMenu() {
+            const valid = await this.validateFields()
+            if (valid) {
+                const json = {
+                    "menu": Number(this.menuID),
+                    "usuario": Number(localStorage.getItem("ClienteID")),
+                    "comentario": this.comentario,
+                    "puntaje": this.puntajeComentario
+                };
+                console.log(json);
+                const headers = {
+                    'Authorization': `Bearer ${localStorage.getItem('access')}`,
+                    'Content-Type': 'application/json',
+                };
+                try {
+                    const response = await axios.post(`${process.env.VUE_APP_API_URL}/comentariosMethods/api/comentarios/menu-crear/`, json, { headers });
+                    const respuesta = response.data.data;
+                    console.log(respuesta);
+                    if (respuesta) {
+                        this.comentario = '';  // Limpiar el comentario
+                        this.loadComentariosMenus(); // Recargar los comentarios del menú
+                        this.isComentarioDialog = false;
+                    }
+                    this.isComentarioDialog = false;
+                } catch (error) {
+                    console.log(error);
+                    this.isComentarioDialog = false;
+                }
+            }
+            else {
+                console.log('no valido');
+            }
         },
         agregarAlCarrito(item) {
             const menuData = {
@@ -200,11 +392,40 @@ export default {
             setTimeout(() => {
                 this.alertVisible = false;
             }, 2000);
-        }
+        },
+
+        async loadComentariosMenu(menuID) {
+            const headers = {
+                'Authorization': `Bearer ${localStorage.getItem('access')}`,
+                'Content-Type': 'application/json',
+            };
+            const response = await axios.get(`${process.env.VUE_APP_API_URL}/comentariosMethods/api/comentarios/menu-listar/${menuID}`, { headers });
+            const comentariosData = response.data.data;
+            this.ComentariosByMenu = comentariosData
+                ? comentariosData.map(item => ({
+                      id: item.id,
+                      comentario: item.comentario,
+                      fecha: this.formatDate(item.fecha),
+                      usuario: item.usuario ? item.usuario.nombre : 'Usuario sin nombre',
+                      puntaje: item.puntaje,
+                  }))
+                : [];
+        },
+        abrirComentarioMenu(idMenu) {
+            this.isComentarioDialog = true;
+            this.menuID = idMenu;
+            this.loadComentariosMenu(idMenu);
+        },
+        async validateFields () {
+            const { valid } = await this.$refs.form.validate()
+            if (valid) return true
+            else return false
+        },
     },
     created() {
         this.restauranteID = this.$route.params.id;
         this.loadRestaurante();
+        this.loadComentariosRestaurantes();
     }
 }
 </script>

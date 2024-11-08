@@ -19,7 +19,15 @@ export default createStore({
       }
     },
     eliminarItemDelCarrito(state, id) {
-      state.carrito = state.carrito.filter(item => item.id !== id);
+      const item = state.carrito.find(item => item.id === id);
+      if (item) {
+        if (item.cantidad > 1) {
+          item.cantidad--; // Reduce la cantidad si es mayor a 1
+        } else {
+          // Elimina el producto si la cantidad es 1
+          state.carrito = state.carrito.filter(item => item.id !== id);
+        }
+      }
     }
   },
   actions: {

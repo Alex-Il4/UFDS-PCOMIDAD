@@ -5,6 +5,8 @@ import LoginRestauranteView from '@/views/restaurante/login/LoginRestauranteView
 import CrearRestauranteView from '@/views/restaurante/login/CrearRestauranteView.vue'
 import DashboardMain from '@/views/restaurante/dashboard/dashboard.vue'
 import restaurantesMethodsView from '@/views/restaurante/dashboard/Methods/RestauranteMethodsView.vue'
+import UserPerfilView from '@/views/PerfilView.vue'
+
 import EditPedidoView from '@/views/restaurante/dashboard/Methods/EditPedidoView.vue'
 import perfilView from '@/views/restaurante/dashboard/Methods/perfilView.vue'
 import HomeView from '@/views/Cliente/home/HomeView.vue'
@@ -51,6 +53,7 @@ const routes = [
     name: 'dashboard',
     component: DashboardMain
   },
+
   /*Rutas para los clientes de la aplicacion */
   {
     path: '/home',
@@ -63,11 +66,16 @@ const routes = [
     component: MenusByRestaurantesView
   },
   {
-    path: '/carrito',
+    path: '/cliente/carrito',
     name: 'CarritoView',
     component: CarritoView
-  }
-  
+  },
+  {
+    path: '/cliente/perfil',
+    name: 'perfil',
+    component: UserPerfilView
+  },
+
 ]
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),

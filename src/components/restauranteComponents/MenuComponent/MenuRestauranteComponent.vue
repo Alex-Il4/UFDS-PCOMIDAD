@@ -66,6 +66,7 @@
         localStorage.removeItem('correoRestaurante');
         localStorage.removeItem('usuarioRestauranteID');
         localStorage.removeItem('nombreRestaurante');
+        localStorage.clear();
         this.$router.push("/restaurante/login");
       },
       onPerfil() {
