@@ -171,46 +171,49 @@ export default {
     },
 
     async hacerPedido() {
-    // Coloca el token manualmente aquí
-    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzNzEzMTE1LCJpYXQiOjE3MzExMjExMTUsImp0aSI6IjliOGVlM2IzOGVlODRkNDU5MDc2ZTc2ZjUxYmJhODRkIiwidXNlcl9pZCI6NX0.tzS1ZyB9vbWzI4g_yeqe0Z700scnV2to0DZ-4si5nco';
+  // Coloca el token manualmente aquí
+  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzNzEzMTE1LCJpYXQiOjE3MzExMjExMTUsImp0aSI6IjliOGVlM2IzOGVlODRkNDU5MDc2ZTc2ZjUxYmJhODRkIiwidXNlcl9pZCI6NX0.tzS1ZyB9vbWzI4g_yeqe0Z700scnV2to0DZ-4si5nco';
 
-    if (!token) {
-      console.error('Token no disponible.');
-      return;
-    }
-
-    // Datos del pedido
-    const pedidoData = {
-      restaurante: 18,  // ID del restaurante
-      cliente: 5,       // ID del cliente
-      menus: [15],      // ID(s) del menú (en este caso, un solo elemento)
-      status: 'pendiente', // El estado del pedido
-      ubicacionEntrega: "13.704361173829964, -89.24117088317873" // Ubicación de entrega (latitud y longitud)
-    };
-
-    try {
-      const response = await fetch('http://127.0.0.1:8000/pedidosMethods/api/crear/pedidos', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` // Incluye el token manualmente
-        },
-        body: JSON.stringify(pedidoData) // Enviar los datos como JSON
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Error al hacer el pedido: ${errorData.detail || errorData.messages}`);
-      }
-
-      const data = await response.json();
-      console.log('Pedido realizado con éxito:', data);
-      // Aquí puedes hacer lo que necesites con la respuesta, como redirigir al usuario o mostrar un mensaje
-    } catch (error) {
-      console.error('Hubo un problema con la solicitud:', error.message);
-      // Aquí puedes manejar el error, mostrando un mensaje al usuario o haciendo un redireccionamiento
-    }
+  if (!token) {
+    console.error('Token no disponible.');
+    return;
   }
+
+  // Genera el array de menus con los ID de los productos en el carrito
+  const menus = this.carrito.map(item => item.id); 
+
+  // Datos del pedido
+  const pedidoData = {
+    restaurante: this.carrito[0].restauranteID,  // Asumimos que todos los items son del mismo restaurante
+    cliente: this.clienteID,  // ClienteID desde el almacenamiento local
+    menus: menus,            // Lista de IDs de los menús en el carrito
+    status: 'pendiente',     // El estado del pedido
+    ubicacionEntrega: `${this.coords.lat}, ${this.coords.lng}`  // Ubicación de entrega (coordenadas)
+  };
+
+  try {
+    const response = await fetch('http://127.0.0.1:8000/pedidosMethods/api/crear/pedidos', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // Incluye el token manualmente
+      },
+      body: JSON.stringify(pedidoData) // Enviar los datos como JSON
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`Error al hacer el pedido: ${errorData.detail || errorData.messages}`);
+    }
+
+    const data = await response.json();
+    console.log('Pedido realizado con éxito:', data);
+    // Aquí puedes hacer lo que necesites con la respuesta, como redirigir al usuario o mostrar un mensaje
+  } catch (error) {
+    console.error('Hubo un problema con la solicitud:', error.message);
+    // Aquí puedes manejar el error, mostrando un mensaje al usuario o haciendo un redireccionamiento
+  }
+}
   }
 };
 </script>
