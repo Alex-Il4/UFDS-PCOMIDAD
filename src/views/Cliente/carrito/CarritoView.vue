@@ -190,41 +190,43 @@ export default {
     return;
   }
 
-  // Genera el array de menus con los ID de los productos en el carrito
-  const menus = this.carrito.map(item => item.id);
+  // Aquí se envía un pedido por cada ítem en el carrito
+  for (const item of this.carrito) {
+    // Datos del pedido por cada ítem
+    const pedidoData = {
+      restaurante: item.restauranteID,  // El restaurante de cada ítem
+      cliente: this.clienteID,  // ClienteID desde el almacenamiento local
+      menus: [item.id],         // Solo el id de cada menú en el carrito
+      status: 'pendiente',      // El estado del pedido
+      ubicacionEntrega: `${this.coords.lat}, ${this.coords.lng}`  // Ubicación de entrega (coordenadas)
+    };
 
-  // Datos del pedido
-  const pedidoData = {
-    restaurante: this.carrito[0].restauranteID,  // Asumimos que todos los items son del mismo restaurante
-    cliente: this.clienteID,  // ClienteID desde el almacenamiento local
-    menus: menus,            // Lista de IDs de los menús en el carrito
-    status: 'pendiente',     // El estado del pedido
-    ubicacionEntrega: `${this.coords.lat}, ${this.coords.lng}`  // Ubicación de entrega (coordenadas)
-  };
+    try {
+      const response = await fetch('http://127.0.0.1:8000/pedidosMethods/api/crear/pedidos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` // Incluye el token manualmente
+        },
+        body: JSON.stringify(pedidoData) // Enviar los datos como JSON
+      });
 
-  try {
-    const response = await fetch('http://127.0.0.1:8000/pedidosMethods/api/crear/pedidos', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}` // Incluye el token manualmente
-      },
-      body: JSON.stringify(pedidoData) // Enviar los datos como JSON
-    });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Error al hacer el pedido: ${errorData.detail || errorData.messages}`);
+      }
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`Error al hacer el pedido: ${errorData.detail || errorData.messages}`);
+      const data = await response.json();
+      console.log('Pedido realizado con éxito:', data);
+      // Aquí puedes hacer lo que necesites con la respuesta, como redirigir al usuario o mostrar un mensaje
+    } catch (error) {
+      console.error('Hubo un problema con la solicitud:', error.message);
+      // Aquí puedes manejar el error, mostrando un mensaje al usuario o haciendo un redireccionamiento
     }
-
-    const data = await response.json();
-    console.log('Pedido realizado con éxito:', data);
-    // Aquí puedes hacer lo que necesites con la respuesta, como redirigir al usuario o mostrar un mensaje
-  } catch (error) {
-    console.error('Hubo un problema con la solicitud:', error.message);
-    // Aquí puedes manejar el error, mostrando un mensaje al usuario o haciendo un redireccionamiento
   }
 }
+
+
   }
 };
 </script>
