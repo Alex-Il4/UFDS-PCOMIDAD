@@ -60,7 +60,12 @@
             </v-row>
             <v-row class="mt-4 justify-center">
               <v-col cols="12" md="6" class="text-center">
-                <v-btn color="green darken-1" @click="hacerPedido" large>
+                <v-btn 
+                  :disabled="!coords"
+                  color="green darken-1" 
+                  @click="hacerPedido" 
+                  large
+                >
                   <v-icon left>mdi-cart-arrow-down</v-icon> Pedir
                 </v-btn>
               </v-col>
@@ -171,6 +176,12 @@ export default {
     },
 
     async hacerPedido() {
+  // Verificar si las coordenadas están seleccionadas
+  if (!this.coords) {
+    alert("Por favor, selecciona una ubicación en el mapa.");
+    return;  // Detener el envío del pedido si las coordenadas no están seleccionadas
+  }
+
   // Coloca el token manualmente aquí
   const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzNzEzMTE1LCJpYXQiOjE3MzExMjExMTUsImp0aSI6IjliOGVlM2IzOGVlODRkNDU5MDc2ZTc2ZjUxYmJhODRkIiwidXNlcl9pZCI6NX0.tzS1ZyB9vbWzI4g_yeqe0Z700scnV2to0DZ-4si5nco';
 
@@ -180,7 +191,7 @@ export default {
   }
 
   // Genera el array de menus con los ID de los productos en el carrito
-  const menus = this.carrito.map(item => item.id); 
+  const menus = this.carrito.map(item => item.id);
 
   // Datos del pedido
   const pedidoData = {
