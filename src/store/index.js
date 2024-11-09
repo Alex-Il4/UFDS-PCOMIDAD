@@ -2,10 +2,12 @@ import { createStore } from 'vuex';
 
 export default createStore({
   state: {
-    carrito: []
+    carrito: [],
+    menuID: null // Agregar una propiedad para el ID del restaurante
   },
   getters: {
-    obtenerCarrito: (state) => state.carrito
+    obtenerCarrito: (state) => state.carrito,
+    obtenerMenuID: (state) => state.menuID // Getter para obtener el ID del restaurante
   },
   mutations: {
     agregarItemAlCarrito(state, menuData) {
@@ -28,6 +30,9 @@ export default createStore({
           state.carrito = state.carrito.filter(item => item.id !== id);
         }
       }
+    },
+    setMenuID(state, menuID) {
+      state.menuID = menuID; // Establece el ID del restaurante
     }
   },
   actions: {

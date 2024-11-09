@@ -382,7 +382,8 @@ export default {
                 puntaje: item.puntaje,
                 restaurante: item.restaurante,
                 fecha: item.fecha,
-                status: item.status
+                status: item.status,
+                restauranteID: this.restauranteID,  // Añadir el id del restaurant
             };
 
             this.$store.commit('agregarItemAlCarrito', menuData); // Agrega el objeto del menú al carrito en Vuex

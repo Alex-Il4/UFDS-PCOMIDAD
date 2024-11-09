@@ -23,6 +23,10 @@
                               <v-icon color="error" icon="mdi-fire-circle" size="small"></v-icon>
                             </v-card-subtitle>
                           </v-card-item>
+
+                          
+
+
                 
                           <v-card-text class="px-4">
                             <v-row align="center">
@@ -32,6 +36,9 @@
                             <div class="mt-2">{{ item.descripcion }}</div>
                             <div class="mt-2 text-subtitle-2"><strong>Precio: ${{ item.precio }}</strong></div>
                             <div class="mt-1 text-body-2">Cantidad: {{ item.cantidad }}</div>
+                            <div class="mt-1 text-body-2">Nombre Restaurante: {{ item.restaurante }}</div>
+                            <div class="mt-1 text-body-2">Cantidad: {{ item.id }}</div>
+                            <div class="mt-1 text-body-2">Restaurante ID: {{ item.restauranteID }}</div>
                           </v-card-text>
                 
                           <v-card-actions class="justify-center">
@@ -50,7 +57,7 @@
                         lines="two"
                       >
                         <v-banner-text>
-                          Turbina tus coordenadas.
+                        tus coordenadas.
                         </v-banner-text>
                       </v-banner>
                     <div ref="mapdiv" style="width: 100%; height: 400px"></div>
@@ -76,6 +83,7 @@
               </v-layout>
             </v-app>
   </v-responsive>
+ 
 </template>
 
 <script>
@@ -91,11 +99,13 @@ export default {
     return {
       map: null,
       marker: null,
-      coords: null
+      coords: null,
+      clienteID: null, // Nuevo data para almacenar el ClienteID
     };
   },
   mounted() {
     this.initMap();
+    this.clienteID = localStorage.getItem('clienteID'); // Capturamos el clienteID del localStorage
   },
   computed: {
     ...mapGetters(['obtenerCarrito']),
@@ -113,6 +123,8 @@ export default {
     },
     hacerPedido() {
       console.log("Pedir clicked!");
+
+      
     },
     initMap() {
       const mapContainer = this.$refs.mapdiv;
