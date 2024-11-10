@@ -24,10 +24,10 @@
       </v-row>
 
       <v-row class="section" justify="center">
-        <v-col cols="12" class="text-center">
+        <v-col cols="10" class="text-center">
           <h2>Historial de Pedidos</h2><br>
           <v-list class="Listaorden">
-            <tabla-informacion-component :items="pedidos" :headers="headers" :color="'warning'" :textEliminar="'Eliminar'" :textEditar="'Ver'" :textFunciones="'Funciones'" @edit-item="verPedido" @delete-item="deletePedido"/>
+            <tabla-informacion-component :items="pedidos" :headers="headers" :color="'warning'" :textEliminar="'Eliminar'" :textEditar="'Ver'" :textFunciones="'Funciones'" @edit-item="verPedido" @delete-item="deletePedido" height="45vh"/>
           </v-list>
         </v-col>
       </v-row>
