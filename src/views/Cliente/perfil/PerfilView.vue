@@ -138,7 +138,7 @@ export default {
       }
     },
     verPedido(pedidoId) {
-      this.$router.push(`/restaurante/pedidos/ver/${pedidoId}`);
+      this.$router.push(`/cliente/pedidos/ver/${pedidoId}`);
     },
     async deletePedido(pedidoId) {
       const access = localStorage.getItem('access');

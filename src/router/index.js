@@ -12,6 +12,8 @@ import perfilView from '@/views/restaurante/dashboard/Methods/perfilView.vue'
 import HomeView from '@/views/Cliente/home/HomeView.vue'
 import MenusByRestaurantesView from '@/views/Cliente/Menus/MenusByRestaurantesView.vue'
 import CarritoView from '@/views/Cliente/carrito/CarritoView.vue'
+
+import VerPedidoView from '@/views/Cliente/perfil/VerPedidoView.vue'
 const routes = [
   {
     path: '/',
@@ -74,6 +76,11 @@ const routes = [
     path: '/cliente/perfil',
     name: 'perfil',
     component: UserPerfilView
+  },
+  {
+    path: '/cliente/pedidos/ver/:id',
+    name: 'verPedido',
+    component: VerPedidoView
   },
 
 ]
