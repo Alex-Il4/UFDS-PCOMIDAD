@@ -63,7 +63,10 @@
           height="15vh" titleTable="Tu pedido" />
         <!--cargar el mapa aqui-->
         <div class="pa-4">
-          <div ref="mapdiv" style="width: 100%; height: 400px" class="bg-error border-error"></div>
+          <div ref="mapdiv" style="width: 100%; height: 400px" :class="pedidoByID.status === 'pendiente'
+              ? 'bg-error border-error'
+              : 'bg-success border-success'
+            "></div>
         </div>
 
         <template v-slot:actions>
