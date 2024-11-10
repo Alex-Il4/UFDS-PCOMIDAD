@@ -71,6 +71,25 @@
               </v-col>
             </v-row>
           </v-container>
+          <v-snackbar
+            v-model="snackbar"
+            color="success"
+            top
+            timeout="3000"
+            outlined
+          >
+            Pedido en camino, ¡gracias por tu compra!
+            <template v-slot:action="{ attrs }">
+              <v-btn
+                color="white"
+                text
+                v-bind="attrs"
+                @click="snackbar = false"
+              >
+                Cerrar
+              </v-btn>
+            </template>
+          </v-snackbar>
         </v-main>
       </v-layout>
     </v-app>
@@ -93,6 +112,7 @@ export default {
       marker: null,
       coords: null,
       clienteID: null,
+      snackbar: false, // Para controlar la visibilidad del mensaje
     };
   },
   mounted() {
@@ -213,10 +233,13 @@ export default {
       console.log('Pedido realizado con éxito:', data);
     } catch (error) {
       console.error('Hubo un problema con la solicitud:', error.message);
+      return; // Salir si hay un error para evitar el alert de éxito
     }
   }
-}
 
+ // Muestra el snackbar cuando todos los pedidos se hayan enviado correctamente
+ this.snackbar = true;
+}
 
   }
 };
