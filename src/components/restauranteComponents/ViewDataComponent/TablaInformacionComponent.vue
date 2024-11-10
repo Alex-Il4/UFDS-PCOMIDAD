@@ -11,7 +11,7 @@
                   single-line
                 ></v-text-field>
             </template>
-            <v-data-table :items="items" :headers="headers" height="60vh" :search="search">
+            <v-data-table :items="items" :headers="headers" :height="height ? height:'60vh'" :search="search">
                 <template v-slot:[`item.imagen`]="{ item }">
                     <div v-if="item.imagen === null">
                         <v-chip color="error" class="d-flex justify-center align-center mb-2" small>
@@ -72,6 +72,7 @@ export default {
         textEditar: String,
         isFunciones: Boolean,
         textFunciones: String,
+        height: String,
     },
     data: () => ({
         search: '',
