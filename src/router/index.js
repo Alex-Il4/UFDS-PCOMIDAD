@@ -5,7 +5,7 @@ import LoginRestauranteView from '@/views/restaurante/login/LoginRestauranteView
 import CrearRestauranteView from '@/views/restaurante/login/CrearRestauranteView.vue'
 import DashboardMain from '@/views/restaurante/dashboard/dashboard.vue'
 import restaurantesMethodsView from '@/views/restaurante/dashboard/Methods/RestauranteMethodsView.vue'
-import UserPerfilView from '@/views/PerfilView.vue'
+import UserPerfilView from '@/views/Cliente/perfil/PerfilView.vue'
 
 import EditPedidoView from '@/views/restaurante/dashboard/Methods/EditPedidoView.vue'
 import perfilView from '@/views/restaurante/dashboard/Methods/perfilView.vue'
