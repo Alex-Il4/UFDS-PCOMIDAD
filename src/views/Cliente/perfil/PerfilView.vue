@@ -128,11 +128,13 @@ export default {
             }
           });
           this.pedidos = tabla
+          this.showSnackbar('Pedidos cargados exitosamente', 'success');
         } else {
           console.error(respuesta.error);
+          this.showSnackbar('Error al cargar los pedidos', 'error');
         }
       } catch (error) {
-        console.log(error);
+        this.showSnackbar('Error al conectar con el servidor', 'error');
       }
     },
     verPedido(pedidoId) {
