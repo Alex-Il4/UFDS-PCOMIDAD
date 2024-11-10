@@ -75,12 +75,7 @@
       </v-layout>
     </v-app>
   </v-responsive>
-  
-  <v-card class="pa-4" elevation="3">
-    <v-card-title class="text-h6 font-weight-bold">
-      Cliente ID: {{ clienteID || 'No disponible' }}
-    </v-card-title>
-  </v-card>
+
 </template>
 
 <script>
@@ -176,14 +171,13 @@ export default {
     },
 
     async hacerPedido() {
-  // Verificar si las coordenadas están seleccionadas
   if (!this.coords) {
     alert("Por favor, selecciona una ubicación en el mapa.");
-    return;  // Detener el envío del pedido si las coordenadas no están seleccionadas
+    return;
   }
 
-  // Coloca el token manualmente aquí
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMzNzEzMTE1LCJpYXQiOjE3MzExMjExMTUsImp0aSI6IjliOGVlM2IzOGVlODRkNDU5MDc2ZTc2ZjUxYmJhODRkIiwidXNlcl9pZCI6NX0.tzS1ZyB9vbWzI4g_yeqe0Z700scnV2to0DZ-4si5nco';
+  // Obtener el token desde el almacenamiento local
+  const token = localStorage.getItem('access');
 
   if (!token) {
     console.error('Token no disponible.');
@@ -192,13 +186,12 @@ export default {
 
   // Aquí se envía un pedido por cada ítem en el carrito
   for (const item of this.carrito) {
-    // Datos del pedido por cada ítem
     const pedidoData = {
-      restaurante: item.restauranteID,  // El restaurante de cada ítem
-      cliente: this.clienteID,  // ClienteID desde el almacenamiento local
-      menus: [item.id],         // Solo el id de cada menú en el carrito
-      status: 'pendiente',      // El estado del pedido
-      ubicacionEntrega: `${this.coords.lat}, ${this.coords.lng}`  // Ubicación de entrega (coordenadas)
+      restaurante: item.restauranteID,
+      cliente: this.clienteID,
+      menus: [item.id],
+      status: 'pendiente',
+      ubicacionEntrega: `${this.coords.lat}, ${this.coords.lng}`
     };
 
     try {
@@ -206,9 +199,9 @@ export default {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` // Incluye el token manualmente
+          'Authorization': `Bearer ${token}` // Incluye el token automáticamente
         },
-        body: JSON.stringify(pedidoData) // Enviar los datos como JSON
+        body: JSON.stringify(pedidoData)
       });
 
       if (!response.ok) {
@@ -218,10 +211,8 @@ export default {
 
       const data = await response.json();
       console.log('Pedido realizado con éxito:', data);
-      // Aquí puedes hacer lo que necesites con la respuesta, como redirigir al usuario o mostrar un mensaje
     } catch (error) {
       console.error('Hubo un problema con la solicitud:', error.message);
-      // Aquí puedes manejar el error, mostrando un mensaje al usuario o haciendo un redireccionamiento
     }
   }
 }
