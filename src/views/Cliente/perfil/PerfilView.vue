@@ -18,21 +18,6 @@
             <v-list-item class="infoPerfil" style="text-align: left;">
               <strong>Nombre:</strong> {{ user.name }} <br>
               <strong>Email:</strong> {{ user.email }} <br>
-
-              <!-- Solo aparece cuando se presiona el boton para editar-->
-              <template v-if="isEditing">
-                <strong>Nombre:</strong>
-                <v-text-field v-model="editUser.name" label="Nombre" />
-                <strong>Contraseña:</strong>
-                <v-text-field v-model="editUser.password" label="Contraseña" type="password" />
-
-                <v-btn @click="saveProfile" class="btnGuardar">Guardar</v-btn>
-                <v-btn @click="cancelEdit" class="btnCancelar">Cancelar</v-btn>
-              </template>
-              <template v-else>
-                <strong>Teléfono:</strong> {{ user.tel }} <br>
-                <strong>Dirección:</strong> {{ user.address }} <br>
-              </template>
             </v-list-item>
           </v-list>
         </v-col>
@@ -48,10 +33,47 @@
       </v-row>
 
       <v-row class="section actions" justify="space-between">
-        <v-btn @click="editProfile" v-if="!isEditing" class="btnEditar">Editar Perfil</v-btn>
+        <v-btn class="btnEditar">Editar Perfil</v-btn>
         <v-btn @click="salir" class="btnSalir">Cerrar Sesión</v-btn>
       </v-row>
     </v-container>
+    <v-dialog
+      v-model="isvisible"
+      width="auto"
+    >
+      <v-card
+        :color="dialog.colorAlert"
+        width="800"
+        :prepend-icon="dialog.iconAlert"
+        :title="dialog.titleAlert"
+      >
+      <v-timeline direction="horizontal" :line-color="pedidoByID.status === 'pendiente' ? 'error' : 'success'">
+          <v-timeline-item
+            :dot-color="pedidoByID.status === 'pendiente' ? 'red-lighten-1' : 'green-lighten-1'"
+            fill-dot
+            :icon="pedidoByID.status === 'pendiente' ? 'mdi-clock-outline' : 'bi bi-bag-check-fill'"
+            size="large"
+          >
+            <template v-slot:default>
+              <v-label class="text-capitalize">
+                {{ pedidoByID.status }}
+              </v-label>
+            </template>
+          </v-timeline-item>
+        </v-timeline>
+        <tabla-informacion-component class="mr-4 ml-4" :items="pedidoByID.menus" :headers="headersMenu" :color="pedidoByID.status === 'pendiente' ? 'error' : 'success'" isSearch="false" icon="bi bi-bag-heart-fill" height="15vh"  titleTable="Tu pedido" />
+        <!--cargar el mapa aqui-->
+        <div ref="mapdiv" style=" width: 100%; height: 400px"></div>
+
+        <template v-slot:actions>
+          <v-btn
+            class="ms-auto"
+            text="Ok"
+            @click="isvisible = false"
+          ></v-btn>
+        </template>
+      </v-card>
+    </v-dialog>
     <v-snackbar v-model="snackbar.show" :color="snackbar.color" timeout="3000">
       {{ snackbar.message }}
     </v-snackbar>
@@ -85,20 +107,40 @@ export default {
         { title: 'Acciones', value: 'actions',align: 'center', sortable: false },
       ],
       pedidos: [],
-      isEditing: false,
       snackbar: {
         show: false,
         message: '',
         color: 'success',
       },
       id: localStorage.getItem('ClienteID'),
+      isvisible: false,
+      pedidoID : null,
+      dialog: {
+        show: false,
+        message: '',
+        color: 'success',
+        colorAlert: '',
+        iconAlert: '',
+        titleAlert: '',
+        textAlert: '',
+      },
+      access: localStorage.getItem('access'),
+      pedidoByID:{
+        restaurante: '',
+        status: '',
+        tiempoEstimado: '',
+        cliente: '',
+        menus: [],
+      },
+      headersMenu : [
+        { title: "ID", value: "id", align: "center", key: "id" },
+        { title: "titulo", value: "titulo", align: "center", key: "titulo" },
+        { title: "Nombre", value: "nombre", align: "center", key: "nombre" },
+      ],
   }),
   methods: {
-    cancelEdit() {
-      this.isEditing = false;
-    },
     salir() {
-      localStorage.removeItem('authToken');
+      localStorage.clear();
       this.user = {};
       this.$router.push('/login');
     },
@@ -108,9 +150,8 @@ export default {
       this.snackbar.show = true;
     },
     async loadPedidos() {
-      const access = localStorage.getItem('access');
       const headers = {
-        'Authorization': `Bearer ${access}`,
+        'Authorization': `Bearer ${this.access}`,
         'Content-Type': 'application/json',
       };
       try {
@@ -138,12 +179,44 @@ export default {
       }
     },
     verPedido(pedidoId) {
-      this.$router.push(`/cliente/pedidos/ver/${pedidoId}`);
+      this.loadPedidoByID(pedidoId);
+      this.initMap();
+      this.isvisible = true;
+      this.dialog.iconAlert = 'mdi-check-circle-outline';
+      this.dialog.titleAlert = 'Pedido exitoso';
+      this.dialog.textAlert = 'Se ha realizado el pedido con exito';
+      this.dialog.show = true;
+      console.log(pedidoId);
+    },
+    async loadPedidoByID(pedidoID) {
+      const headers = {
+        'Authorization': `Bearer ${this.access}`,
+        'Content-Type': 'application/json',
+      };
+      const json = {
+        "pedidoID": pedidoID,
+      };
+      try {
+        const response = await axios.post(`${process.env.VUE_APP_API_URL}/pedidosMethods/api/informacion/pedido/`, json, { headers });
+        const respuesta = response.data.data;
+        if (respuesta) {
+          this.pedidoByID.cliente = respuesta.cliente.correo;
+          this.pedidoByID.restaurante = respuesta.restaurante.nombre;
+          this.pedidoByID.status = respuesta.status;
+          this.pedidoByID.tiempoEstimado = respuesta.tiempoEstimado;
+          this.pedidoByID.menus = respuesta.menus;
+          this.showSnackbar('Pedidos cargados exitosamente', 'success');
+        } else {
+          console.error(respuesta.error);
+          this.showSnackbar('Error al cargar los pedidos', 'error');
+        }
+      } catch (error) {
+        this.showSnackbar('Error al conectar con el servidor', 'error');
+      }
     },
     async deletePedido(pedidoId) {
-      const access = localStorage.getItem('access');
       const headers = {
-        'Authorization': `Bearer ${access}`,
+        'Authorization': `Bearer ${this.access}`,
         'Content-Type': 'application/json',
       };
       try {
@@ -159,9 +232,42 @@ export default {
         console.log(error);
       }
     },
+    initMap() {
+      const mapContainer = this.$refs.mapdiv;
+      if (!mapContainer) {
+        console.error("Contenedor del mapa no encontrado");
+        return;
+      }
+
+      this.map = L.map(mapContainer).setView([13.67371411848531, -89.27905661071419], 13);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(this.map);
+
+      // Añadir el control de búsqueda sin marcador automático
+      if (L.Control && L.Control.geocoder) {
+        // eslint-disable-next-line no-unused-vars
+        const geocoder = L.Control.geocoder({
+          defaultMarkGeocode: false // Evita la colocación automática del marcador
+        })
+          .on('markgeocode', (e) => {
+            // Centra el mapa en la ubicación buscada sin colocar un marcador
+            this.map.setView(e.geocode.center, 18);
+          })
+          .addTo(this.map);
+      } else {
+        console.error("Leaflet Control Geocoder no está disponible");
+      }
+
+      // Vincula el evento de clic en el mapa a la función onMapClick
+      this.map.on('click', this.onMapClick);
+    },
   },
   created() {
     this.loadPedidos();
+  },
+  mounted() {
+    this.initMap();
   },
 };
 </script>
