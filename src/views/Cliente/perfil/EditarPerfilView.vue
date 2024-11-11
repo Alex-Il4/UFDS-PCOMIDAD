@@ -13,13 +13,6 @@
                 <v-text-field v-model="apellido" density="compact" placeholder="Apellido" prepend-inner-icon="mdi-email-outline"
                     variant="outlined"></v-text-field>
 
-            <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
-                Contraseña
-            </div>
-
-            <v-text-field v-model="pass" :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'" :type="visible ? 'text' : 'password'"
-                density="compact" placeholder="Enter your password" prepend-inner-icon="mdi-lock-outline"
-                variant="outlined" @click:append-inner="visible = !visible"></v-text-field>
 
             <v-btn class="mb-8" color="success" size="large" variant="tonal" block @click="confirmActualizar.isVisible = true">
                 Actualizar
@@ -37,6 +30,9 @@
                 </v-card-text>
             </v-card>
         </v-dialog>
+        <v-snackbar v-model="snackbar.show" :color="snackbar.color" timeout="3000">
+            {{ snackbar.message }}
+        </v-snackbar>
     </div>
 </template>
 
@@ -47,13 +43,17 @@ export default {
     data: () => ({
         nombre: '',
         apellido: '',
-        pass: '',
         visible: false,
         access: localStorage.getItem("access"),
         confirmActualizar: {
             isVisible: false,
         },
         id: localStorage.getItem("ClienteID"),
+        snackbar: {
+            show: false,
+            message: "",
+            color: "success",
+        },
     }),
     methods: {
         async actualizar() {
@@ -62,9 +62,9 @@ export default {
                 "Content-Type": "application/json",
             }
             const json = {
+                id: this.id,
                 nombre: this.nombre,
                 apellido: this.apellido,
-                password: this.pass,
             };
             try {
                 const response = await axios.post(`${process.env.VUE_APP_API_URL}/loginMethods/api/perfil/editar/`, json, { headers });
@@ -74,12 +74,22 @@ export default {
                     this.apellido = '';
                     this.pass = '';
                     this.confirmActualizar.isVisible = false;
+                    this.$emit('close');
+                    this.snackbar.show = true;
+                    this.snackbar.message = 'Perfil actualizado exitosamente';
+                    this.snackbar.color = 'success';
                 } else {
-                    alert(response.data.error);
+                    this.snackbar.show = true;
+                    this.snackbar.message = 'Error al actualizar el perfil';
+                    this.snackbar.color = 'error';
                     this.confirmActualizar.isVisible = false;
                 }
             } catch (error) {
                 console.log(error);
+                this.snackbar.show = true;
+                this.snackbar.message = 'Error al actualizar el perfil';
+                this.snackbar.color = 'error';
+                this.confirmActualizar.isVisible = false;
             }
         },
     },
