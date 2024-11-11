@@ -1,80 +1,82 @@
 <template>
-  <v-container class="perfil">
-    <v-btn icon @click="$router.push('/home')" class="btnHome">
-      <v-icon>mdi-arrow-left</v-icon>
-    </v-btn>
-    <v-container class="container">
-      <v-card class="mx-auto" variant="text">
-        <v-img height="250" src="https://img.freepik.com/fotos-premium/3d-render-fast-food-hamburger-hot-dog-refresco-flotante_570783-160.jpg" cover
-          class="flex">
-          <v-card-title class="text-capitalize text-white"> <v-avatar color="warning">
-              <v-icon icon="bi bi-person-circle"></v-icon>
-            </v-avatar> {{ user.name }} • {{ user.apellido }}</v-card-title>
-          <v-card-text>
-            <v-chip color="orange-accent-4" variant="elevated" class="ma-2 font-weight-bold">Correo: {{ user.email }}</v-chip>
-            <v-chip color="amber-darken-1" variant="elevated" class="ma-2 font-weight-bold">Pedidos: {{ pedidos.length }}</v-chip>
-          </v-card-text>
-        </v-img>
-      </v-card>
+  <v-app :theme="theme">
+    <v-container class="perfil">
+      <v-btn icon @click="$router.push('/home')" class="btnHome">
+        <v-icon>mdi-arrow-left</v-icon>
+      </v-btn>
+      <v-container max-width="68%">
+        <v-card class="mx-auto" variant="text">
+          <v-img height="250" src="https://img.freepik.com/fotos-premium/3d-render-fast-food-hamburger-hot-dog-refresco-flotante_570783-160.jpg" cover
+            class="flex">
+            <v-card-title class="text-capitalize text-white"> <v-avatar color="warning">
+                <v-icon icon="bi bi-person-circle"></v-icon>
+              </v-avatar> {{ user.name }} • {{ user.apellido }}</v-card-title>
+            <v-card-text>
+              <v-chip color="orange-accent-4" variant="elevated" class="ma-2 font-weight-bold">Correo: {{ user.email }}</v-chip>
+              <v-chip color="amber-darken-1" variant="elevated" class="ma-2 font-weight-bold">Pedidos: {{ pedidos.length }}</v-chip>
+              <div class="pt-16">
+                <v-chip color="success" variant="elevated" class="ma-2 font-weight-bold" append-icon="bi bi-pen-fill">Editar</v-chip>
+                <v-chip color="error" variant="elevated" class="ma-2 font-weight-bold" append-icon="bi bi-door-open-fill">Salir</v-chip>
+                <v-chip color="error" variant="elevated" class="ma-2 font-weight-bold" :append-icon="theme === 'light' ? 'mdi-moon-waning-crescent' : 'bi bi-highlights'" @click="changeTheme">Tema</v-chip>
+              </div>
+            </v-card-text>
+          </v-img>
+        </v-card>
 
-      <v-row class="section mt-2" justify="center">
-        <v-col cols="12" class="text-center">
-          <h2>Historial de Pedidos</h2>
-          <v-list>
-            <tabla-informacion-component :items="pedidos" :headers="headers" :color="'warning'"
-              :textEliminar="'Eliminar'" :textEditar="'Ver'" :textFunciones="'Funciones'" @edit-item="verPedido"
-              @delete-item="deletePedido" height="45vh" />
-          </v-list>
-        </v-col>
-      </v-row>
-
-      <v-row class="section actions" justify="space-between">
-        <v-btn class="btnEditar">Editar Perfil</v-btn>
-        <v-btn @click="salir" class="btnSalir">Cerrar Sesión</v-btn>
-      </v-row>
-    </v-container>
-    <v-dialog v-model="isvisible" width="auto">
-      <v-card :color="dialog.colorAlert" width="800" :prepend-icon="dialog.iconAlert">
-        <template v-slot:title>
-          <div class="text-capitalize">
-            {{dialog.titleAlert}}
+        <v-row class="section mt-2" justify="center">
+          <v-col cols="12" class="text-center">
+            <h2>Historial de Pedidos</h2>
+            <v-list>
+              <tabla-informacion-component :items="pedidos" :headers="headers" :color="'warning'"
+                :textEliminar="'Eliminar'" :textEditar="'Ver'" :textFunciones="'Funciones'" @edit-item="verPedido"
+                @delete-item="deletePedido" height="40vh" />
+            </v-list>
+          </v-col>
+        </v-row>
+      </v-container>
+      <v-dialog v-model="isvisible" width="auto">
+        <v-card :color="dialog.colorAlert" width="800" :prepend-icon="dialog.iconAlert">
+          <template v-slot:title>
+            <div class="text-capitalize">
+              {{dialog.titleAlert}}
+            </div>
+          </template>
+          <v-timeline direction="horizontal" :line-color="pedidoByID.status === 'pendiente' ? 'error' : 'success'">
+            <v-timeline-item :dot-color="pedidoByID.status === 'pendiente'
+                ? 'red-lighten-1'
+                : 'green-lighten-1'
+              " fill-dot :icon="pedidoByID.status === 'pendiente'
+                  ? 'mdi-clock-outline'
+                  : 'bi bi-bag-check-fill'
+                " size="large">
+              <template v-slot:default>
+                <v-label class="text-capitalize">
+                  {{ pedidoByID.status }}
+                </v-label>
+              </template>
+            </v-timeline-item>
+          </v-timeline>
+          <tabla-informacion-component class="mr-4 ml-4" :items="pedidoByID.menus" :headers="headersMenu"
+            :color="pedidoByID.status === 'pendiente' ? 'error' : 'success'" isSearch icon="bi bi-bag-heart-fill"
+            height="15vh" titleTable="Tu pedido" />
+          <!--cargar el mapa aqui-->
+          <div class="pa-4">
+            <div ref="mapdiv" style="width: 100%; height: 380px" :class="pedidoByID.status === 'pendiente'
+                ? 'bg-error border-error'
+                : 'bg-success border-success'
+              "></div>
           </div>
-        </template>
-        <v-timeline direction="horizontal" :line-color="pedidoByID.status === 'pendiente' ? 'error' : 'success'">
-          <v-timeline-item :dot-color="pedidoByID.status === 'pendiente'
-              ? 'red-lighten-1'
-              : 'green-lighten-1'
-            " fill-dot :icon="pedidoByID.status === 'pendiente'
-                ? 'mdi-clock-outline'
-                : 'bi bi-bag-check-fill'
-              " size="large">
-            <template v-slot:default>
-              <v-label class="text-capitalize">
-                {{ pedidoByID.status }}
-              </v-label>
-            </template>
-          </v-timeline-item>
-        </v-timeline>
-        <tabla-informacion-component class="mr-4 ml-4" :items="pedidoByID.menus" :headers="headersMenu"
-          :color="pedidoByID.status === 'pendiente' ? 'error' : 'success'" isSearch icon="bi bi-bag-heart-fill"
-          height="15vh" titleTable="Tu pedido" />
-        <!--cargar el mapa aqui-->
-        <div class="pa-4">
-          <div ref="mapdiv" style="width: 100%; height: 380px" :class="pedidoByID.status === 'pendiente'
-              ? 'bg-error border-error'
-              : 'bg-success border-success'
-            "></div>
-        </div>
-
-        <template v-slot:actions>
-          <v-btn class="ms-auto" text="Ok" @click="isvisible = false"></v-btn>
-        </template>
-      </v-card>
-    </v-dialog>
-    <v-snackbar v-model="snackbar.show" :color="snackbar.color" timeout="3000">
-      {{ snackbar.message }}
-    </v-snackbar>
-  </v-container>
+  
+          <template v-slot:actions>
+            <v-btn class="ms-auto" text="Ok" @click="isvisible = false"></v-btn>
+          </template>
+        </v-card>
+      </v-dialog>
+      <v-snackbar v-model="snackbar.show" :color="snackbar.color" timeout="3000">
+        {{ snackbar.message }}
+      </v-snackbar>
+    </v-container>
+  </v-app>
 </template>
 
 <script>
@@ -145,9 +147,13 @@ export default {
       map: null,
       lat: null,
       lng: null,
+      theme: 'light',
     };
   },
   methods: {
+    changeTheme() {
+      this.theme = this.theme === 'light' ? 'dark' : 'light';
+    },
     salir() {
       localStorage.clear();
       this.user = {};
