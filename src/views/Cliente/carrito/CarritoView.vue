@@ -6,15 +6,17 @@
         <v-main>
           <v-container>
             <h2 class="text-h4 font-weight-bold mb-4">Carrito de Compras</h2>
-            <v-row>
+            
+            <!-- Condicional para mostrar los elementos del carrito o el mensaje de vacío -->
+            <v-row v-if="carrito.length > 0">
               <v-col v-for="(item, index) in carrito" :key="index" cols="12" md="4" lg="3">
                 <v-card :disabled="loading" :loading="loading" class="my-3 elevation-10" max-width="355">
                   <template v-slot:loader="{ isActive }">
                     <v-progress-linear :active="isActive" color="deep-purple" height="4" indeterminate></v-progress-linear>
                   </template>
-        
+          
                   <v-img :src="item.imagen" height="200" cover></v-img>
-        
+          
                   <v-card-item class="px-4 pt-3">
                     <v-card-title class="text-h6 font-weight-bold">{{ item.titulo }}</v-card-title>
                     <v-card-subtitle class="d-flex align-center">
@@ -43,6 +45,12 @@
                 </v-card>
               </v-col>
             </v-row>
+            <v-row v-else>
+              <v-col cols="12" class="text-center">
+                <v-alert type="info" class="mt-4">No hay menús en el carrito</v-alert> <!-- Mensaje cuando el carrito está vacío -->
+              </v-col>
+            </v-row>
+
             <!-- Muestra el mapa para usuario -->
             <v-banner class="my-4" color="error" icon="mdi-weather-hurricane" lines="two">
               <v-banner-text> tus coordenadas. </v-banner-text>
@@ -94,8 +102,8 @@
       </v-layout>
     </v-app>
   </v-responsive>
-
 </template>
+
 
 <script>
 import { mapGetters, mapMutations } from 'vuex';
@@ -130,7 +138,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['eliminarItemDelCarrito']),
+    ...mapMutations(['eliminarItemDelCarrito', 'vaciarCarrito']),
     eliminarDelCarrito(id) {
       this.eliminarItemDelCarrito(id);
     },
@@ -204,42 +212,39 @@ export default {
     return;
   }
 
-  // Aquí se envía un pedido por cada ítem en el carrito
-  for (const item of this.carrito) {
-    const pedidoData = {
-      restaurante: item.restauranteID,
-      cliente: this.clienteID,
-      menus: [item.id],
-      status: 'pendiente',
-      ubicacionEntrega: `${this.coords.lat}, ${this.coords.lng}`
-    };
+  // Crear un solo pedido con todos los artículos del carrito
+  const pedidoData = {
+    restaurante: this.carrito[0].restauranteID, // Asumiendo que todos los items son del mismo restaurante
+    cliente: this.clienteID,
+    menus: this.carrito.map(item => item.id), // Agrupa todos los ids de menús en un solo array
+    status: 'pendiente',
+    ubicacionEntrega: `${this.coords.lat}, ${this.coords.lng}`
+  };
 
-    try {
-      const response = await fetch('http://127.0.0.1:8000/pedidosMethods/api/crear/pedidos', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` // Incluye el token automáticamente
-        },
-        body: JSON.stringify(pedidoData)
-      });
+  try {
+    const response = await fetch('http://127.0.0.1:8000/pedidosMethods/api/crear/pedidos', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(pedidoData)
+    });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Error al hacer el pedido: ${errorData.detail || errorData.messages}`);
-      }
-
-      const data = await response.json();
-      console.log('Pedido realizado con éxito:', data);
-    } catch (error) {
-      console.error('Hubo un problema con la solicitud:', error.message);
-      return; // Salir si hay un error para evitar el alert de éxito
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`Error al hacer el pedido: ${errorData.detail || errorData.messages}`);
     }
-  }
 
- // Muestra el snackbar cuando todos los pedidos se hayan enviado correctamente
- this.snackbar = true;
+    const data = await response.json();
+    console.log('Pedido realizado con éxito:', data);
+    this.vaciarCarrito(); // Vacía el carrito después de hacer el pedido
+    this.snackbar = true; // Muestra el snackbar al finalizar el pedido
+  } catch (error) {
+    console.error('Hubo un problema con la solicitud:', error.message);
+  }
 }
+
 
   }
 };
