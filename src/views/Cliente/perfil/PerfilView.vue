@@ -15,7 +15,7 @@
               <v-chip color="orange-accent-4" variant="elevated" class="ma-2 font-weight-bold">Correo: {{ user.email }}</v-chip>
               <v-chip color="amber-darken-1" variant="elevated" class="ma-2 font-weight-bold">Pedidos: {{ pedidos.length }}</v-chip>
               <div class="pt-16">
-                <v-chip color="success" variant="elevated" class="ma-2 font-weight-bold" append-icon="bi bi-pen-fill">Editar</v-chip>
+                <v-chip color="success" variant="elevated" class="ma-2 font-weight-bold" append-icon="bi bi-pen-fill" @click="dialogEditar.isVisible = true">Editar</v-chip>
                 <v-chip color="error" variant="elevated" class="ma-2 font-weight-bold" append-icon="bi bi-door-open-fill">Salir</v-chip>
                 <v-chip color="error" variant="elevated" class="ma-2 font-weight-bold" :append-icon="theme === 'light' ? 'mdi-moon-waning-crescent' : 'bi bi-highlights'" @click="changeTheme">Tema</v-chip>
               </div>
@@ -72,6 +72,10 @@
           </template>
         </v-card>
       </v-dialog>
+      <v-dialog v-model="dialogEditar.isVisible" width="auto" persistent>
+        <editar-perfil-view @close="dialogEditar.isVisible = false"></editar-perfil-view>
+      </v-dialog>
+
       <v-snackbar v-model="snackbar.show" :color="snackbar.color" timeout="3000">
         {{ snackbar.message }}
       </v-snackbar>
@@ -82,10 +86,12 @@
 <script>
 import axios from "axios";
 import TablaInformacionComponent from "@/components/restauranteComponents/ViewDataComponent/TablaInformacionComponent.vue";
+import EditarPerfilView from "@/views/Cliente/perfil/EditarPerfilView.vue";
 export default {
   name: "PerfilView",
   components: {
     TablaInformacionComponent,
+    EditarPerfilView,
   },
   data() {
     return {
@@ -148,6 +154,9 @@ export default {
       lat: null,
       lng: null,
       theme: 'light',
+      dialogEditar: {
+        isVisible: true,
+      },
     };
   },
   methods: {
