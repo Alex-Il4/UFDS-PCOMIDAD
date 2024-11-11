@@ -99,6 +99,8 @@ export default {
       editUser: {
         name: "",
         password: "",
+        email: "",
+        apellido: "",
       },
       headers: [
         {
@@ -263,6 +265,31 @@ export default {
         console.log(error);
       }
     },
+    async loadCliente() {
+      const headers = {
+        Authorization: `Bearer ${this.access}`,
+        "Content-Type": "application/json",
+      };
+      try {
+        const response = await axios.get(
+          `${process.env.VUE_APP_API_URL}/loginMethods/api/perfil/informacion/${this.id}`,
+          { headers }
+        );
+        const respuesta = response.data.data;
+        if (respuesta) {
+          console.log(JSON.stringify(respuesta, null, 2));
+          this.user.name = respuesta.nombre;
+          this.user.email = respuesta.correo;
+          this.user.apellido = respuesta.apellido;
+          this.showSnackbar("Cliente cargado exitosamente", "success");
+        } else {
+          console.error(respuesta.error);
+          this.showSnackbar("Error al cargar el cliente", "error");
+        }
+      } catch (error) {
+        this.showSnackbar("Error al conectar con el servidor", "error");
+      }
+    },
     initMap(lat, lng) {
       // Si el mapa ya existe, desactívalo y elimínalo
       if (this.map) {
@@ -292,6 +319,7 @@ export default {
   },
   created() {
     this.loadPedidos();
+    this.loadCliente();
   },
 };
 </script>
