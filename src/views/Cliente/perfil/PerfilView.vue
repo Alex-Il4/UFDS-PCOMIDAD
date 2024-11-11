@@ -42,7 +42,12 @@
       </v-row>
     </v-container>
     <v-dialog v-model="isvisible" width="auto">
-      <v-card :color="dialog.colorAlert" width="800" :prepend-icon="dialog.iconAlert" :title="dialog.titleAlert">
+      <v-card :color="dialog.colorAlert" width="800" :prepend-icon="dialog.iconAlert">
+        <template v-slot:title>
+          <div class="text-capitalize">
+            {{dialog.titleAlert}}
+          </div>
+        </template>
         <v-timeline direction="horizontal" :line-color="pedidoByID.status === 'pendiente' ? 'error' : 'success'">
           <v-timeline-item :dot-color="pedidoByID.status === 'pendiente'
               ? 'red-lighten-1'
@@ -63,7 +68,7 @@
           height="15vh" titleTable="Tu pedido" />
         <!--cargar el mapa aqui-->
         <div class="pa-4">
-          <div ref="mapdiv" style="width: 100%; height: 400px" :class="pedidoByID.status === 'pendiente'
+          <div ref="mapdiv" style="width: 100%; height: 380px" :class="pedidoByID.status === 'pendiente'
               ? 'bg-error border-error'
               : 'bg-success border-success'
             "></div>
@@ -195,7 +200,7 @@ export default {
       const ubicacion = await this.loadPedidoByID(pedidoId);
       this.isvisible = true;
       this.dialog.iconAlert = "mdi-check-circle-outline";
-      this.dialog.titleAlert = "Pedido exitoso";
+      this.dialog.titleAlert = this.pedidoByID.status;
       this.dialog.textAlert = "Se ha realizado el pedido con exito";
       this.dialog.show = true;
       console.log(pedidoId);
