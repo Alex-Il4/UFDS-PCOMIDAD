@@ -271,7 +271,7 @@ export default {
         return;
       }
       // Usa las coordenadas que pasaste o los valores predeterminados
-      this.map = L.map(mapContainer).setView([lat, lng], 13);
+      this.map = L.map(mapContainer,{zoomAnimation:true}).setView([lat, lng], 13);
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution:
