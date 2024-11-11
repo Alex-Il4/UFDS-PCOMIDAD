@@ -16,7 +16,7 @@
               <v-chip color="amber-darken-1" variant="elevated" class="ma-2 font-weight-bold">Pedidos: {{ pedidos.length }}</v-chip>
               <div class="pt-16">
                 <v-chip color="success" variant="elevated" class="ma-2 font-weight-bold" append-icon="bi bi-pen-fill" @click="dialogEditar.isVisible = true">Editar</v-chip>
-                <v-chip color="error" variant="elevated" class="ma-2 font-weight-bold" append-icon="bi bi-door-open-fill">Salir</v-chip>
+                <v-chip color="error" variant="elevated" class="ma-2 font-weight-bold" append-icon="bi bi-door-open-fill" @click="salir">Salir</v-chip>
                 <v-chip color="error" variant="elevated" class="ma-2 font-weight-bold" :append-icon="theme === 'light' ? 'mdi-moon-waning-crescent' : 'bi bi-highlights'" @click="changeTheme">Tema</v-chip>
               </div>
             </v-card-text>
@@ -166,7 +166,7 @@ export default {
     salir() {
       localStorage.clear();
       this.user = {};
-      this.$router.push("/login");
+      this.$router.push("/");
     },
     showSnackbar(message, color) {
       this.snackbar.message = message;
