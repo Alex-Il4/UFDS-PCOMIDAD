@@ -132,7 +132,7 @@
               v-model="snackbarUbicacion"
               color="blue darken-2"
               top
-              timeout="3000"
+              timeout="1000"
               outlined
             >
               ¡Ubicación seleccionada con éxito!
