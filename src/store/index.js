@@ -33,7 +33,10 @@ export default createStore({
     },
     setMenuID(state, menuID) {
       state.menuID = menuID; // Establece el ID del restaurante
-    }
+    },
+    vaciarCarrito(state) {  // <--- Agrega esta mutación
+      state.carrito = [];
+    },
   },
   actions: {
     setMenuID({ commit }, menuID) {
