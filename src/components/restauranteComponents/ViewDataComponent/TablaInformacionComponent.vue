@@ -1,7 +1,7 @@
 <template>
     <div>
-        <v-card class="mx-auto" :title="titleTable" :color="color" :prepend-icon="icon" :search="search">
-            <template v-slot:text>
+        <v-card :title="titleTable" :color="color" :prepend-icon="icon" :search="search">
+            <template v-slot:text v-if="!isSearch">
                 <v-text-field
                   v-model="search"
                   label="Buscar elemento"
@@ -73,6 +73,7 @@ export default {
         isFunciones: Boolean,
         textFunciones: String,
         height: String,
+        isSearch: Boolean,
     },
     data: () => ({
         search: '',

@@ -12,6 +12,7 @@ import perfilView from '@/views/restaurante/dashboard/Methods/perfilView.vue'
 import HomeView from '@/views/Cliente/home/HomeView.vue'
 import MenusByRestaurantesView from '@/views/Cliente/Menus/MenusByRestaurantesView.vue'
 import CarritoView from '@/views/Cliente/carrito/CarritoView.vue'
+
 const routes = [
   {
     path: '/',
