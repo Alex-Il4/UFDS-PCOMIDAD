@@ -5,7 +5,12 @@
         <SideBarComponent :theme="theme" @toggle-theme="onClick"></SideBarComponent> 
         <v-main>
           <v-container>
-            <h2 class="text-h4 font-weight-bold mb-4">Carrito de Compras</h2>
+            <v-card class="pa-4 mb-4 titulo-carrito">
+              <v-card-title class="text-h4 font-weight-bold mb-0">
+                <v-icon left color="purple darken-2" size="36">mdi-cart</v-icon> 
+                Carrito de Compras
+              </v-card-title>
+            </v-card>
             <div class="carrito-scrollable">
                <!-- Condicional para mostrar los elementos del carrito o el mensaje de vacío -->
             <v-row v-if="carrito.length > 0">
@@ -122,7 +127,22 @@
                 Cerrar
               </v-btn>
             </template>
-</v-snackbar>
+            </v-snackbar>
+            <v-snackbar
+              v-model="snackbarUbicacion"
+              color="blue darken-2"
+              top
+              timeout="3000"
+              outlined
+            >
+              ¡Ubicación seleccionada con éxito!
+              <template v-slot:action="{ attrs }">
+                <v-btn color="white" text v-bind="attrs" @click="snackbarUbicacion = false">
+                  Cerrar
+                </v-btn>
+              </template>
+            </v-snackbar>
+            
 
         </v-main>
       </v-layout>
@@ -148,6 +168,7 @@ export default {
       clienteID: null,
       snackbar: false, // Para controlar la visibilidad del mensaje
       snackbarError: false, // Para el mensaje de error
+      snackbarUbicacion: false, // Para el mensaje de selección de ubicación
       snackbarErrorMessage: "", // Mensaje de error dinámico
     };
   },
@@ -202,29 +223,27 @@ export default {
       this.map.on('click', this.onMapClick);
     },
     onMapClick(e) {
-      if (e && e.latlng) {
-        // Estas coordenadas se deben enviar al momento de hacer el pedido
-        this.coords = {
-          lat: e.latlng.lat,
-          lng: e.latlng.lng
-        };
+  if (e && e.latlng) {
+    this.coords = {
+      lat: e.latlng.lat,
+      lng: e.latlng.lng
+    };
 
-        alert("You clicked the map at " + this.coords.lat + ", " + this.coords.lng);
+    // Activa el snackbar para confirmar la selección de ubicación
+    this.snackbarUbicacion = true;
 
-        // Si no hay un marcador, crea uno en la ubicación del clic
-        if (!this.marker) {
-          this.marker = L.marker([this.coords.lat, this.coords.lng]).addTo(this.map);
-        } else {
-          // Si ya hay un marcador, actualiza su ubicación
-          this.marker.setLatLng([this.coords.lat, this.coords.lng]);
-        }
-
-        // Aquí puedes usar las coordenadas como necesites
-        console.log('Coordenadas guardadas:', this.coords);
-      } else {
-        console.error("LatLng data not available");
-      }
-    },
+    // Si no hay un marcador, crea uno en la ubicación del clic
+    if (!this.marker) {
+      this.marker = L.marker([this.coords.lat, this.coords.lng]).addTo(this.map);
+    } else {
+      // Si ya hay un marcador, actualiza su ubicación
+      this.marker.setLatLng([this.coords.lat, this.coords.lng]);
+    }
+    console.log('Coordenadas guardadas:', this.coords);
+  } else {
+    console.error("LatLng data not available");
+  }
+},
 
     async hacerPedido() {
   if (!this.coords) {
@@ -308,6 +327,15 @@ h2{
 
 .boton-fijo {
   margin-top: auto; /* Empuja el botón hacia la parte inferior de la tarjeta */
+}
+.titulo-carrito {
+  background-color: #f5f5f5; /* Color de fondo suave */
+  color: #4a148c; /* Color de texto acorde con el tema */
+  border-radius: 12px; /* Bordes redondeados */
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
 
