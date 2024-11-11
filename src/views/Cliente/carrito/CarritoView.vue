@@ -6,17 +6,17 @@
         <v-main>
           <v-container>
             <h2 class="text-h4 font-weight-bold mb-4">Carrito de Compras</h2>
-            
-            <!-- Condicional para mostrar los elementos del carrito o el mensaje de vacío -->
+            <div class="carrito-scrollable">
+               <!-- Condicional para mostrar los elementos del carrito o el mensaje de vacío -->
             <v-row v-if="carrito.length > 0">
               <v-col v-for="(item, index) in carrito" :key="index" cols="12" md="4" lg="3">
-                <v-card :disabled="loading" :loading="loading" class="my-3 elevation-10" max-width="355">
+                <v-card :disabled="loading" :loading="loading" class="my-3 tarjeta-con-boton-fijo" max-width="355">
                   <template v-slot:loader="{ isActive }">
                     <v-progress-linear :active="isActive" color="deep-purple" height="4" indeterminate></v-progress-linear>
                   </template>
-          
+                
                   <v-img :src="item.imagen" height="200" cover></v-img>
-          
+                
                   <v-card-item class="px-4 pt-3">
                     <v-card-title class="text-h6 font-weight-bold">{{ item.titulo }}</v-card-title>
                     <v-card-subtitle class="d-flex align-center">
@@ -24,7 +24,7 @@
                       <v-icon color="error" icon="mdi-fire-circle" size="small"></v-icon>
                     </v-card-subtitle>
                   </v-card-item>
-
+                
                   <v-card-text class="px-4">
                     <v-row align="center">
                       <v-rating :value="item.puntaje" color="amber" dense readonly></v-rating>
@@ -33,11 +33,11 @@
                     <div class="mt-2">{{ item.descripcion }}</div>
                     <div class="mt-2 text-subtitle-2"><strong>Precio: ${{ item.precio }}</strong></div>
                     <div class="mt-1 text-body-2">Cantidad: {{ item.cantidad }}</div>
-                    <div class="mt-1 text-body-2">menus: {{ item.id }}</div>
-                    <div class="mt-1 text-body-2">RestauranteID: {{ item.restauranteID }}</div>
-                    <div class="mt-1 text-body-2">cliente: {{ clienteID }}</div>
                   </v-card-text>
-                  <v-card-actions class="justify-center">
+                
+                  <v-spacer></v-spacer> <!-- Espaciador para empujar el botón hacia abajo -->
+                  
+                  <v-card-actions class="justify-center boton-fijo">
                     <v-btn color="red darken-2" @click="eliminarDelCarrito(item.id)" text>
                       <v-icon left>mdi-delete</v-icon> Eliminar
                     </v-btn>
@@ -51,12 +51,18 @@
               </v-col>
             </v-row>
 
+            </div>
+            
+           
+
+
             <!-- Muestra el mapa para usuario -->
             <v-banner class="my-4" color="error" icon="mdi-weather-hurricane" lines="two">
               <v-banner-text> tus coordenadas. </v-banner-text>
             </v-banner>
             <div ref="mapdiv" style="width: 100%; height: 400px"></div>
           </v-container>
+          
           <v-container>
             <!-- Total del carrito en tiempo real -->
             <v-row class="mt-4 justify-center">
@@ -98,6 +104,26 @@
               </v-btn>
             </template>
           </v-snackbar>
+          <v-snackbar
+            v-model="snackbarError"
+            color="red darken-1"
+            top
+            timeout="3000"
+            outlined
+          >
+            {{ snackbarErrorMessage }}
+            <template v-slot:action="{ attrs }">
+              <v-btn
+                color="white"
+                text
+                v-bind="attrs"
+                @click="snackbarError = false"
+              >
+                Cerrar
+              </v-btn>
+            </template>
+</v-snackbar>
+
         </v-main>
       </v-layout>
     </v-app>
@@ -121,6 +147,8 @@ export default {
       coords: null,
       clienteID: null,
       snackbar: false, // Para controlar la visibilidad del mensaje
+      snackbarError: false, // Para el mensaje de error
+      snackbarErrorMessage: "", // Mensaje de error dinámico
     };
   },
   mounted() {
@@ -204,6 +232,16 @@ export default {
     return;
   }
 
+  // Validar que todos los items del carrito tienen el mismo restauranteID
+  const restauranteID = this.carrito[0]?.restauranteID;
+  const mismoRestaurante = this.carrito.every(item => item.restauranteID === restauranteID);
+
+  if (!mismoRestaurante) {
+      this.snackbarErrorMessage = "Solo puedes pedir menús de un solo restaurante en este pedido.";
+      this.snackbarError = true;
+      return;
+  }
+
   // Obtener el token desde el almacenamiento local
   const token = localStorage.getItem('access');
 
@@ -214,7 +252,7 @@ export default {
 
   // Crear un solo pedido con todos los artículos del carrito
   const pedidoData = {
-    restaurante: this.carrito[0].restauranteID, // Asumiendo que todos los items son del mismo restaurante
+    restaurante: restauranteID, // Usar el restauranteID validado
     cliente: this.clienteID,
     menus: this.carrito.map(item => item.id), // Agrupa todos los ids de menús en un solo array
     status: 'pendiente',
@@ -249,4 +287,27 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+h2{
+  text-align: center;
+
+}
+.carrito-scrollable {
+  overflow-y: auto;
+  height: calc(55vh); 
+  width: 100%;
+  padding-right: 10px;
+}
+
+.tarjeta-con-boton-fijo {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Hace que la tarjeta ocupe todo el alto disponible */
+}
+
+.boton-fijo {
+  margin-top: auto; /* Empuja el botón hacia la parte inferior de la tarjeta */
+}
+</style>
 
