@@ -155,7 +155,7 @@ export default {
       lng: null,
       theme: 'light',
       dialogEditar: {
-        isVisible: true,
+        isVisible: false,
       },
     };
   },
