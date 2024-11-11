@@ -3,32 +3,24 @@
     <v-btn icon @click="$router.push('/home')" class="btnHome">
       <v-icon>mdi-arrow-left</v-icon>
     </v-btn>
-
-    <v-row class="namepic" justify="center">
-      <v-col cols="12" class="text-center">
-        <h1>{{ user.name }}</h1>
-      </v-col>
-    </v-row>
-
     <v-container class="container">
-      <v-row class="section" justify="center">
-        <v-col cols="12" class="text-center">
-          <h2>Información de Perfil</h2>
-          <br />
-          <v-list class="info mx-auto">
-            <v-list-item class="infoPerfil" style="text-align: left">
-              <strong>Nombre:</strong> {{ user.name }} <br />
-              <strong>Email:</strong> {{ user.email }} <br />
-            </v-list-item>
-          </v-list>
-        </v-col>
-      </v-row>
+      <v-card class="mx-auto" variant="text">
+        <v-img height="250" src="https://img.freepik.com/fotos-premium/3d-render-fast-food-hamburger-hot-dog-refresco-flotante_570783-160.jpg" cover
+          class="flex">
+          <v-card-title class="text-capitalize text-white"> <v-avatar color="warning">
+              <v-icon icon="bi bi-person-circle"></v-icon>
+            </v-avatar> {{ user.name }} • {{ user.apellido }}</v-card-title>
+          <v-card-text>
+            <v-chip color="orange-accent-4" variant="elevated" class="ma-2 font-weight-bold">Correo: {{ user.email }}</v-chip>
+            <v-chip color="amber-darken-1" variant="elevated" class="ma-2 font-weight-bold">Pedidos: {{ pedidos.length }}</v-chip>
+          </v-card-text>
+        </v-img>
+      </v-card>
 
-      <v-row class="section" justify="center">
-        <v-col cols="10" class="text-center">
+      <v-row class="section mt-2" justify="center">
+        <v-col cols="12" class="text-center">
           <h2>Historial de Pedidos</h2>
-          <br />
-          <v-list class="Listaorden">
+          <v-list>
             <tabla-informacion-component :items="pedidos" :headers="headers" :color="'warning'"
               :textEliminar="'Eliminar'" :textEditar="'Ver'" :textFunciones="'Funciones'" @edit-item="verPedido"
               @delete-item="deletePedido" height="45vh" />
@@ -99,6 +91,8 @@ export default {
       editUser: {
         name: "",
         password: "",
+        email: "",
+        apellido: "",
       },
       headers: [
         {
@@ -263,6 +257,31 @@ export default {
         console.log(error);
       }
     },
+    async loadCliente() {
+      const headers = {
+        Authorization: `Bearer ${this.access}`,
+        "Content-Type": "application/json",
+      };
+      try {
+        const response = await axios.get(
+          `${process.env.VUE_APP_API_URL}/loginMethods/api/perfil/informacion/${this.id}`,
+          { headers }
+        );
+        const respuesta = response.data.data;
+        if (respuesta) {
+          console.log(JSON.stringify(respuesta, null, 2));
+          this.user.name = respuesta.nombre;
+          this.user.email = respuesta.correo;
+          this.user.apellido = respuesta.apellido;
+          this.showSnackbar("Cliente cargado exitosamente", "success");
+        } else {
+          console.error(respuesta.error);
+          this.showSnackbar("Error al cargar el cliente", "error");
+        }
+      } catch (error) {
+        this.showSnackbar("Error al conectar con el servidor", "error");
+      }
+    },
     initMap(lat, lng) {
       // Si el mapa ya existe, desactívalo y elimínalo
       if (this.map) {
@@ -292,6 +311,7 @@ export default {
   },
   created() {
     this.loadPedidos();
+    this.loadCliente();
   },
 };
 </script>
