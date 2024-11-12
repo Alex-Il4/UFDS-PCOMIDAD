@@ -328,5 +328,13 @@ export default {
     this.loadPedidos();
     this.loadCliente();
   },
+  watch: {
+    dialogEditar: {
+      handler() {
+        this.loadCliente();
+      },
+      deep: true,
+    },
+  }
 };
 </script>
