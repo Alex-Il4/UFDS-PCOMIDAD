@@ -58,6 +58,7 @@
               variant="underlined"
           ></v-text-field>
           <v-file-input
+              v-model="imagen"
               :rules="[rules.imagen]"
               accept="image/png, image/jpeg, image/bmp"
               label="Imagen del restaurante"
@@ -142,7 +143,7 @@ export default {
         titleAlert: '',
         textAlert: '',
         isVisible: false,
-    }),
+    }), 
     methods: {
         async onSubmit() {
             const valid = await this.validateFields()
