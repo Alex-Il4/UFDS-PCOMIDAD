@@ -46,7 +46,7 @@ const routes = [
   },
   {
     path: '/restaurante/perfil',
-    name: 'perfil',
+    name: 'restaurantePerfil',
     component: perfilView
   },
   {

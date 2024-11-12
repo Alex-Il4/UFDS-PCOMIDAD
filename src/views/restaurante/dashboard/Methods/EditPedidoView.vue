@@ -106,6 +106,7 @@
 
 <script>
 import axios from 'axios';
+import { useRouter } from 'vue-router';
 import MenuRestauranteComponent from '@/components/restauranteComponents/MenuComponent/MenuRestauranteComponent.vue';
 export default {
     name: "EditPedidoView",
@@ -145,6 +146,7 @@ export default {
         clienteID: '',
         correo: '',
         tiempoEstimado: null,
+        restauranteID: null,
     }),
     methods: {
         onClick() {
@@ -174,7 +176,9 @@ export default {
                     this.iconAlert = 'mdi-check-circle-outline';
                     this.titleAlert = 'Actualizado';
                     this.textAlert = 'El pedido ha sido actualizado exitosamente';
-                    this.$router.go(-1);
+                    setTimeout(() => {
+                        this.$router.push(`/restaurante/metodos/${this.restauranteID}`);
+                    }, 1000);
                 } else {
                     this.isVisible = true;
                     this.colorAlert = 'error';
@@ -206,6 +210,7 @@ export default {
                 const respuesta = response.data.data;
                 if (respuesta) {
                     console.log(JSON.stringify(respuesta, null, 2));
+                    this.restauranteID = respuesta.restaurante;
                     this.clienteID = respuesta.id;
                     this.correo = respuesta.cliente.correo;
                     this.cliente = respuesta.cliente.nombre;
@@ -233,5 +238,11 @@ export default {
     async created() {
         await this.loadPedido();
     },
+    setup() {
+        const router = useRouter();
+        return {
+            router
+        }
+    }
 }
 </script>
