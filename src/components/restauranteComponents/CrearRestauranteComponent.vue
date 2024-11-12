@@ -54,7 +54,7 @@
               :rules="[rules.Required, rules.onlyString]"
               color="success"
               label="tipo de cocina"
-              placeholder="Ingresa el telefono"
+              placeholder="Ingresa el tipo de cocina"
               variant="underlined"
           ></v-text-field>
           <v-file-input
