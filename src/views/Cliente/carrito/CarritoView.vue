@@ -32,8 +32,8 @@
                 
                   <v-card-text class="px-4">
                     <v-row align="center">
-                      <v-rating :value="item.puntaje" color="amber" dense readonly></v-rating>
-                      <span class="text-grey ms-4 caption">4.5 (413)</span>
+                      <v-rating :model-value="item.puntaje" color="amber" dense readonly></v-rating>
+                      <span class="text-grey ms-4 caption">{{item.puntaje}}</span>
                     </v-row>
                     <div class="mt-2">{{ item.descripcion }}</div>
                     <div class="mt-2 text-subtitle-2"><strong>Precio: ${{ item.precio }}</strong></div>
