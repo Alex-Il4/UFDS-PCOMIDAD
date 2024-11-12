@@ -132,6 +132,28 @@ export default {
             if (valid) return true
             else return false
         },
+        async loadData() {
+            const access = localStorage.getItem('access');
+            const headers = {
+                'Authorization': `Bearer ${access}`,
+                'Content-Type': 'application/json',
+            };
+            try {
+                const response = await axios.get(`${process.env.VUE_APP_API_URL}/loginMethods/api/perfil/informacion/${this.id}`, { headers });
+                const respuesta = response.data.data;
+                if (respuesta) {
+                    this.nombre = respuesta.nombre;
+                    this.apellido = respuesta.apellido;
+                } else {
+                    console.error(respuesta.error);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        },
+    },
+    created() {
+        this.loadData();
     },
 }
 </script>
