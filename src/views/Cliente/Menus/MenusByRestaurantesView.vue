@@ -43,7 +43,7 @@
                                             <v-img height="250" :src="item.raw.imagen" cover></v-img>
 
                                             <v-card-item>
-                                                <v-card-title>{{ item.raw.id }} {{ item.raw.titulo }}</v-card-title>
+                                                <v-card-title>{{ item.raw.titulo }}</v-card-title>
                                                 <v-card-subtitle>
                                                     <span class="me-1">Restaurante • {{ item.raw.restaurante }}</span>
                                                     <v-icon color="error" icon="mdi-fire-circle" size="small"></v-icon>
