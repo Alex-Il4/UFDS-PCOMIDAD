@@ -162,6 +162,7 @@ export default {
   },
   data() {
     return {
+      theme: 'light',
       map: null,
       marker: null,
       coords: null,
@@ -300,8 +301,10 @@ export default {
   } catch (error) {
     console.error('Hubo un problema con la solicitud:', error.message);
   }
-}
-
+},
+  onClick() {
+            this.theme = this.theme === 'light' ? 'dark' : 'light';
+        },
 
   }
 };
