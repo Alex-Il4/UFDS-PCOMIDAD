@@ -73,7 +73,7 @@ export default {
             { title: "Titulo", value: "titulo", align: "start", key: "titulo" },
             { title: "Nombre", value: "nombre", align: "start", key: "nombre" },
             { title: "Precio", value: "precio", align: "start", key: "precio" },
-            { title: "Status", value: "status", align: "start", key: "status" },
+            { title: "Estado", value: "status", align: "start", key: "status" },
             { title: "Fecha", value: "fecha", align: "start", key: "fecha" },
             { title: "Imagen", value: "imagen", align: "center", key: "imagen" },
             { title: "Actions", key: "actions", sortable: false },
@@ -140,7 +140,7 @@ export default {
                             titulo: item.titulo,
                             nombre: item.nombre,
                             precio: item.precio,
-                            status: item.status,
+                            status: item.status ? 'Activo' : 'Inactivo',
                             fecha: item.fecha,
                             imagen: item.imagen ? item.imagen : null,
                         }
