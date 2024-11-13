@@ -26,7 +26,7 @@
                     <div class="">
                         <v-chip append-icon="bi bi-file-text-fill" color="success" class="d-flex justify-center align-center mb-2 mt-2" small  @click="$emit('edit-item', item.id)"> {{ textEditar }}</v-chip>
                         <v-chip color="error" class="d-flex justify-center align-center mb-2" small append-icon="bi bi-trash3-fill"
-                            @click="$emit('delete-item', item.id)">
+                            @click="$emit('delete-item', item.id)" v-if="!isDelete">
                             {{ textEliminar }}
                         </v-chip>
 
@@ -74,6 +74,7 @@ export default {
         textFunciones: String,
         height: String,
         isSearch: Boolean,
+        isDelete: Boolean
     },
     data: () => ({
         search: '',

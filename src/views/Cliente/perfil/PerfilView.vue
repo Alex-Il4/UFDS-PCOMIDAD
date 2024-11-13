@@ -28,8 +28,8 @@
             <h2>Historial de Pedidos</h2>
             <v-list>
               <tabla-informacion-component :items="pedidos" :headers="headers" :color="'warning'"
-                :textEliminar="'Eliminar'" :textEditar="'Ver'" :textFunciones="'Funciones'" @edit-item="verPedido"
-                @delete-item="deletePedido" height="40vh" />
+                :textEditar="'Ver'" :textFunciones="'Funciones'" @edit-item="verPedido"
+                @delete-item="deletePedido" height="40vh" @delete-dialog="onDeleteDialog" is-delete />
             </v-list>
           </v-col>
         </v-row>
@@ -102,6 +102,7 @@ export default {
         email: "",
         apellido: "",
       },
+      isDelete: false,
       headers: [
         {
           title: "ID",
