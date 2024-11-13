@@ -51,8 +51,13 @@
           <v-select
             clearable
             v-model="status"
-            label="Status"
-            :items="['true', 'false']"
+            label="Estado"
+            :items="[
+              { value: true, title: 'Activo' },
+              { value: false, title: 'Inactivo' }
+            ]"
+            item-title="title"
+            item-value="value"
             variant="outlined"
             class="mb-2"
           ></v-select>
@@ -63,8 +68,8 @@
             v-if="!isEditMode"
             :rules="[rules.imagen]"
             accept="image/png, image/jpeg, image/bmp"
-            label="Imagen del restaurante"
-            placeholder="Imagen del restaurante"
+            label="Una imagen a subir"
+            placeholder="Selecciona una imagen"
             prepend-icon="mdi-camera"
             color="success"
             variant="outlined"
