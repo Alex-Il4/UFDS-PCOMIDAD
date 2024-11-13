@@ -210,7 +210,7 @@ export default {
                 const respuesta = response.data.data;
                 if (respuesta) {
                     console.log(JSON.stringify(respuesta, null, 2));
-                    this.restauranteID = respuesta.restaurante;
+                    this.restauranteID = respuesta.restaurante.id;
                     this.clienteID = respuesta.id;
                     this.correo = respuesta.cliente.correo;
                     this.cliente = respuesta.cliente.nombre;

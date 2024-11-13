@@ -191,7 +191,7 @@ export default {
           const tabla = pedido.map((item) => {
             return {
               id: item.id,
-              restaurante: item.restaurante,
+              restaurante: item.restaurante.nombre,
               correo: item.cliente.correo,
               status: item.status,
             };
